@@ -13,7 +13,7 @@ class TrTransitionLoop : public TdRenderLoop {
   shared_ptr<TdRenderLoop> m_target;
   shared_ptr<TdRenderLoop> m_source;
   // TODO: initialize here or in ctor?
-  int m_maxTicks = 80;
+  int m_maxTicks = 40;
   int m_curTick = 0;
   int m_maxWaitTick = 20;
   int m_waitTick = 0;

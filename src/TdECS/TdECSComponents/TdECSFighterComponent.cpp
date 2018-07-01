@@ -63,7 +63,9 @@ void TdECSFighterComponent::update(TdGame* game) {
             if (minDistSq < 0 || distSq < minDistSq) {
               minDistSq = distSq;
               m_targetEnt = ent.get();
-              printf("Target Found!\n");
+              printf("Target Found!: %f, %f\n",
+                     m_ent->get<TdECSPositionComponent>()->m_x,
+                     m_ent->get<TdECSPositionComponent>()->m_y);
             }
             // and if it's close enough
             if (distSq < 10.0 * 10.0) {

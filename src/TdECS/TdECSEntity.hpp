@@ -107,13 +107,13 @@ class TdECSEntity {
     return pt;
   }
 
-  static TdECSEntity *addEnemy(TdGame *game, TdECSSystem *system) {
+  static TdECSEntity *addEnemy(TdGame *game, TdECSSystem *system, double x, double y) {
     auto entity = std::make_unique<TdECSEntity>(system);
 
     auto graphicsComp =
         std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFFFFFFF));
     auto shapeComp = std::make_unique<TdECSShapeComponent>(48 + 2, 48 + 2);
-    auto positionComp = std::make_unique<TdECSPositionComponent>(400, 400, 0);
+    auto positionComp = std::make_unique<TdECSPositionComponent>(x, y, 0);
     auto physicsComp = std::make_unique<TdECSPhysicsComponent>();
     auto healthComp = std::make_unique<TdECSHealthComponent>(100, 0);
     auto fighterComp = std::make_unique<TdECSFighterComponent>();

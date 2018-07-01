@@ -10,7 +10,7 @@
 class TrMainMenuLoop;
 
 TdGameLoop::TdGameLoop(TdGame *game) {
-  TdECSEntity::addEnemy(game, game->m_entitySystem.get());
+  m_rd = std::uniform_real_distribution<>(0.0, M_PI * 2);
 }
 
 TdGameLoop::~TdGameLoop() = default;
@@ -29,6 +29,10 @@ TdRenderLoop *TdGameLoop::update(TdGame *game) {
 
         break;
       case SDLK_SPACE:
+        double theta = m_rd(m_rg);
+        double x = sin(theta) * 800 + K_DISPLAY_SIZE_X / 2.0;
+        double y = cos(theta) * 800 + K_DISPLAY_SIZE_Y / 2.0;
+        TdECSEntity::addEnemy(game, game->m_entitySystem.get(), x, y);
         break;
     }
   }

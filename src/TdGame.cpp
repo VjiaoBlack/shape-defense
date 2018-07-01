@@ -13,6 +13,13 @@ void TdGame::setupSDL() {
     exit(1);
   }
 
+  // nearest neighbor scaling
+  SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "0");
+
+  // "antialiasing"
+  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+
   // Create window
   m_SDLWindow = TrWindow(SDL_CreateWindow("athena", SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED, sz(K_DISPLAY_SIZE_X),
@@ -44,8 +51,7 @@ void TdGame::setupSDL() {
     exit(2);
   }
 
-  // Enable "antialiasing"
-  SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "2");
+
 }
 
 TdGame::TdGame()
