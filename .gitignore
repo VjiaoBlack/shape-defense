@@ -1,0 +1,8 @@
+.idea
+CMakeCache.txt
+CMakeFiles
+Defense
+Defense.cbp
+Makefile
+cmake
+cmake-build-debug
