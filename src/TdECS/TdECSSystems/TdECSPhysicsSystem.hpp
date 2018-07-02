@@ -12,6 +12,7 @@
 
 #include "TdECS/TdECSComponents/TdECSPhysicsComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSPositionComponent.hpp"
+#include "TdECSSystemUtils.hpp"
 
 class TdGame;
 
@@ -21,8 +22,6 @@ class TdECSPhysicsSystem {
   std::vector<std::unique_ptr<TdECSPhysicsComponent>> m_physicsComponents;
 
   void update(TdGame *game) {
-    for (auto &c : m_physicsComponents) {
-      c->update(game);
-    }
+    updateComponents(game, m_physicsComponents);
   }
 };

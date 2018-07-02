@@ -11,6 +11,11 @@ class TrMainMenuLoop;
 
 TdGameLoop::TdGameLoop(TdGame *game) {
   m_rd = std::uniform_real_distribution<>(0.0, M_PI * 2);
+
+  double theta = m_rd(m_rg);
+  double x = sin(theta) * 300 + K_DISPLAY_SIZE_X / 2.0;
+  double y = cos(theta) * 300 + K_DISPLAY_SIZE_Y / 2.0;
+  TdECSEntity::addEnemy(game, game->m_entitySystem.get(), x, y);
 }
 
 TdGameLoop::~TdGameLoop() = default;
@@ -30,18 +35,17 @@ TdRenderLoop *TdGameLoop::update(TdGame *game) {
         break;
       case SDLK_SPACE:
         double theta = m_rd(m_rg);
-        double x = sin(theta) * 800 + K_DISPLAY_SIZE_X / 2.0;
-        double y = cos(theta) * 800 + K_DISPLAY_SIZE_Y / 2.0;
+        double x = sin(theta) * 300 + K_DISPLAY_SIZE_X / 2.0;
+        double y = cos(theta) * 300 + K_DISPLAY_SIZE_Y / 2.0;
         TdECSEntity::addEnemy(game, game->m_entitySystem.get(), x, y);
         break;
     }
   }
 
-  game->m_entitySystem->m_planning.update(game);
-  game->m_entitySystem->m_physics.update(game);
+  game->m_entitySystem->update(game);
   return this;
 }
 
 void TdGameLoop::render(TdGame *game) {
-  game->m_entitySystem->m_graphics.update(game);
+//  game->m_entitySystem->m_graphics.update(game);
 }

@@ -14,16 +14,25 @@ void TdECSShooterComponent::update(TdGame *game) {
     m_curLaserDuration -= 30.0 / 1000.0;
     m_curCooldown -= 30.0 / 1000.0;
     if (m_curLaserDuration < 0) {
+      m_targetEnt->get<TdECSHealthComponent>()->m_health -= m_damage;
       m_curLaserDuration = 0;
       m_targetEnt = nullptr;
       m_isShooting = false;
     }
   } else if (m_curCooldown) {
     m_curCooldown -= 30.0 / 1000.0;
-    printf("%f.. %f\n", m_curCooldown, m_cooldown);
     if (m_curCooldown < 0) {
       m_curCooldown = 0;
     }
+  } else if (m_target) {
+    // attack it
+    m_isShooting = true;
+    m_curLaserDuration = m_laserDuration;
+    m_curCooldown = m_cooldown;
+
+
+
+    //    printf("%f\n", m_targetEnt->get<TdECSHealthComponent>()->m_health);
   } else {
     switch (m_target) {
       case 0:  // targets enemies
@@ -46,6 +55,7 @@ void TdECSShooterComponent::update(TdGame *game) {
               m_curLaserDuration = m_laserDuration;
               m_curCooldown = m_cooldown;
               m_targetEnt = ent.get();
+              break;
             }
           }
         }

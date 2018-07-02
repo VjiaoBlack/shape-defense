@@ -17,5 +17,5 @@ class TdECSHealthComponent : public TdECSComponent {
   TdECSHealthComponent(double health, double armor)
       : m_health(health), m_armor(armor) {}
 
-  virtual void update(TdGame* game) {}
+  virtual void update(TdGame* game);
 };

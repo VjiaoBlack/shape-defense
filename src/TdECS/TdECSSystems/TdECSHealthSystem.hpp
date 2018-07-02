@@ -1,6 +1,6 @@
 #pragma once
 /**
- * TdECSPlanningSystem.hpp
+ * TdECSHealthSystem.hpp
  *
  * Victor Jiao
  *
@@ -16,13 +16,12 @@
 
 class TdGame;
 
-class TdECSPlanningSystem {
+class TdECSHealthSystem {
  public:
-  std::vector<std::unique_ptr<TdECSShooterComponent>> m_shooterComponents;
-  std::vector<std::unique_ptr<TdECSFighterComponent>> m_fighterComponents;
+  std::vector<std::unique_ptr<TdECSHealthComponent>> m_healthComponents;
 
   void update(TdGame *game) {
-    updateComponents(game, m_shooterComponents);
-    updateComponents(game, m_fighterComponents);
+    updateComponents(game, m_healthComponents); // updates health
+    updateComponents(game, m_healthComponents); // removes dead health comps
   }
 };

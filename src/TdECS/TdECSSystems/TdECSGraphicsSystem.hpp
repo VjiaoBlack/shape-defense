@@ -12,6 +12,7 @@
 #include "TdECS/TdECSComponents/TdECSShapeComponent.hpp"
 
 #include "TdECS/TdECSComponents/TdECSGraphicsComponent.hpp"
+#include "TdECSSystemUtils.hpp"
 
 class TdGame;
 
@@ -20,8 +21,6 @@ class TdECSGraphicsSystem {
   std::vector<std::unique_ptr<TdECSGraphicsComponent>> m_graphicsComponents;
 
   void update(TdGame *game) {
-    for (auto &c : m_graphicsComponents) {
-      c->update(game);
-    }
+    updateComponents(game, m_graphicsComponents);
   }
 };

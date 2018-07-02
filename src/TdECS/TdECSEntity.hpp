@@ -32,6 +32,8 @@ class TdECSMissingComponentException : public std::runtime_error {
 
 class TdECSEntity {
  public:
+  bool m_dead = false;
+
   // add component pointers to this tuple later
   // TODO: restrict m_components access
   std::map<std::string, TdECSComponent *> m_components;
@@ -50,6 +52,13 @@ class TdECSEntity {
     if (m_GUISystem) {
       m_GUISystem->addComponent(std::move(component));
     }
+  }
+
+  void die() {
+    for (auto cp : m_components) {
+      cp.second->m_dead = true;
+    }
+    m_dead = true;
   }
 
   template <class T>
@@ -107,15 +116,16 @@ class TdECSEntity {
     return pt;
   }
 
-  static TdECSEntity *addEnemy(TdGame *game, TdECSSystem *system, double x, double y) {
+  static TdECSEntity *addEnemy(TdGame *game, TdECSSystem *system, double x,
+                               double y) {
     auto entity = std::make_unique<TdECSEntity>(system);
 
     auto graphicsComp =
         std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFFFFFFF));
-    auto shapeComp = std::make_unique<TdECSShapeComponent>(48 + 2, 48 + 2);
+    auto shapeComp = std::make_unique<TdECSShapeComponent>(16, 16);
     auto positionComp = std::make_unique<TdECSPositionComponent>(x, y, 0);
     auto physicsComp = std::make_unique<TdECSPhysicsComponent>();
-    auto healthComp = std::make_unique<TdECSHealthComponent>(100, 0);
+    auto healthComp = std::make_unique<TdECSHealthComponent>(10, 0);
     auto fighterComp = std::make_unique<TdECSFighterComponent>();
 
     entity->addComponent(std::move(graphicsComp));
