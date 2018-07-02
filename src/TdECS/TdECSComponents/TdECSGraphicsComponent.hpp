@@ -14,6 +14,6 @@ class TdECSGraphicsComponent : public TdECSComponent {
  public:
   SDL_Color m_color;
   TdECSGraphicsComponent(SDL_Color color) : m_color(color) {}
-  virtual void update(TdGame* game);
+  virtual void update(TdGame *game, TdECSSystem *system);
 };
 

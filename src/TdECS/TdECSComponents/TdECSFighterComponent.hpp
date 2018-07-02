@@ -15,10 +15,10 @@ class TdECSFighterComponent : public TdECSComponent {
 
   bool m_fighting = false;
 
-  TdECSEntity* m_targetEnt = nullptr;
+  int m_targetEntId = -1;
 
   TdECSFighterComponent() {}
 
-  virtual void update(TdGame* game);
+  virtual void update(TdGame *game, TdECSSystem *system);
 };
 

@@ -8,14 +8,18 @@
 #include "TdECSSystem.hpp"
 #include "../TdECSEntity.hpp"
 
+void TdECSSystem::addEntity(std::unique_ptr<TdECSEntity>&& e) {
+  m_entities[m_nextEntityId++] = std::move(e);
+}
+
 void TdECSSystem::update(TdGame *game) {
-  m_health.update(game);
-  m_physics.update(game);
-  m_planning.update(game);
-  m_graphics.update(game);
+  m_health.update(game, this);
+  m_physics.update(game, this);
+  m_planning.update(game, this);
+  m_graphics.update(game, this);
 
   for (auto c = m_entities.begin(); c != m_entities.end();) {
-    if ((*c)->m_dead) {
+    if ((*c).second->m_dead) {
       c = m_entities.erase(c);
     } else {
       c++;

@@ -33,6 +33,7 @@ class TdECSMissingComponentException : public std::runtime_error {
 class TdECSEntity {
  public:
   bool m_dead = false;
+  int m_id;
 
   // add component pointers to this tuple later
   // TODO: restrict m_components access
@@ -40,14 +41,14 @@ class TdECSEntity {
   TdECSSystem *m_GUISystem;
 
   TdECSEntity() = delete;
-  TdECSEntity(TdECSSystem *GUISystem) {
-    m_GUISystem = GUISystem;
+  TdECSEntity(TdECSSystem *GUISystem)
+      : m_id(GUISystem->m_nextEntityId), m_GUISystem(GUISystem) {
     m_components = std::map<std::string, TdECSComponent *>();
   }
 
   template <class T>
   void addComponent(std::unique_ptr<T> &&component) {
-    component->m_ent = this;
+    component->m_entId = m_id;
     m_components[typeid(T).name()] = component.get();
     if (m_GUISystem) {
       m_GUISystem->addComponent(std::move(component));
@@ -91,17 +92,19 @@ class TdECSEntity {
     entity->addComponent(std::move(shooterComp));
 
     auto pt = entity.get();
-    system->m_entities.push_back(std::move(entity));
+    system->addEntity(std::move(entity));
     return pt;
   }
 
-  static TdECSEntity *addTower(TdGame *game, TdECSSystem *system, int tileX, int tileY) {
+  static TdECSEntity *addTower(TdGame *game, TdECSSystem *system, int tileX,
+                               int tileY) {
     auto entity = std::make_unique<TdECSEntity>(system);
 
     auto graphicsComp =
         std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFFFFFFF));
     auto shapeComp = std::make_unique<TdECSShapeComponent>(32 + 1, 32 + 1);
-    auto tilePosComp = std::make_unique<TdECSTilePositionComponent>(tileX, tileY);
+    auto tilePosComp =
+        std::make_unique<TdECSTilePositionComponent>(tileX, tileY);
     auto healthComp = std::make_unique<TdECSHealthComponent>(100, 0);
     auto shooterComp = std::make_unique<TdECSShooterComponent>(5, 2, 30);
 
@@ -112,7 +115,8 @@ class TdECSEntity {
     entity->addComponent(std::move(shooterComp));
 
     auto pt = entity.get();
-    system->m_entities.push_back(std::move(entity));
+    system->addEntity(std::move(entity));
+
     return pt;
   }
 
@@ -136,7 +140,8 @@ class TdECSEntity {
     entity->addComponent(std::move(fighterComp));
 
     auto pt = entity.get();
-    system->m_entities.push_back(std::move(entity));
+    system->addEntity(std::move(entity));
+
     return pt;
   }
 };

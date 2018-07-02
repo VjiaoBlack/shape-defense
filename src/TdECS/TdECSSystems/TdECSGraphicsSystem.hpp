@@ -20,7 +20,7 @@ class TdECSGraphicsSystem {
  public:
   std::vector<std::unique_ptr<TdECSGraphicsComponent>> m_graphicsComponents;
 
-  void update(TdGame *game) {
-    updateComponents(game, m_graphicsComponents);
+  void update(TdGame *game, TdECSSystem* system) {
+    updateComponents(game, system, m_graphicsComponents);
   }
 };

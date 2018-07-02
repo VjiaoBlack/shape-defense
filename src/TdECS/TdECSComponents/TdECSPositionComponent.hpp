@@ -18,5 +18,5 @@ class TdECSPositionComponent : public TdECSComponent {
   TdECSPositionComponent(double x, double y, double theta)
       : m_x(x), m_y(y), m_theta(theta){};
 
-  virtual void update(TdGame *game) {}
+  virtual void update(TdGame *game, TdECSSystem *system) {}
 };

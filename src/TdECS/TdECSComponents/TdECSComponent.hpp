@@ -9,10 +9,11 @@
 
 class TdECSEntity;
 class TdGame;
+class TdECSSystem;
 
 class TdECSComponent {
  public:
-  TdECSEntity* m_ent;
+  int m_entId;
   bool m_dead = false;
-  virtual void update(TdGame* game) {};
+  virtual void update(TdGame *game, TdECSSystem *system) {};
 };

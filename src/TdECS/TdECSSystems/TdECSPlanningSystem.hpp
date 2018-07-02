@@ -21,8 +21,8 @@ class TdECSPlanningSystem {
   std::vector<std::unique_ptr<TdECSShooterComponent>> m_shooterComponents;
   std::vector<std::unique_ptr<TdECSFighterComponent>> m_fighterComponents;
 
-  void update(TdGame *game) {
-    updateComponents(game, m_shooterComponents);
-    updateComponents(game, m_fighterComponents);
+  void update(TdGame *game, TdECSSystem* system) {
+    updateComponents(game, system, m_shooterComponents);
+    updateComponents(game, system, m_fighterComponents);
   }
 };

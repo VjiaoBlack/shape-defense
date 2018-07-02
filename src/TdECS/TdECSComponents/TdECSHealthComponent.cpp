@@ -8,8 +8,8 @@
 #include "TdECSHealthComponent.hpp"
 #include "../TdECSEntity.hpp"
 
-void TdECSHealthComponent::update(TdGame* game) {
+void TdECSHealthComponent::update(TdGame *game, TdECSSystem *system) {
   if (m_health <= 0.0) {
-    m_ent->die();
+    system->m_entities[m_entId]->die();
   }
 }

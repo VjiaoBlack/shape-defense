@@ -11,15 +11,16 @@
 #include <vector>
 
 class TdGame;
+class TdECSSystem;
 
 template <class T>
-inline void updateComponents(TdGame* game,
+inline void updateComponents(TdGame* game, TdECSSystem* system,
                              std::vector<std::unique_ptr<T>>& vec) {
   for (auto c = vec.begin(); c != vec.end();) {
     if ((*c)->m_dead) {
       c = vec.erase(c);
     } else {
-      (*c)->update(game);
+      (*c)->update(game, system);
       c++;
     }
   }

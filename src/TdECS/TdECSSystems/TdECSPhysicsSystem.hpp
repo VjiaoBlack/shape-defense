@@ -21,7 +21,7 @@ class TdECSPhysicsSystem {
   std::vector<std::unique_ptr<TdECSPositionComponent>> m_positionComponents;
   std::vector<std::unique_ptr<TdECSPhysicsComponent>> m_physicsComponents;
 
-  void update(TdGame *game) {
-    updateComponents(game, m_physicsComponents);
+  void update(TdGame *game, TdECSSystem* system) {
+    updateComponents(game, system, m_physicsComponents);
   }
 };

@@ -19,6 +19,8 @@
  */
 
 #include <memory>
+#include <map>
+
 #include "TdECS/TdECSComponents/TdECSTilePositionComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSPositionComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSFighterComponent.hpp"
@@ -36,17 +38,21 @@ class TdGame;
 
 class TdECSSystem {
  public:
+  int m_nextEntityId = 0;
+
   TdECSGraphicsSystem m_graphics;
   TdECSPhysicsSystem m_physics;
   TdECSPlanningSystem m_planning;
   TdECSHealthSystem m_health;
 
-  std::vector<std::unique_ptr<TdECSEntity>> m_entities;
+  std::map<int, std::unique_ptr<TdECSEntity>> m_entities;
 
   std::vector<std::unique_ptr<TdECSTilePositionComponent>> m_tilePositionComponents;
   std::vector<std::unique_ptr<TdECSShapeComponent>> m_shapeComponents;
 
   void update(TdGame *game);
+
+  void addEntity(std::unique_ptr<TdECSEntity>&& e);
 
   void addComponent(std::unique_ptr<TdECSPositionComponent> c) {
     m_physics.m_positionComponents.push_back(std::move(c));

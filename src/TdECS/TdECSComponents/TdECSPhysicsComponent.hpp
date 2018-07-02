@@ -17,5 +17,5 @@ class TdECSPhysicsComponent : public TdECSComponent {
 
   TdECSPhysicsComponent() {}
 
-  virtual void update(TdGame* game);
+  virtual void update(TdGame *game, TdECSSystem *system);
 };

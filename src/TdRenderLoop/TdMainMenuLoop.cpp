@@ -73,5 +73,5 @@ void TrMainMenuLoop::render(TdGame *game) {
   SDL_RenderCopy(game->m_SDLRenderer, m_titleTexture.get(), nullptr, &renderQuad);
 
   m_GUISystem->update(game);
-  game->m_entitySystem->m_graphics.update(game);
+  game->m_entitySystem->m_graphics.update(game, game->m_entitySystem.get());
 }

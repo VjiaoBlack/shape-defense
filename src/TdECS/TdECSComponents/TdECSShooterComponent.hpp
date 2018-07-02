@@ -12,7 +12,7 @@
 class TdECSShooterComponent : public TdECSComponent {
  public:
   int m_target = 0;  // 0 targets enemies, 1 targets player
-  TdECSEntity* m_targetEnt;
+  int m_targetEntId;
 
   double m_damage;
   double m_cooldown;
@@ -23,8 +23,7 @@ class TdECSShooterComponent : public TdECSComponent {
   double m_curCooldown = 0;
   double m_curLaserDuration = 0;
 
-
   TdECSShooterComponent(double damage, double cooldown, double range)
       : m_damage(damage), m_cooldown(cooldown), m_range(range) {}
-  virtual void update(TdGame *game);
+  virtual void update(TdGame *game, TdECSSystem *system);
 };

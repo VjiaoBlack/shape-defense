@@ -17,5 +17,5 @@ class TdECSTilePositionComponent : public TdECSComponent {
   TdECSTilePositionComponent(int x, int y)
       : m_x(x), m_y(y) {};
 
-  virtual void update(TdGame *game) {}
+  virtual void update(TdGame *game, TdECSSystem *system) {}
 };

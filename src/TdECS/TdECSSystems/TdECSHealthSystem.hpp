@@ -20,8 +20,8 @@ class TdECSHealthSystem {
  public:
   std::vector<std::unique_ptr<TdECSHealthComponent>> m_healthComponents;
 
-  void update(TdGame *game) {
-    updateComponents(game, m_healthComponents); // updates health
-    updateComponents(game, m_healthComponents); // removes dead health comps
+  void update(TdGame *game, TdECSSystem* system) {
+    updateComponents(game, system, m_healthComponents); // updates health
+    updateComponents(game, system, m_healthComponents); // removes dead health comps
   }
 };

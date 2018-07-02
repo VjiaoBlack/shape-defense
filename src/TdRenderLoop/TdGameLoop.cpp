@@ -101,5 +101,5 @@ void TdGameLoop::render(TdGame *game) {
     posy += 17;
   }
 
-  game->m_entitySystem->m_graphics.update(game);
+  game->m_entitySystem->m_graphics.update(game, game->m_entitySystem.get());
 }
