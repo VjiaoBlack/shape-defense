@@ -49,6 +49,8 @@ void TdECSGraphicsComponent::update(TdGame *game) {
   if (m_ent->has<TdECSShooterComponent>()) {
     auto shooterComp = m_ent->get<TdECSShooterComponent>();
     if (shooterComp->m_isShooting) {
+      // TODO: problem with deleted targets while shooting...
+      // TODO: probably from when 2 shooters target
       SDL_RenderDrawLine(
           game->m_SDLRenderer, (int)std::round(xPos), (int)std::round(yPos),
           (int)std::round(

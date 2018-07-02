@@ -17,8 +17,8 @@ void TdGame::setupSDL() {
   SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
   // "antialiasing"
-  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+//  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+//  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
 
   // Create window
   m_SDLWindow = TrWindow(SDL_CreateWindow("athena", SDL_WINDOWPOS_UNDEFINED,

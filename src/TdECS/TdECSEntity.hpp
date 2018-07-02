@@ -95,13 +95,13 @@ class TdECSEntity {
     return pt;
   }
 
-  static TdECSEntity *addTower(TdGame *game, TdECSSystem *system) {
+  static TdECSEntity *addTower(TdGame *game, TdECSSystem *system, int tileX, int tileY) {
     auto entity = std::make_unique<TdECSEntity>(system);
 
     auto graphicsComp =
         std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFFFFFFF));
-    auto shapeComp = std::make_unique<TdECSShapeComponent>(48 + 2, 48 + 2);
-    auto tilePosComp = std::make_unique<TdECSTilePositionComponent>(0, 0);
+    auto shapeComp = std::make_unique<TdECSShapeComponent>(32 + 1, 32 + 1);
+    auto tilePosComp = std::make_unique<TdECSTilePositionComponent>(tileX, tileY);
     auto healthComp = std::make_unique<TdECSHealthComponent>(100, 0);
     auto shooterComp = std::make_unique<TdECSShooterComponent>(5, 2, 30);
 
@@ -121,7 +121,7 @@ class TdECSEntity {
     auto entity = std::make_unique<TdECSEntity>(system);
 
     auto graphicsComp =
-        std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFFFFFFF));
+        std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFC06060));
     auto shapeComp = std::make_unique<TdECSShapeComponent>(16, 16);
     auto positionComp = std::make_unique<TdECSPositionComponent>(x, y, 0);
     auto physicsComp = std::make_unique<TdECSPhysicsComponent>();
