@@ -50,7 +50,7 @@ class TdECSSystem {
   std::vector<std::unique_ptr<TdECSTilePositionComponent>> m_tilePositionComponents;
   std::vector<std::unique_ptr<TdECSShapeComponent>> m_shapeComponents;
 
-  void update(TdGame *game);
+  void update(TdGame *game, bool updateGraphics = true);
 
   void addEntity(std::unique_ptr<TdECSEntity>&& e);
 

@@ -18,6 +18,7 @@ class TdGameLoop : public TdRenderLoop {
   std::uniform_real_distribution<> m_rd;
 
   bool m_isBuilding = false;
+  int m_enemySpawnTimer = 0;
 
   std::unique_ptr<TdConstructionManager> m_constructionManager;
 

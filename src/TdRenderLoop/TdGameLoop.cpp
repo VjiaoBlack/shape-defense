@@ -60,17 +60,27 @@ TdRenderLoop *TdGameLoop::update(TdGame *game) {
     }
   }
 
+
   for (auto button : game->m_buttonsDown) {
     switch (button) {
       case SDL_BUTTON_LEFT:
-        m_constructionManager->build(game);
+        if (game->m_buttonsDownPrev.count(SDL_BUTTON_LEFT) == 0) {
+          m_constructionManager->build(game);
+        }
         break;
     }
   }
 
-  game->m_entitySystem->update(game);
+  game->m_entitySystem->update(game, false);
 
   m_constructionManager->update(game);
+
+  if (m_enemySpawnTimer == 15) {
+    this->addRandomEnemy(game, 1000);
+    m_enemySpawnTimer = 0;
+  }
+
+  m_enemySpawnTimer++;
 
   return this;
 }

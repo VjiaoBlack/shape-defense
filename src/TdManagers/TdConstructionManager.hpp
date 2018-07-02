@@ -14,7 +14,6 @@ class TdConstructionManager {
  public:
   SDL_Rect m_rect;
   bool m_isOn = false;
-  int m_cooldown = 0;
 
   TdConstructionManager() {
     m_rect.x = 0;

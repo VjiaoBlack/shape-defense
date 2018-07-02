@@ -89,6 +89,7 @@ void TdECSFighterComponent::update(TdGame *game, TdECSSystem *system) {
             if (distSq < 10.0 * 10.0) {
               // attack it
               m_fighting = true;
+              (system->m_entities[m_targetEntId])->get<TdECSHealthComponent>()->m_health -= 1;
             }
           }
         }

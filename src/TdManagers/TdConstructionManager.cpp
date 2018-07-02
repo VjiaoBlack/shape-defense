@@ -23,16 +23,11 @@ void TdConstructionManager::update(TdGame* game) {
 
 
   }
-  if (m_cooldown > 0) {
-    m_cooldown--;
-  }
 }
 
 // right now just builds a tower
 void TdConstructionManager::build(TdGame* game) {
-  if (m_isOn && m_cooldown == 0) {
-    printf("ADDED\n");
-    m_cooldown = 60;
+  if (m_isOn) {
     TdECSEntity::addTower(game, game->m_entitySystem.get(), m_rect.x / 17 - 46, m_rect.y / 17 - 25);
   }
 }
