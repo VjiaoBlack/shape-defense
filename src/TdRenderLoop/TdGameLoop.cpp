@@ -3,14 +3,14 @@
  */
 
 #include "TdGameLoop.hpp"
+#include "../TdManagers/TdConstructionManager.hpp"
 #include "TdECS/TdECSEntity.hpp"
 #include "TdMainMenuLoop.hpp"
 #include "TdTransitionLoop.hpp"
-#include "../TdManagers/TdConstructionManager.hpp"
 
 class TrMainMenuLoop;
 
-void TdGameLoop::addRandomEnemy(TdGame* game, double dist) {
+void TdGameLoop::addRandomEnemy(TdGame *game, double dist) {
   double theta = m_rd(m_rg);
   double x = sin(theta) * dist + K_DISPLAY_SIZE_X / 2.0;
   double y = cos(theta) * dist + K_DISPLAY_SIZE_Y / 2.0;
@@ -47,24 +47,25 @@ TdRenderLoop *TdGameLoop::update(TdGame *game) {
         this->addRandomEnemy(game, 1000);
         break;
       case SDLK_b:
-        m_isBuilding = !m_isBuilding;
-        if (m_isBuilding) {
-          printf("BUILDING MODE ON\n");
-          m_constructionManager->m_isOn = true;
-        } else {
-          printf("building mode off\n");
-          // disable building manager
-          m_constructionManager->m_isOn = false;
+        if (!game->m_keysDownPrev.count(SDLK_b)) {
+          m_isBuilding = !m_isBuilding;
+          if (m_isBuilding) {
+            printf("BUILDING MODE ON\n");
+            m_constructionManager->m_isOn = true;
+          } else {
+            printf("building mode off\n");
+            // disable building manager
+            m_constructionManager->m_isOn = false;
+          }
         }
         break;
     }
   }
 
-
   for (auto button : game->m_buttonsDown) {
     switch (button) {
       case SDL_BUTTON_LEFT:
-        if (game->m_buttonsDownPrev.count(SDL_BUTTON_LEFT) == 0) {
+        if (!game->m_buttonsDownPrev.count(SDL_BUTTON_LEFT)) {
           m_constructionManager->build(game);
         }
         break;
@@ -96,9 +97,14 @@ void TdGameLoop::render(TdGame *game) {
   while (posx <= K_DISPLAY_SIZE_X / 2) {
     SDL_RenderDrawLine(game->m_SDLRenderer, K_DISPLAY_SIZE_X / 2 + posx, 0,
                        K_DISPLAY_SIZE_X / 2 + posx, K_DISPLAY_SIZE_Y);
+    SDL_RenderDrawLine(game->m_SDLRenderer, 1 + K_DISPLAY_SIZE_X / 2 + posx, 0,
+                       1 + K_DISPLAY_SIZE_X / 2 + posx, K_DISPLAY_SIZE_Y);
+
     SDL_RenderDrawLine(game->m_SDLRenderer, K_DISPLAY_SIZE_X / 2 - posx, 0,
                        K_DISPLAY_SIZE_X / 2 - posx, K_DISPLAY_SIZE_Y);
-    posx += 17;
+    SDL_RenderDrawLine(game->m_SDLRenderer, 1 + K_DISPLAY_SIZE_X / 2 - posx, 0,
+                       1 + K_DISPLAY_SIZE_X / 2 - posx, K_DISPLAY_SIZE_Y);
+    posx += 16;
   }
 
   // horizontal lines
@@ -106,9 +112,14 @@ void TdGameLoop::render(TdGame *game) {
   while (posy <= K_DISPLAY_SIZE_Y / 2) {
     SDL_RenderDrawLine(game->m_SDLRenderer, 0, K_DISPLAY_SIZE_Y / 2 + posy,
                        K_DISPLAY_SIZE_X, K_DISPLAY_SIZE_Y / 2 + posy);
+    SDL_RenderDrawLine(game->m_SDLRenderer, 0, 1 + K_DISPLAY_SIZE_Y / 2 + posy,
+                       K_DISPLAY_SIZE_X, 1 + K_DISPLAY_SIZE_Y / 2 + posy);
+
     SDL_RenderDrawLine(game->m_SDLRenderer, 0, K_DISPLAY_SIZE_Y / 2 - posy,
                        K_DISPLAY_SIZE_X, K_DISPLAY_SIZE_Y / 2 - posy);
-    posy += 17;
+    SDL_RenderDrawLine(game->m_SDLRenderer, 0, 1 + K_DISPLAY_SIZE_Y / 2 - posy,
+                       K_DISPLAY_SIZE_X, 1 + K_DISPLAY_SIZE_Y / 2 - posy);
+    posy += 16;
   }
 
   game->m_entitySystem->m_graphics.update(game, game->m_entitySystem.get());

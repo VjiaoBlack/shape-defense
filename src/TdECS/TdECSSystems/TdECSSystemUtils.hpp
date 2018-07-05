@@ -12,6 +12,7 @@
 
 class TdGame;
 class TdECSSystem;
+class TdECSEntity;
 
 template <class T>
 inline void updateComponents(TdGame* game, TdECSSystem* system,
@@ -25,17 +26,6 @@ inline void updateComponents(TdGame* game, TdECSSystem* system,
     }
   }
 }
-//
-//std::list<typename std::vector<std::unique_ptr<T>>::iterator> to_remove;
-//
-//for (auto c = vec.begin(); c != vec.end(); c++) {
-//if ((*c)->m_dead) {
-//to_remove.push_back(c);
-//} else {
-//(*c)->update(game);
-//}
-//}
-//
-//for (auto c : to_remove) {
-//vec.erase(*c);
-//}
+
+std::tuple<double, double> getCenterPosition(TdECSEntity *ent);
+std::tuple<double, double> getPosition(TdECSEntity *ent);

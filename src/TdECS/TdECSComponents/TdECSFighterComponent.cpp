@@ -11,89 +11,119 @@
 #include "TdGame.hpp"
 
 void TdECSFighterComponent::update(TdGame *game, TdECSSystem *system) {
-  if (m_dead) {
-    return;
-  }
-  if (system->m_entities.count(m_targetEntId) && system->m_entities[m_targetEntId] == nullptr) {
-    m_targetEntId = -1;
-  }
-  if (!system->m_entities.count(m_entId) || system->m_entities[m_entId] == nullptr) {
-    m_dead = true;
-    return;
-  }
+  if (!m_isShooting && m_targetEntId >= 0) {
+    double minDist = -1.0;
+    bool enemyFound = false;
+    for (auto &ent_pair : game->m_entitySystem->m_entities) {
+      // if it's a shooter (assume all shooters are allies for now
+      // TODO: assumption
+      if (ent_pair.second && ent_pair.second->has<TdECSShooterComponent>()) {
+        // and if it's close enough
+        double itEntX, itEntY;
+        std::tie(itEntX, itEntY) = getCenterPosition(ent_pair.second.get());
 
-  switch (m_target) {
-    case 0:  // targets enemies
-      break;
-    case 1:
-      if (m_targetEntId > -1) {
-        // go towards it if its far
-        double entX = -system->m_entities[m_entId]->get<TdECSPositionComponent>()->m_x;
-        double entY = -system->m_entities[m_entId]->get<TdECSPositionComponent>()->m_y;
-        if (system->m_entities[m_targetEntId]->has<TdECSPositionComponent>()) {
-          entX += system->m_entities[m_targetEntId]->get<TdECSPositionComponent>()->m_x;
-          entY += system->m_entities[m_targetEntId]->get<TdECSPositionComponent>()->m_y;
-        } else if (system->m_entities[m_targetEntId]->has<TdECSTilePositionComponent>()) {
-          entX += system->m_entities[m_targetEntId]->get<TdECSTilePositionComponent>()->m_x * 17 +
-                  K_DISPLAY_SIZE_X / 2 - 8;
-          entY += system->m_entities[m_targetEntId]->get<TdECSTilePositionComponent>()->m_y * 17 +
-                  K_DISPLAY_SIZE_Y / 2 - 8;
-        } else {
-          printf("ERROR\n");
+        double entX, entY;
+        std::tie(entX, entY) = getCenterPosition(system->m_entities[m_entId].get());
+
+        entX -= itEntX;
+        entY -= itEntY;
+
+        double dist = sqrt(entX * entX + entY * entY);
+        if (minDist < 0 || dist < minDist) {
+          minDist = dist;
+          m_targetEntId = ent_pair.first;
+          enemyFound = true;
         }
-        double distSq = entX * entX + entY * entY;
+      }
+    }
 
-        if (distSq > 60.0 * 60.0) {
-          // move towards it
-          // TODO: make planning component
-          system->m_entities[m_entId]->get<TdECSPhysicsComponent>()->m_vx = entX / sqrt(distSq);
-          system->m_entities[m_entId]->get<TdECSPhysicsComponent>()->m_vy = entY / sqrt(distSq);
-        } else {
-          // stop
-          // TODO: planning component
-          system->m_entities[m_entId]->get<TdECSPhysicsComponent>()->m_vx = 0.0;
-          system->m_entities[m_entId]->get<TdECSPhysicsComponent>()->m_vy = 0.0;
-        }
-      } else {
-        if (system->m_entities.count(m_targetEntId) == 0) {
-          m_targetEntId = -1;
-        }
-        double minDistSq = -1.0;
+    if (!enemyFound) {
+      m_targetEntId = -1;
+      return;
+    }
 
+    double targetEntX, targetEntY;
+    std::tie(targetEntX, targetEntY) =
+        getCenterPosition(system->m_entities[m_targetEntId].get());
 
-        for (auto& ent_pair : game->m_entitySystem->m_entities) {
-          // if it's a shooter (assume all fighters are allies for now
+    double entX, entY;
+    std::tie(entX, entY) = getCenterPosition(system->m_entities[m_entId].get());
+
+    entX = targetEntX - entX;
+    entY = targetEntY - entY;
+
+    double dist = sqrt(entX * entX + entY * entY);
+
+    //     go towards it if its far
+    if (dist > 60.0) {
+      // move towards it
+      // TODO: make planning component
+      system->m_entities[m_entId]->get<TdECSPhysicsComponent>()->m_vx =
+          2.0 * entX / dist;
+      system->m_entities[m_entId]->get<TdECSPhysicsComponent>()->m_vy =
+          2.0 * entY / dist;
+    } else {
+      // stop
+      // TODO: planning component
+      system->m_entities[m_entId]->get<TdECSPhysicsComponent>()->m_vx = 0.0;
+      system->m_entities[m_entId]->get<TdECSPhysicsComponent>()->m_vy = 0.0;
+      // start fighting
+      m_isShooting = true;
+      m_curCooldown = m_cooldown;
+      m_curLaserDuration = m_laserDuration;
+    }
+
+  } else if (m_isShooting) {
+    if (!system->m_entities.count(m_targetEntId)) {
+      m_isShooting = false;
+      m_targetEntId = -1;
+    } else {
+      m_curLaserDuration -= 30.0 / 1000.0;
+      m_curCooldown -= 30.0 / 1000.0;
+      if (m_curLaserDuration < 0) {
+        (system->m_entities[m_targetEntId])
+            ->get<TdECSHealthComponent>()
+            ->m_health -= m_damage;
+        m_curLaserDuration = 0;
+
+        m_targetEntId = -1;
+        m_isShooting = false;
+      }
+    }
+  } else if (m_curCooldown) {
+    m_curCooldown -= 30.0 / 1000.0;
+    if (m_curCooldown < 0) {
+      m_curCooldown = 0;
+    }
+  } else {
+    switch (m_target) {
+      case 0:
+        break;
+      case 1:  // targets allies
+        double minDist = -1.0;
+        for (auto &ent_pair : game->m_entitySystem->m_entities) {
+          // if it's a shooter (assume all shooters are allies for now
           // TODO: assumption
-          if (ent_pair.second->has<TdECSShooterComponent>()) {
-            double entX;
-            double entY;
-            if (ent_pair.second->has<TdECSPositionComponent>()) {
-              entX = ent_pair.second->get<TdECSPositionComponent>()->m_x;
-              entY = ent_pair.second->get<TdECSPositionComponent>()->m_y;
-            } else if (ent_pair.second->has<TdECSTilePositionComponent>()) {
-              entX = ent_pair.second->get<TdECSTilePositionComponent>()->m_x * 17 +
-                  K_DISPLAY_SIZE_X / 2 - 8;
-              entY = ent_pair.second->get<TdECSTilePositionComponent>()->m_y * 17 +
-                  K_DISPLAY_SIZE_Y / 2 - 8;
-            }
-
-            double myX = system->m_entities[m_entId]->get<TdECSPositionComponent>()->m_x;
-            double myY = system->m_entities[m_entId]->get<TdECSPositionComponent>()->m_y;
-
-            double distSq = (entX - myX) * (entX - myX) + (entY - myY) * (entY - myY);
-            if (minDistSq < 0 || distSq < minDistSq) {
-              minDistSq = distSq;
-              m_targetEntId = ent_pair.first;
-            }
+          if (ent_pair.second &&
+              ent_pair.second->has<TdECSShooterComponent>()) {
             // and if it's close enough
-            if (distSq < 10.0 * 10.0) {
-              // attack it
-              m_fighting = true;
-              (system->m_entities[m_targetEntId])->get<TdECSHealthComponent>()->m_health -= 1;
+            double itEntX, itEntY;
+            std::tie(itEntX, itEntY) = getCenterPosition(ent_pair.second.get());
+
+            double entX, entY;
+            std::tie(entX, entY) = getCenterPosition(system->m_entities[m_entId].get());
+
+            entX -= itEntX;
+            entY -= itEntY;
+
+            double dist = sqrt(entX * entX + entY * entY);
+            if (minDist < 0 || dist < minDist) {
+              minDist = dist;
+              m_targetEntId = ent_pair.first;
             }
           }
         }
-      }
-      break;
+        break;
+    }
   }
 }

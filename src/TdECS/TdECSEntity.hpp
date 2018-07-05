@@ -82,14 +82,16 @@ class TdECSEntity {
 
     auto graphicsComp =
         std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFFFFFFF));
-    auto shapeComp = std::make_unique<TdECSShapeComponent>(48 + 2, 48 + 2);
+    auto shapeComp = std::make_unique<TdECSShapeComponent>(48, 48);
     auto tilePosComp = std::make_unique<TdECSTilePositionComponent>(0, 0);
     auto shooterComp = std::make_unique<TdECSShooterComponent>(5, 1, 30);
+    auto healthComp = std::make_unique<TdECSHealthComponent>(3000000, 2);
 
     entity->addComponent(std::move(graphicsComp));
     entity->addComponent(std::move(shapeComp));
     entity->addComponent(std::move(tilePosComp));
     entity->addComponent(std::move(shooterComp));
+    entity->addComponent(std::move(healthComp));
 
     auto pt = entity.get();
     system->addEntity(std::move(entity));
@@ -102,7 +104,7 @@ class TdECSEntity {
 
     auto graphicsComp =
         std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFFFFFFF));
-    auto shapeComp = std::make_unique<TdECSShapeComponent>(32 + 1, 32 + 1);
+    auto shapeComp = std::make_unique<TdECSShapeComponent>(32, 32);
     auto tilePosComp =
         std::make_unique<TdECSTilePositionComponent>(tileX, tileY);
     auto healthComp = std::make_unique<TdECSHealthComponent>(100, 0);
@@ -130,7 +132,7 @@ class TdECSEntity {
     auto positionComp = std::make_unique<TdECSPositionComponent>(x, y, 0);
     auto physicsComp = std::make_unique<TdECSPhysicsComponent>();
     auto healthComp = std::make_unique<TdECSHealthComponent>(10, 0);
-    auto fighterComp = std::make_unique<TdECSFighterComponent>();
+    auto fighterComp = std::make_unique<TdECSFighterComponent>(5, 0.5, 30);
 
     entity->addComponent(std::move(graphicsComp));
     entity->addComponent(std::move(shapeComp));

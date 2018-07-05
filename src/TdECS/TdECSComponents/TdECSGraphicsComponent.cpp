@@ -7,7 +7,6 @@
  */
 #include "TdECSGraphicsComponent.hpp"
 #include <TdGame.hpp>
-#include "TdECSShapeComponent.hpp"
 
 #include "../TdECSEntity.hpp"
 
@@ -19,18 +18,13 @@ void TdECSGraphicsComponent::update(TdGame *game, TdECSSystem *system) {
                          m_color.a);
 
   auto shape = system->m_entities[m_entId]->get<TdECSShapeComponent>();
-  double xPos;
-  double yPos;
+  double xPos, yPos;
+  std::tie(xPos, yPos) =
+      getPosition(system->m_entities[m_entId].get());
 
-  if (system->m_entities[m_entId]->has<TdECSTilePositionComponent>()) {
-    xPos = system->m_entities[m_entId]->get<TdECSTilePositionComponent>()->m_x * 17 +
-           K_DISPLAY_SIZE_X / 2 - 8;
-    yPos = system->m_entities[m_entId]->get<TdECSTilePositionComponent>()->m_y * 17 +
-           K_DISPLAY_SIZE_Y / 2 - 8;
-  } else {
-    xPos = system->m_entities[m_entId]->get<TdECSPositionComponent>()->m_x;
-    yPos = system->m_entities[m_entId]->get<TdECSPositionComponent>()->m_y;
-  }
+  double xCenterPos, yCenterPos;
+  std::tie(xCenterPos, yCenterPos) =
+      getCenterPosition(system->m_entities[m_entId].get());
 
   for (int i = 0; i < shape->m_points.size() - 1; i++) {
     SDL_RenderDrawLine(game->m_SDLRenderer,
@@ -47,16 +41,34 @@ void TdECSGraphicsComponent::update(TdGame *game, TdECSSystem *system) {
                      (int)std::round(yPos + shape->m_points.back().second));
 
   if (system->m_entities[m_entId]->has<TdECSShooterComponent>()) {
-    auto shooterComp = system->m_entities[m_entId]->get<TdECSShooterComponent>();
-    if (shooterComp->m_isShooting && system->m_entities.count(shooterComp->m_targetEntId)) {
-      // TODO: problem with deleted targets while shooting...
-      // TODO: probably from when 2 shooters target
-      SDL_RenderDrawLine(
-          game->m_SDLRenderer, (int)std::round(xPos), (int)std::round(yPos),
-          (int)std::round(
-              system->m_entities[shooterComp->m_targetEntId]->get<TdECSPositionComponent>()->m_x),
-          (int)std::round(
-              system->m_entities[shooterComp->m_targetEntId]->get<TdECSPositionComponent>()->m_y));
+    auto shooterComp =
+        system->m_entities[m_entId]->get<TdECSShooterComponent>();
+    if (shooterComp->m_isShooting &&
+        system->m_entities.count(shooterComp->m_targetEntId)) {
+      SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+      double entXPos, entYPos;
+      std::tie(entXPos, entYPos) =
+          getCenterPosition(system->m_entities[shooterComp->m_targetEntId].get());
+
+      SDL_RenderDrawLine(game->m_SDLRenderer, (int)std::round(xCenterPos),
+                         (int)std::round(yCenterPos), (int)std::round(entXPos),
+                         std::round(entYPos));
+    }
+  }
+
+  if (system->m_entities[m_entId]->has<TdECSFighterComponent>()) {
+    auto fighterComp =
+        system->m_entities[m_entId]->get<TdECSFighterComponent>();
+    if (fighterComp->m_isShooting &&
+        system->m_entities.count(fighterComp->m_targetEntId)) {
+      SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0x00, 0x00, 0xFF);
+      double entXPos, entYPos;
+      std::tie(entXPos, entYPos) =
+          getCenterPosition(system->m_entities[fighterComp->m_targetEntId].get());
+
+      SDL_RenderDrawLine(game->m_SDLRenderer, (int)std::round(xCenterPos),
+                         (int)std::round(yCenterPos), (int)std::round(entXPos),
+                         std::round(entYPos));
     }
   }
 

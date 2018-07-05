@@ -37,13 +37,14 @@ void TdECSShooterComponent::update(TdGame *game, TdECSSystem *system) {
           // TODO: assumption
           if (ent_pair.second && ent_pair.second->has<TdECSFighterComponent>()) {
             // and if it's close enough
-            double entX = ent_pair.second->get<TdECSPositionComponent>()->m_x;
-            double entY = ent_pair.second->get<TdECSPositionComponent>()->m_y;
+            double itEntX, itEntY;
+            std::tie(itEntX, itEntY) = getCenterPosition(ent_pair.second.get());
 
-            entX -= system->m_entities[m_entId]->get<TdECSTilePositionComponent>()->m_x * 17 +
-                    K_DISPLAY_SIZE_X / 2 - 8;
-            entY -= system->m_entities[m_entId]->get<TdECSTilePositionComponent>()->m_y * 17 +
-                    K_DISPLAY_SIZE_Y / 2 - 8;
+            double entX, entY;
+            std::tie(entX, entY) = getCenterPosition(system->m_entities[m_entId].get());
+
+            entX -= itEntX;
+            entY -= itEntY;
 
             if (entX * entX + entY * entY < 150.0 * 150.0) {
               // attack it
