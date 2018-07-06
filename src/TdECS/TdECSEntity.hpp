@@ -19,6 +19,8 @@
 #include "TdECS/TdECSComponents/TdECSPhysicsComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSPositionComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSShooterComponent.hpp"
+#include "TdECS/TdECSComponents/TdECSAttackComponent.hpp"
+#include "TdECS/TdECSComponents/TdECSLaserShooterComponent.hpp"
 
 #include "TdECS/TdECSSystems/TdECSSystem.hpp"
 
@@ -48,7 +50,7 @@ class TdECSEntity {
 
   template <class T>
   void addComponent(std::unique_ptr<T> &&component) {
-    component->m_entId = m_id;
+    component->m_entID = m_id;
     m_components[typeid(T).name()] = component.get();
     if (m_GUISystem) {
       m_GUISystem->addComponent(std::move(component));
@@ -84,14 +86,19 @@ class TdECSEntity {
         std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFFFFFFF));
     auto shapeComp = std::make_unique<TdECSShapeComponent>(48, 48);
     auto tilePosComp = std::make_unique<TdECSTilePositionComponent>(0, 0);
-    auto shooterComp = std::make_unique<TdECSShooterComponent>(5, 1, 30);
+    auto shooterComp = std::make_unique<TdECSShooterComponent>();
     auto healthComp = std::make_unique<TdECSHealthComponent>(3000000, 2);
+    auto attackComp = std::make_unique<TdECSAttackComponent>(0, 10, 1);
+    auto laserComp = std::make_unique<TdECSLaserShooterComponent>();
+
 
     entity->addComponent(std::move(graphicsComp));
     entity->addComponent(std::move(shapeComp));
     entity->addComponent(std::move(tilePosComp));
     entity->addComponent(std::move(shooterComp));
     entity->addComponent(std::move(healthComp));
+    entity->addComponent(std::move(attackComp));
+    entity->addComponent(std::move(laserComp));
 
     auto pt = entity.get();
     system->addEntity(std::move(entity));
@@ -108,13 +115,17 @@ class TdECSEntity {
     auto tilePosComp =
         std::make_unique<TdECSTilePositionComponent>(tileX, tileY);
     auto healthComp = std::make_unique<TdECSHealthComponent>(100, 0);
-    auto shooterComp = std::make_unique<TdECSShooterComponent>(5, 2, 30);
+    auto shooterComp = std::make_unique<TdECSShooterComponent>();
+    auto attackComp = std::make_unique<TdECSAttackComponent>(0, 10, 2);
+    auto laserComp = std::make_unique<TdECSLaserShooterComponent>();
 
     entity->addComponent(std::move(graphicsComp));
     entity->addComponent(std::move(shapeComp));
     entity->addComponent(std::move(tilePosComp));
     entity->addComponent(std::move(healthComp));
     entity->addComponent(std::move(shooterComp));
+    entity->addComponent(std::move(attackComp));
+    entity->addComponent(std::move(laserComp));
 
     auto pt = entity.get();
     system->addEntity(std::move(entity));
@@ -132,7 +143,9 @@ class TdECSEntity {
     auto positionComp = std::make_unique<TdECSPositionComponent>(x, y, 0);
     auto physicsComp = std::make_unique<TdECSPhysicsComponent>();
     auto healthComp = std::make_unique<TdECSHealthComponent>(10, 0);
-    auto fighterComp = std::make_unique<TdECSFighterComponent>(5, 0.5, 30);
+    auto fighterComp = std::make_unique<TdECSFighterComponent>();
+    auto attackComp = std::make_unique<TdECSAttackComponent>(1, 5, 0.5);
+    auto laserComp = std::make_unique<TdECSLaserShooterComponent>();
 
     entity->addComponent(std::move(graphicsComp));
     entity->addComponent(std::move(shapeComp));
@@ -140,6 +153,8 @@ class TdECSEntity {
     entity->addComponent(std::move(physicsComp));
     entity->addComponent(std::move(healthComp));
     entity->addComponent(std::move(fighterComp));
+    entity->addComponent(std::move(attackComp));
+    entity->addComponent(std::move(laserComp));
 
     auto pt = entity.get();
     system->addEntity(std::move(entity));

@@ -30,8 +30,8 @@ void TdECSSystem::update(TdGame* game, bool updateGraphics) {
   }
   //
   //  printf("%d\n", m_entities.size());
-  //  for (auto &h : m_health.m_healthComponents) {
-  //    printf("%f\n", h->m_health);
+  //  for (auto &h : m_curHealth.m_healthComponents) {
+  //    printf("%f\n", h->m_curHealth);
   //  }
   //  printf("\n");
 }

@@ -10,17 +10,17 @@
 #include "../TdECSEntity.hpp"
 
 void TdECSShooterComponent::update(TdGame *game, TdECSSystem *system) {
-  if (m_isShooting) {
-    if (!system->m_entities.count(m_targetEntId)) {
+  /*if (m_isShooting) {
+    if (!system->m_entities.count(m_targetEntID)) {
       m_isShooting = false;
-      m_targetEntId = -1;
+      m_targetEntID = -1;
     } else {
       m_curLaserDuration -= 30.0 / 1000.0;
       m_curCooldown -= 30.0 / 1000.0;
       if (m_curLaserDuration < 0) {
-        (system->m_entities[m_targetEntId])->get<TdECSHealthComponent>()->m_health -= m_damage;
+        (system->m_entities[m_targetEntID])->get<TdECSHealthComponent>()->m_curHealth -= m_damage;
         m_curLaserDuration = 0;
-        m_targetEntId = -1;
+        m_targetEntID = -1;
         m_isShooting = false;
       }
     }
@@ -41,7 +41,7 @@ void TdECSShooterComponent::update(TdGame *game, TdECSSystem *system) {
             std::tie(itEntX, itEntY) = getCenterPosition(ent_pair.second.get());
 
             double entX, entY;
-            std::tie(entX, entY) = getCenterPosition(system->m_entities[m_entId].get());
+            std::tie(entX, entY) = getCenterPosition(system->m_entities[m_entID].get());
 
             entX -= itEntX;
             entY -= itEntY;
@@ -51,7 +51,7 @@ void TdECSShooterComponent::update(TdGame *game, TdECSSystem *system) {
               m_isShooting = true;
               m_curLaserDuration = m_laserDuration;
               m_curCooldown = m_cooldown;
-              m_targetEntId = ent_pair.first;
+              m_targetEntID = ent_pair.first;
               break;
             }
           }
@@ -61,5 +61,5 @@ void TdECSShooterComponent::update(TdGame *game, TdECSSystem *system) {
       case 1:
         break;
     }
-  }
+  }*/
 }

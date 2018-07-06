@@ -13,7 +13,7 @@ class TdECSSystem;
 
 class TdECSComponent {
  public:
-  int m_entId;
+  int m_entID;
   bool m_dead = false;
   virtual void update(TdGame *game, TdECSSystem *system) {};
 };

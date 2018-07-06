@@ -1,4 +1,3 @@
-#pragma once
 /**
  * TdECSSystemUtils.hpp
  *
@@ -46,4 +45,24 @@ std::tuple<double, double> getPosition(TdECSEntity *ent) {
     std::string msg = "missing component: general position";
     throw TdECSMissingComponentException(msg);
   }
+};
+
+double findCenterDistance(TdECSEntity* ent1, TdECSEntity* ent2) {
+  double ent1X, ent1Y;
+  std::tie(ent1X, ent1Y) = getCenterPosition(ent1);
+
+  double ent2X, ent2Y;
+  std::tie(ent2X, ent2Y) = getCenterPosition(ent2);
+
+  return sqrt((ent1X - ent2X) * (ent1X - ent2X) + (ent1Y - ent2Y) * (ent1Y - ent2Y));
+}
+
+std::tuple<double, double> findCenterDisplacement(TdECSEntity* ent1, TdECSEntity* ent2) {
+  double ent1X, ent1Y;
+  std::tie(ent1X, ent1Y) = getCenterPosition(ent1);
+
+  double ent2X, ent2Y;
+  std::tie(ent2X, ent2Y) = getCenterPosition(ent2);
+
+  return make_tuple(ent2X - ent1X, ent2Y - ent1Y);
 };

@@ -1,12 +1,11 @@
 #pragma once
-/** 
+/**
  * TdECSSystem.hpp
- *  
+ *
  * Victor Jiao
  *
  * <DETAILS>
  */
-
 
 #pragma once
 
@@ -18,20 +17,22 @@
  * Handles a GUI System.
  */
 
-#include <memory>
 #include <map>
+#include <memory>
+#include "TdECS/TdECSComponents/TdECSLaserShooterComponent.hpp"
+#include "TdECS/TdECSComponents/TdECSAttackComponent.hpp"
 
-#include "TdECS/TdECSComponents/TdECSTilePositionComponent.hpp"
-#include "TdECS/TdECSComponents/TdECSPositionComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSFighterComponent.hpp"
-#include "TdECS/TdECSComponents/TdECSShooterComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSHealthComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSPhysicsComponent.hpp"
+#include "TdECS/TdECSComponents/TdECSPositionComponent.hpp"
+#include "TdECS/TdECSComponents/TdECSShooterComponent.hpp"
+#include "TdECS/TdECSComponents/TdECSTilePositionComponent.hpp"
 
 #include "TdECSGraphicsSystem.hpp"
+#include "TdECSHealthSystem.hpp"
 #include "TdECSPhysicsSystem.hpp"
 #include "TdECSPlanningSystem.hpp"
-#include "TdECSHealthSystem.hpp"
 
 class TdECSEntity;
 class TdGame;
@@ -47,12 +48,13 @@ class TdECSSystem {
 
   std::map<int, std::unique_ptr<TdECSEntity>> m_entities;
 
-  std::vector<std::unique_ptr<TdECSTilePositionComponent>> m_tilePositionComponents;
+  std::vector<std::unique_ptr<TdECSTilePositionComponent>>
+      m_tilePositionComponents;
   std::vector<std::unique_ptr<TdECSShapeComponent>> m_shapeComponents;
 
   void update(TdGame *game, bool updateGraphics = true);
 
-  void addEntity(std::unique_ptr<TdECSEntity>&& e);
+  void addEntity(std::unique_ptr<TdECSEntity> &&e);
 
   void addComponent(std::unique_ptr<TdECSPositionComponent> c) {
     m_physics.m_positionComponents.push_back(std::move(c));
@@ -84,5 +86,13 @@ class TdECSSystem {
 
   void addComponent(std::unique_ptr<TdECSPhysicsComponent> c) {
     m_physics.m_physicsComponents.push_back(std::move(c));
+  }
+
+  void addComponent(std::unique_ptr<TdECSLaserShooterComponent> c) {
+    m_planning.m_laserComponents.push_back(std::move(c));
+  }
+
+  void addComponent(std::unique_ptr<TdECSAttackComponent> c) {
+    m_planning.m_attackComponents.push_back(std::move(c));
   }
 };
