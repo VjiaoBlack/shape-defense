@@ -144,6 +144,7 @@ void TdGame::run() {
     fflush(stdout);
     if (m_deltaTime < (1000.0 / 30.0)) {
       usleep(1000 * ((1000.0 / 30.0) - m_deltaTime));
+      m_deltaTime = 1000 / 30.0;
     }
   }
 }

@@ -14,13 +14,14 @@
 #include <stdexcept>
 #include <string>
 #include "../Utils.hpp"
+#include "TdECS/TdECSComponents/TdECSAttackComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSFighterComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSHealthComponent.hpp"
+#include "TdECS/TdECSComponents/TdECSLaserShooterComponent.hpp"
+#include "TdECS/TdECSComponents/TdECSPathingComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSPhysicsComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSPositionComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSShooterComponent.hpp"
-#include "TdECS/TdECSComponents/TdECSAttackComponent.hpp"
-#include "TdECS/TdECSComponents/TdECSLaserShooterComponent.hpp"
 
 #include "TdECS/TdECSSystems/TdECSSystem.hpp"
 
@@ -91,7 +92,6 @@ class TdECSEntity {
     auto attackComp = std::make_unique<TdECSAttackComponent>(0, 10, 1);
     auto laserComp = std::make_unique<TdECSLaserShooterComponent>();
 
-
     entity->addComponent(std::move(graphicsComp));
     entity->addComponent(std::move(shapeComp));
     entity->addComponent(std::move(tilePosComp));
@@ -116,7 +116,7 @@ class TdECSEntity {
         std::make_unique<TdECSTilePositionComponent>(tileX, tileY);
     auto healthComp = std::make_unique<TdECSHealthComponent>(100, 0);
     auto shooterComp = std::make_unique<TdECSShooterComponent>();
-    auto attackComp = std::make_unique<TdECSAttackComponent>(0, 10, 2);
+    auto attackComp = std::make_unique<TdECSAttackComponent>(0, 5, 1.5);
     auto laserComp = std::make_unique<TdECSLaserShooterComponent>();
 
     entity->addComponent(std::move(graphicsComp));
@@ -144,7 +144,7 @@ class TdECSEntity {
     auto physicsComp = std::make_unique<TdECSPhysicsComponent>();
     auto healthComp = std::make_unique<TdECSHealthComponent>(10, 0);
     auto fighterComp = std::make_unique<TdECSFighterComponent>();
-    auto attackComp = std::make_unique<TdECSAttackComponent>(1, 5, 0.5);
+    auto attackComp = std::make_unique<TdECSAttackComponent>(1, 3, 0.5);
     auto laserComp = std::make_unique<TdECSLaserShooterComponent>();
 
     entity->addComponent(std::move(graphicsComp));
@@ -155,6 +155,7 @@ class TdECSEntity {
     entity->addComponent(std::move(fighterComp));
     entity->addComponent(std::move(attackComp));
     entity->addComponent(std::move(laserComp));
+    entity->addComponent(std::make_unique<TdECSPathingComponent>());
 
     auto pt = entity.get();
     system->addEntity(std::move(entity));

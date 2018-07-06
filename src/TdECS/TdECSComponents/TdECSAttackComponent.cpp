@@ -6,6 +6,7 @@
  * <DETAILS>
  */
 
+#include <TdGame.hpp>
 #include "TdECSAttackComponent.hpp"
 #include "../TdECSEntity.hpp"
 
@@ -16,7 +17,7 @@ void TdECSAttackComponent::damage(TdGame *game, TdECSSystem *system) {
 
 void TdECSAttackComponent::update(TdGame *game, TdECSSystem *system) {
   if (m_curCooldown > 0) {
-    m_curCooldown -= 30.0 / 1000.0;
+    m_curCooldown -= game->m_deltaTime / 1000.0;
     if (m_curCooldown < 0) {
       m_curCooldown = 0;
     }
@@ -62,15 +63,13 @@ void TdECSAttackComponent::update(TdGame *game, TdECSSystem *system) {
 
       if (minDist > 60.0) {
         // if closest tower is too far, move towards it
-        double entXDist, entYDist;
-        std::tie(entXDist, entYDist) = findCenterDisplacement(myEnt, itEnt);
+        double entX, entY;
+        std::tie(entX, entY) = getCenterPosition(itEnt);
 
-        myEnt->get<TdECSPhysicsComponent>()->m_vx = 2.0 * entXDist / minDist;
-        myEnt->get<TdECSPhysicsComponent>()->m_vy = 2.0 * entYDist / minDist;
+        myEnt->get<TdECSPathingComponent>()->move(game, system, entX, entY);
       } else {
         // otherwise, open fire
-        myEnt->get<TdECSPhysicsComponent>()->m_vx = 0.0;
-        myEnt->get<TdECSPhysicsComponent>()->m_vy = 0.0;
+        myEnt->get<TdECSPathingComponent>()->stop(game, system);
         myEnt->get<TdECSLaserShooterComponent>()->fire();
         m_curCooldown = m_cooldown;
       }

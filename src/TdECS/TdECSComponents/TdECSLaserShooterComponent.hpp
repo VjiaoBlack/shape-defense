@@ -11,8 +11,6 @@
 
 class TdECSLaserShooterComponent : public TdECSComponent {
  public:
-
-
   double m_laserDuration = 0.1;
 
   bool m_isShooting = false;

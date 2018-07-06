@@ -54,6 +54,10 @@ class TdECSSystem {
 
   void update(TdGame *game, bool updateGraphics = true);
 
+  // currently uses rectangle collisions
+  bool isColliding(TdECSEntity* ent1, TdECSEntity* ent2);
+  bool willCollide(TdECSEntity* ent1, TdECSEntity* ent2);
+
   void addEntity(std::unique_ptr<TdECSEntity> &&e);
 
   void addComponent(std::unique_ptr<TdECSPositionComponent> c) {
@@ -94,5 +98,9 @@ class TdECSSystem {
 
   void addComponent(std::unique_ptr<TdECSAttackComponent> c) {
     m_planning.m_attackComponents.push_back(std::move(c));
+  }
+
+  void addComponent(std::unique_ptr<TdECSPathingComponent> c) {
+    m_planning.m_pathingComponents.push_back(std::move(c));
   }
 };

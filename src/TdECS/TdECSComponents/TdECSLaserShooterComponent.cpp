@@ -20,7 +20,7 @@ void TdECSLaserShooterComponent::update(TdGame *game, TdECSSystem *system) {
       m_isShooting = false;
       ent->get<TdECSAttackComponent>()->m_targetEntID = -1;
     } else {
-      m_curLaserDuration -= 30.0 / 1000.0;
+      m_curLaserDuration -= game->m_deltaTime / 1000.0;
       if (m_curLaserDuration < 0) {
         m_curLaserDuration = 0;
         ent->get<TdECSAttackComponent>()->damage(game, system);
