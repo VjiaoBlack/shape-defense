@@ -33,7 +33,7 @@ void TdECSAttackComponent::update(TdGame *game, TdECSSystem *system) {
         double dist = findCenterDistance(myEnt, itPair.second.get());
 
         if (itPair.second && itPair.second->has<TdECSFighterComponent>()) {
-          if (dist < 150.0 && (minDist < 0 || dist < minDist)) {
+          if (dist < 160.0 && (minDist < 0 || dist < minDist)) {
             minDist = dist;
             m_targetEntID = itPair.first;
             itEnt = itPair.second.get();
@@ -52,7 +52,7 @@ void TdECSAttackComponent::update(TdGame *game, TdECSSystem *system) {
       for (auto &itPair : system->m_entities) {
         double dist = findCenterDistance(myEnt, itPair.second.get());
 
-        if (itPair.second && itPair.second->has<TdECSShooterComponent>()) {
+        if (itPair.second && !itPair.second->has<TdECSFighterComponent>()) {
           if (minDist < 0 || dist < minDist) {
             minDist = dist;
             m_targetEntID = itPair.first;
@@ -61,7 +61,7 @@ void TdECSAttackComponent::update(TdGame *game, TdECSSystem *system) {
         }
       }
 
-      if (minDist > 60.0) {
+      if (!system->bubbleWillCollide(itEnt, myEnt)) {
         // if closest tower is too far, move towards it
         double entX, entY;
         std::tie(entX, entY) = getCenterPosition(itEnt);

@@ -133,6 +133,28 @@ class TdECSEntity {
     return pt;
   }
 
+  static TdECSEntity *addWall(TdGame *game, TdECSSystem *system, int tileX,
+                               int tileY) {
+    auto entity = std::make_unique<TdECSEntity>(system);
+
+    auto graphicsComp =
+        std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFFFFFFF));
+    auto shapeComp = std::make_unique<TdECSShapeComponent>(16, 16);
+    auto tilePosComp =
+        std::make_unique<TdECSTilePositionComponent>(tileX, tileY);
+    auto healthComp = std::make_unique<TdECSHealthComponent>(500, 2);
+
+    entity->addComponent(std::move(graphicsComp));
+    entity->addComponent(std::move(shapeComp));
+    entity->addComponent(std::move(tilePosComp));
+    entity->addComponent(std::move(healthComp));
+
+    auto pt = entity.get();
+    system->addEntity(std::move(entity));
+
+    return pt;
+  }
+
   static TdECSEntity *addEnemy(TdGame *game, TdECSSystem *system, double x,
                                double y) {
     auto entity = std::make_unique<TdECSEntity>(system);

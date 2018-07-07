@@ -41,18 +41,8 @@ void TdECSPathingComponent::stop(TdGame* game, TdECSSystem* system) {
 void TdECSPathingComponent::update(TdGame* game, TdECSSystem* system) {
   if (m_isMoving) {
     // find collision
-    bool willCollide = false;
     auto myEnt = system->m_entities[m_entID].get();
-    for (auto& entPair : system->m_entities) {
-      if (entPair.first == m_entID) {
-        continue;
-      }
-
-      if (system->willCollide(myEnt, entPair.second.get())) {
-        willCollide = true;
-        break;
-      }
-    }
+    bool willCollide = system->willCollide(myEnt);
 
     if (willCollide) {
       // if there is a collision, wait
