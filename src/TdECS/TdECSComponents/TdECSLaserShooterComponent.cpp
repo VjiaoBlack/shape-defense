@@ -12,11 +12,11 @@
 #include "TdECSAttackComponent.hpp"
 
 void TdECSLaserShooterComponent::update(TdGame *game, TdECSSystem *system) {
-  auto& ent = system->m_entities[m_entID];
+  auto ent = system->getEnt(m_entID);
   int targetEntID = ent->get<TdECSAttackComponent>()->m_targetEntID;
 
   if (m_isShooting) {
-    if (!system->m_entities.count(targetEntID)) {
+    if (!system->getEnt(targetEntID)) {
       m_isShooting = false;
       ent->get<TdECSAttackComponent>()->m_targetEntID = -1;
     } else {

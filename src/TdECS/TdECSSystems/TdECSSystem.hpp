@@ -8,7 +8,9 @@
  */
 
 #include <map>
+#include <unordered_map>
 #include <memory>
+#include <list>
 #include "TdECS/TdECSComponents/TdECSLaserShooterComponent.hpp"
 #include "TdECS/TdECSComponents/TdECSAttackComponent.hpp"
 
@@ -30,6 +32,7 @@ class TdGame;
 
 class TdECSSystem {
  private:
+//  std::map<int, std::unique_ptr<TdECSEntity>> m_entities;
 
  public:
   int m_nextEntityId = 0;
@@ -41,10 +44,16 @@ class TdECSSystem {
 
   TdECSCollisionSystem m_collisions;
 
+  std::unordered_map<int, std::unique_ptr<TdECSEntity>> m_enemies;
+  std::unordered_map<int, std::unique_ptr<TdECSEntity>> m_allies;
 
-  std::map<int, std::unique_ptr<TdECSEntity>> m_enemies;
-  std::map<int, std::unique_ptr<TdECSEntity>> m_allies;
-  std::map<int, std::unique_ptr<TdECSEntity>> m_entities;
+  std::list<std::unordered_map<int, std::unique_ptr<TdECSEntity>>*> getEntityMaps() {
+    std::list<std::unordered_map<int, std::unique_ptr<TdECSEntity>>*> itList;
+    itList.push_back(&m_enemies);
+    itList.push_back(&m_allies);
+//    itList.push_back(&m_entities);
+    return itList;
+  };
 
   std::vector<std::unique_ptr<TdECSTilePositionComponent>>
       m_tilePositionComponents;

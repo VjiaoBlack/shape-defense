@@ -18,7 +18,10 @@ class TdCollisionQuadTree {
         nullptr, TdECSRect(glm::dvec2(-1500, -1500), 4000, 4000));
   }
 
-  bool tryAddEntID(TdGame *game, TdECSSystem *system, int entID);
+  bool tryAddEntID(TdGame *game,
+                     TdECSSystem *system,
+                     int entID,
+                     TdECSEntity *ent);
   void removeEntID(TdGame *game, TdECSSystem *system, int entID);
   void update(TdGame *game, TdECSSystem *system);
 };

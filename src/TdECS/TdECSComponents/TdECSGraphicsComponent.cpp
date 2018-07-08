@@ -7,6 +7,7 @@
  */
 #include "TdECSGraphicsComponent.hpp"
 #include <TdGame.hpp>
+#include <TdECS/TdECSSystems/TdECSSystemPosUtils.hpp>
 
 #include "../TdECSEntity.hpp"
 
@@ -14,7 +15,7 @@ void TdECSGraphicsComponent::update(TdGame *game, TdECSSystem *system) {
   SDL_Color c;
   SDL_GetRenderDrawColor(game->m_SDLRenderer, &c.r, &c.g, &c.b, &c.a);
 
-  auto ent = system->m_entities[m_entID].get();
+  auto ent = system->getEnt(m_entID);
   if (ent->has<TdECSHealthComponent>()) {
     auto healthComp = ent->get<TdECSHealthComponent>();
     SDL_SetRenderDrawColor(
@@ -27,54 +28,48 @@ void TdECSGraphicsComponent::update(TdGame *game, TdECSSystem *system) {
   }
 
   auto shape = ent->get<TdECSShapeComponent>();
-  double xPos, yPos;
-  std::tie(xPos, yPos) = getPosition(ent);
+  glm::dvec2 pos = getPosition(ent);
 
-  double xCenterPos, yCenterPos;
-  std::tie(xCenterPos, yCenterPos) =
-      getCenterPosition(ent);
+  glm::dvec2 centerp = getCenterPosition(ent);
 
   for (int i = 0; i < shape->m_points.size() - 1; i++) {
     SDL_RenderDrawLine(game->m_SDLRenderer,
-                       (int) std::round(xPos + shape->m_points[i].x),
-                       (int) std::round(yPos + shape->m_points[i].y),
-                       (int) std::round(xPos + shape->m_points[i + 1].x),
-                       (int) std::round(yPos + shape->m_points[i + 1].y));
+                       (int) std::round(pos.x + shape->m_points[i].x),
+                       (int) std::round(pos.y + shape->m_points[i].y),
+                       (int) std::round(pos.x + shape->m_points[i + 1].x),
+                       (int) std::round(pos.y + shape->m_points[i + 1].y));
   }
 
   SDL_RenderDrawLine(game->m_SDLRenderer,
-                     (int) std::round(xPos + shape->m_points.front().x),
-                     (int) std::round(yPos + shape->m_points.front().y),
-                     (int) std::round(xPos + shape->m_points.back().x),
-                     (int) std::round(yPos + shape->m_points.back().y) - 1);
+                     (int) std::round(pos.x + shape->m_points.front().x),
+                     (int) std::round(pos.y + shape->m_points.front().y),
+                     (int) std::round(pos.x + shape->m_points.back().x),
+                     (int) std::round(pos.y + shape->m_points.back().y) - 1);
 
   if (ent->has<TdECSLaserShooterComponent>()) {
     auto attackComp = ent->get<TdECSAttackComponent>();
     auto laserComp =
         ent->get<TdECSLaserShooterComponent>();
     if (laserComp->m_isShooting &&
-        system->m_entities.count(attackComp->m_targetEntID)) {
+        system->getEnt(attackComp->m_targetEntID)) {
       if (ent->has<TdECSShooterComponent>()) {
         SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
       } else if (ent->has<TdECSFighterComponent>()) {
         SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0x00, 0x00, 0xFF);
       }
-      double entXPos, entYPos;
-      std::tie(entXPos, entYPos) =
-          getCenterPosition(system->m_entities[attackComp->m_targetEntID].get());
+      glm::dvec2 entp = getCenterPosition(system->getEnt(attackComp->m_targetEntID));
 
-      SDL_RenderDrawLine(game->m_SDLRenderer, (int) std::round(xCenterPos),
-                         (int) std::round(yCenterPos), (int) std::round(entXPos),
-                         std::round(entYPos));
+      SDL_RenderDrawLine(game->m_SDLRenderer, (int) std::round(centerp.x),
+                         (int) std::round(centerp.y), (int) std::round(entp.x),
+                         std::round(entp.y));
     }
   } else if (ent->get<TdECSShapeComponent>()->m_height == 16) {
     // draw some diagonal lines
-    double x, y;
-    std::tie(x, y) = getPosition(ent);
+    glm::dvec2 xy = getPosition(ent);
 
-    SDL_RenderDrawLine(game->m_SDLRenderer, x + 8, y, x, y + 8);
-    SDL_RenderDrawLine(game->m_SDLRenderer, x + 16, y, x, y + 16);
-    SDL_RenderDrawLine(game->m_SDLRenderer, x + 16, y + 8, x + 8, y + 16);
+    SDL_RenderDrawLine(game->m_SDLRenderer, xy.x + 8, xy.y, xy.x, xy.y + 8);
+    SDL_RenderDrawLine(game->m_SDLRenderer, xy.x + 16, xy.y, xy.x, xy.y + 16);
+    SDL_RenderDrawLine(game->m_SDLRenderer, xy.x + 16, xy.y + 8, xy.x + 8, xy.y + 16);
   }
 
   SDL_SetRenderDrawColor(game->m_SDLRenderer, c.r, c.g, c.b, c.a);

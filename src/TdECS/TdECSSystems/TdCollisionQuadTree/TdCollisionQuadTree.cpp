@@ -12,16 +12,19 @@
 
 
 void TdCollisionQuadTree::update(TdGame *game, TdECSSystem *system) {
-  m_root->refreshNode(game, system, m_root->m_entIDs);
+  m_root->refreshNode(game, system, m_root->m_ents);
 //  printf("\n");
 //  printf("QuadTree Sz: %d\n", m_root->getNumEnts());
 //  printf("QuadTre Lvl: %d\n", m_root->getDeepestLayer(0));
 }
 
-bool TdCollisionQuadTree::tryAddEntID(TdGame *game, TdECSSystem *system, int entID) {
-  return m_root->tryAddEntID(game, system, entID);
+bool TdCollisionQuadTree::tryAddEntID(TdGame *game,
+                                      TdECSSystem *system,
+                                      int entID,
+                                      TdECSEntity *ent) {
+  return m_root->tryAddEntID(system, entID, ent);
 }
 
 void TdCollisionQuadTree::removeEntID(TdGame *game, TdECSSystem *system, int entID) {
-  m_root->removeEntID(game, system, entID);
+  m_root->removeEntID(system, entID);
 }

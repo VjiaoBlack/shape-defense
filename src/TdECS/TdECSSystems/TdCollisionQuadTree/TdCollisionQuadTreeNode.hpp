@@ -8,7 +8,7 @@
  */
 
 #include <SDL_rect.h>
-#include <set>
+#include <unordered_map>
 #include "../../TdECSSystems/TdECSSystemUtils.hpp"
 
 class TdGame;
@@ -16,14 +16,12 @@ class TdECSSystem;
 
 class TdCollisionQuadTreeNode {
  public:
-  std::set<int> m_entIDs;
+  std::unordered_map<int, TdECSEntity *> m_ents;
   int m_depth;
   TdCollisionQuadTreeNode *m_parent = nullptr;
 
-  TdCollisionQuadTreeNode *getContainingNode(TdGame *game, TdECSSystem *system,
-                                             int entID);
-  TdCollisionQuadTreeNode *forceSearch(TdGame *game, TdECSSystem *system,
-                                             int entID);
+  TdCollisionQuadTreeNode *getContainingNode(TdECSSystem *system, int entID);
+  TdCollisionQuadTreeNode *forceSearch(TdECSSystem *system, int entID);
 
   TdECSRect m_rect;
 
@@ -33,7 +31,7 @@ class TdCollisionQuadTreeNode {
   std::unique_ptr<TdCollisionQuadTreeNode> m_br;
 
   TdCollisionQuadTreeNode(TdCollisionQuadTreeNode *parent, TdECSRect rect)
-      : m_parent(parent), m_rect(rect){
+      : m_parent(parent), m_rect(rect) {
     m_tl.reset(nullptr);
     m_tr.reset(nullptr);
     m_bl.reset(nullptr);
@@ -46,16 +44,17 @@ class TdCollisionQuadTreeNode {
     }
   };
 
-  ~TdCollisionQuadTreeNode() {
-  }
+  ~TdCollisionQuadTreeNode() {}
 
-  bool containsEntID(TdGame *game, TdECSSystem *system, int entID);
-  void refreshNode(TdGame *game, TdECSSystem *system, std::set<int>& outside);
-  void getAllWithinRadius(TdGame *game, TdECSSystem *system,
-                          std::set<int> &ents, double x, double y, double r);
+  bool containsEntID(TdECSSystem *system, int entID);
+  void refreshNode(TdGame *game, TdECSSystem *system,
+                   std::unordered_map<int, TdECSEntity *> &outside);
+  void getAllWithinRadius(TdECSSystem *system,
+                          std::unordered_map<int, TdECSEntity *> &ents,
+                          double x, double y, double r);
 
-  bool tryAddEntID(TdGame *game, TdECSSystem *system, int entID);
-  void removeEntID(TdGame *game, TdECSSystem *system, int entID);
+  bool tryAddEntID(TdECSSystem *system, int entID, TdECSEntity *ent);
+  void removeEntID(TdECSSystem *system, int entID);
 
   int getNumEnts();
   int getDeepestLayer(int start);

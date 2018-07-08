@@ -47,9 +47,3 @@ inline void updateComponents(TdGame* game, TdECSSystem* system,
     }
   }
 }
-
-// TODO: use tuples? or use glm::vec2?
-std::tuple<double, double> getCenterPosition(TdECSEntity *ent);
-std::tuple<double, double> getPosition(TdECSEntity *ent);
-double findCenterDistance(TdECSEntity* ent1, TdECSEntity* ent2);
-std::tuple<double, double> findCenterDisplacement(TdECSEntity* ent1, TdECSEntity* ent2);
