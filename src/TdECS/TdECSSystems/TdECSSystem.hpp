@@ -33,6 +33,7 @@
 #include "TdECSHealthSystem.hpp"
 #include "TdECSPhysicsSystem.hpp"
 #include "TdECSPlanningSystem.hpp"
+#include "TdECSCollisionSystem.hpp"
 
 class TdECSEntity;
 class TdGame;
@@ -45,6 +46,8 @@ class TdECSSystem {
   TdECSPhysicsSystem m_physics;
   TdECSPlanningSystem m_planning;
   TdECSHealthSystem m_health;
+
+  TdECSCollisionSystem m_collisions;
 
   std::map<int, std::unique_ptr<TdECSEntity>> m_entities;
 
@@ -63,7 +66,7 @@ class TdECSSystem {
   bool willCollide(TdECSEntity* ent);
   bool bubbleWillCollide(TdECSEntity* ent);
 
-  void addEntity(std::unique_ptr<TdECSEntity> &&e);
+  void addEntity(TdGame *game, std::unique_ptr<TdECSEntity> &&e);
 
   void addComponent(std::unique_ptr<TdECSPositionComponent> c) {
     m_physics.m_positionComponents.push_back(std::move(c));

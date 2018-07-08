@@ -13,6 +13,7 @@
 
 void TdECSHealthComponent::update(TdGame *game, TdECSSystem *system) {
   if (m_curHealth <= 0.0) {
+    system->m_collisions.m_qtree->removeEntID(game, system, m_entID);
     system->m_entities[m_entID]->die();
   }
 }

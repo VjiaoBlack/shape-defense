@@ -12,8 +12,8 @@ class TrMainMenuLoop;
 
 void TdGameLoop::addRandomEnemy(TdGame *game, double dist) {
   double theta = m_rd(m_rg);
-  double x = sin(theta) * dist + K_DISPLAY_SIZE_X / 2.0;
-  double y = cos(theta) * dist + K_DISPLAY_SIZE_Y / 2.0;
+  double x = sin(theta) * dist  + K_DISPLAY_SIZE_X / 2.0;
+  double y = cos(theta) * dist  + K_DISPLAY_SIZE_Y / 2.0;
   TdECSEntity::addEnemy(game, game->m_entitySystem.get(), x, y);
 }
 

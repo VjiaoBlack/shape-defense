@@ -135,8 +135,12 @@ bool TdECSSystem::bubbleWillCollide(TdECSEntity* ent) {
   return false;
 }
 
-void TdECSSystem::addEntity(std::unique_ptr<TdECSEntity>&& e) {
+void TdECSSystem::addEntity(TdGame *game, std::unique_ptr<TdECSEntity> &&e) {
+  int id = e->m_id;
   m_entities[m_nextEntityId++] = std::move(e);
+  if (!m_collisions.m_qtree->tryAddEntID(game, this, id)) {
+    std::cerr << "Error: FAILED TO ADD ENTITY" << std::endl;
+  }
 }
 
 void TdECSSystem::update(TdGame* game, bool updateGraphics) {
@@ -155,4 +159,8 @@ void TdECSSystem::update(TdGame* game, bool updateGraphics) {
       c++;
     }
   }
+
+  m_collisions.update(game, this);
+
+  printf("numEntities: %lu\n", m_entities.size());
 }

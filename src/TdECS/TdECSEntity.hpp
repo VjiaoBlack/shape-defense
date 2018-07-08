@@ -89,7 +89,7 @@ class TdECSEntity {
     auto tilePosComp = std::make_unique<TdECSTilePositionComponent>(0, 0);
     auto shooterComp = std::make_unique<TdECSShooterComponent>();
     auto healthComp = std::make_unique<TdECSHealthComponent>(3000000, 2);
-    auto attackComp = std::make_unique<TdECSAttackComponent>(0, 10, 1);
+    auto attackComp = std::make_unique<TdECSAttackComponent>(0, 10, 0.3);
     auto laserComp = std::make_unique<TdECSLaserShooterComponent>();
 
     entity->addComponent(std::move(graphicsComp));
@@ -101,7 +101,7 @@ class TdECSEntity {
     entity->addComponent(std::move(laserComp));
 
     auto pt = entity.get();
-    system->addEntity(std::move(entity));
+    system->addEntity(game, std::move(entity));
     return pt;
   }
 
@@ -128,7 +128,7 @@ class TdECSEntity {
     entity->addComponent(std::move(laserComp));
 
     auto pt = entity.get();
-    system->addEntity(std::move(entity));
+    system->addEntity(game, std::move(entity));
 
     return pt;
   }
@@ -150,7 +150,7 @@ class TdECSEntity {
     entity->addComponent(std::move(healthComp));
 
     auto pt = entity.get();
-    system->addEntity(std::move(entity));
+    system->addEntity(game, std::move(entity));
 
     return pt;
   }
@@ -161,8 +161,8 @@ class TdECSEntity {
 
     auto graphicsComp =
         std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFC06060));
-    auto shapeComp = std::make_unique<TdECSShapeComponent>(16, 16);
-    auto positionComp = std::make_unique<TdECSPositionComponent>(x, y, 0);
+    auto shapeComp = std::make_unique<TdECSShapeComponent>(8, 8);
+    auto positionComp = std::make_unique<TdECSPositionComponent>(x, y);
     auto physicsComp = std::make_unique<TdECSPhysicsComponent>();
     auto healthComp = std::make_unique<TdECSHealthComponent>(10, 0);
     auto fighterComp = std::make_unique<TdECSFighterComponent>();
@@ -180,7 +180,7 @@ class TdECSEntity {
     entity->addComponent(std::make_unique<TdECSPathingComponent>());
 
     auto pt = entity.get();
-    system->addEntity(std::move(entity));
+    system->addEntity(game, std::move(entity));
 
     return pt;
   }

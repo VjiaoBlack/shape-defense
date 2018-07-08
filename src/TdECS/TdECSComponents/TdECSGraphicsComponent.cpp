@@ -36,17 +36,17 @@ void TdECSGraphicsComponent::update(TdGame *game, TdECSSystem *system) {
 
   for (int i = 0; i < shape->m_points.size() - 1; i++) {
     SDL_RenderDrawLine(game->m_SDLRenderer,
-                       (int) std::round(xPos + shape->m_points[i].first),
-                       (int) std::round(yPos + shape->m_points[i].second),
-                       (int) std::round(xPos + shape->m_points[i + 1].first),
-                       (int) std::round(yPos + shape->m_points[i + 1].second));
+                       (int) std::round(xPos + shape->m_points[i].x),
+                       (int) std::round(yPos + shape->m_points[i].y),
+                       (int) std::round(xPos + shape->m_points[i + 1].x),
+                       (int) std::round(yPos + shape->m_points[i + 1].y));
   }
 
   SDL_RenderDrawLine(game->m_SDLRenderer,
-                     (int) std::round(xPos + shape->m_points.front().first),
-                     (int) std::round(yPos + shape->m_points.front().second),
-                     (int) std::round(xPos + shape->m_points.back().first),
-                     (int) std::round(yPos + shape->m_points.back().second));
+                     (int) std::round(xPos + shape->m_points.front().x),
+                     (int) std::round(yPos + shape->m_points.front().y),
+                     (int) std::round(xPos + shape->m_points.back().x),
+                     (int) std::round(yPos + shape->m_points.back().y) - 1);
 
   if (ent->has<TdECSLaserShooterComponent>()) {
     auto attackComp = ent->get<TdECSAttackComponent>();
