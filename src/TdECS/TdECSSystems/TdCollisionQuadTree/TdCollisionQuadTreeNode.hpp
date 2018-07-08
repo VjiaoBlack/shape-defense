@@ -22,6 +22,8 @@ class TdCollisionQuadTreeNode {
 
   TdCollisionQuadTreeNode *getContainingNode(TdGame *game, TdECSSystem *system,
                                              int entID);
+  TdCollisionQuadTreeNode *forceSearch(TdGame *game, TdECSSystem *system,
+                                             int entID);
 
   TdECSRect m_rect;
 

@@ -7,10 +7,14 @@
  */
 #include "TdCollisionQuadTreeNode.hpp"
 #include <TdGame.hpp>
+#include <csignal>
 #include "../../TdECSEntity.hpp"
 
 TdCollisionQuadTreeNode *TdCollisionQuadTreeNode::getContainingNode(
     TdGame *game, TdECSSystem *system, int entID) {
+//  printf("  node pos: %d, %d : %d, %d\n", (int)m_rect.pos.x, (int)m_rect.pos.y,
+//         (int)m_rect.w, (int)m_rect.h);
+
   auto ent = system->m_entities[entID].get();
   if (m_tl) {
     if (m_tl->m_rect.contains(ent)) {
@@ -27,10 +31,44 @@ TdCollisionQuadTreeNode *TdCollisionQuadTreeNode::getContainingNode(
     }
   }
   if (m_rect.contains(system->m_entities[entID].get())) {
+//    printf("  RECT CONTAINS\n");
     return this;
   } else {
+//    printf("  RECT CANT CONTAIN\n");
     return nullptr;
   }
+}
+
+TdCollisionQuadTreeNode *TdCollisionQuadTreeNode::forceSearch(
+    TdGame *game, TdECSSystem *system, int entID) {
+  if (m_entIDs.count(entID)) {
+    return this;
+  }
+
+  if (m_tl) {
+    if (m_tl->m_entIDs.count(entID)) {
+      return m_tl.get();
+    } else {
+      m_tl->forceSearch(game, system, entID);
+    }
+    if (m_tr->m_entIDs.count(entID)) {
+      return m_tr.get();
+    } else {
+      m_tr->forceSearch(game, system, entID);
+    }
+    if (m_bl->m_entIDs.count(entID)) {
+      return m_bl.get();
+    } else {
+      m_bl->forceSearch(game, system, entID);
+    }
+    if (m_br->m_entIDs.count(entID)) {
+      return m_br.get();
+    } else {
+      m_br->forceSearch(game, system, entID);
+    }
+  }
+
+  return nullptr;
 }
 
 bool TdCollisionQuadTreeNode::tryAddEntID(TdGame *game, TdECSSystem *system,
@@ -49,20 +87,29 @@ void TdCollisionQuadTreeNode::removeEntID(TdGame *game, TdECSSystem *system,
                                           int entID) {
   auto node = getContainingNode(game, system, entID);
   if (!node) {
-    std::cerr
-        << "ERROR: collision quad tree attempted to remove nonexistent node."
-        << std::endl;
-    double a;
+    std::cerr << "ERROR: collision quad tree attempted to remove from "
+                 "nonexistent node."
+              << std::endl;
+    raise(SIGSEGV);
     //    exit(2);
     return;
   }
 
   if (node->m_entIDs.count(entID) == 0) {
-    std::cerr
-        << "ERROR: collision quad tree attempted to remove nonexistent node."
-        << std::endl;
-    double a;
-    //    exit(1);
+    std::cerr << "ERROR: collision quad tree attempted to remove ent from "
+                 "incorrect node."
+              << std::endl;
+
+    // where the hell is it then???
+
+//    auto node =
+//        system->m_collisions.m_qtree->m_root->forceSearch(game, system, entID);
+
+//    printf("  FOUND %d, %d: %d, %d\n", (int)node->m_rect.pos.x,
+//           (int)node->m_rect.pos.y, (int)node->m_rect.w, (int)node->m_rect.h);
+
+    raise(SIGSEGV);
+    //        exit(1);
     return;
   }
 
@@ -89,6 +136,14 @@ void TdCollisionQuadTreeNode::refreshNode(TdGame *game, TdECSSystem *system,
   SDL_Rect draw{(int)m_rect.pos.x, (int)m_rect.pos.y, (int)m_rect.w,
                 (int)m_rect.h};
   SDL_RenderDrawRect(game->m_SDLRenderer, &draw);
+
+  for (auto it = m_entIDs.begin(); it != m_entIDs.end();) {
+    if (system->m_entities.count(*it) == 0 || system->m_entities[*it]->m_dead) {
+      it = m_entIDs.erase(it);
+    } else {
+      it++;
+    }
+  }
 
   // collect entIDs that don't belong
   if (m_tl) {
@@ -133,21 +188,17 @@ void TdCollisionQuadTreeNode::refreshNode(TdGame *game, TdECSSystem *system,
     }
   }
 
-    // put non-fitting objects upwards
-    if (m_parent) {
-      for (auto it = m_entIDs.begin(); it != m_entIDs.end();) {
-        if (system->m_entities.count(*it) == 0 ||
-            system->m_entities[*it]->m_dead) {
-          it = m_entIDs.erase(it);
-        } else if (!this->m_rect.contains(system->m_entities[*it].get())) {
-          outside.insert(*it);
-          it = m_entIDs.erase(it);
-        } else {
-          it++;
-        }
+  // put non-fitting objects upwards
+  if (m_parent) {
+    for (auto it = m_entIDs.begin(); it != m_entIDs.end();) {
+      if (!this->m_rect.contains(system->m_entities[*it].get())) {
+        outside.insert(*it);
+        it = m_entIDs.erase(it);
+      } else {
+        it++;
       }
     }
-
+  }
 
   // attempt to redistribute entIDs
   if (m_parent) {
@@ -155,6 +206,24 @@ void TdCollisionQuadTreeNode::refreshNode(TdGame *game, TdECSSystem *system,
       // if entID is inside, put into m_entIDs
       if (this->tryAddEntID(game, system, *it)) {
         it = outside.erase(it);
+      } else {
+        it++;
+      }
+    }
+  }
+
+  // attempt to redistribute entIDs DOWN
+  if (m_tl) {
+    for (auto it = m_entIDs.begin(); it != m_entIDs.end();) {
+      // if entID is inside, put into m_entIDs
+      if (m_tl->tryAddEntID(game, system, *it)) {
+        it = m_entIDs.erase(it);
+      } else if (m_tr->tryAddEntID(game, system, *it)) {
+        it = m_entIDs.erase(it);
+      } else if (m_bl->tryAddEntID(game, system, *it)) {
+        it = m_entIDs.erase(it);
+      } else if (m_br->tryAddEntID(game, system, *it)) {
+        it = m_entIDs.erase(it);
       } else {
         it++;
       }
@@ -185,6 +254,22 @@ void TdCollisionQuadTreeNode::getAllWithinRadius(TdGame *game,
                                                  TdECSSystem *system,
                                                  std::set<int> &ents, double x,
                                                  double y, double r) {
+
+  if (m_tl) {
+    if (m_tl->m_rect.cheapIntersectsCircle(glm::dvec2(x, y), r)) {
+      m_tl->getAllWithinRadius(game, system, ents, x, y, r);
+    }
+    if (m_tr->m_rect.cheapIntersectsCircle(glm::dvec2(x, y), r)) {
+      m_tr->getAllWithinRadius(game, system, ents, x, y, r);
+    }
+    if (m_bl->m_rect.cheapIntersectsCircle(glm::dvec2(x, y), r)) {
+      m_bl->getAllWithinRadius(game, system, ents, x, y, r);
+    }
+    if (m_br->m_rect.cheapIntersectsCircle(glm::dvec2(x, y), r)) {
+      m_br->getAllWithinRadius(game, system, ents, x, y, r);
+    }
+  }
+
   for (auto entID : m_entIDs) {
     double entX, entY;
     std::tie(entX, entY) = getPosition(system->m_entities[entID].get());
@@ -194,13 +279,6 @@ void TdCollisionQuadTreeNode::getAllWithinRadius(TdGame *game,
     if (dist <= r) {
       ents.insert(entID);
     }
-  }
-
-  if (m_tl) {
-    m_tl->getAllWithinRadius(game, system, ents, x, y, r);
-    m_tr->getAllWithinRadius(game, system, ents, x, y, r);
-    m_bl->getAllWithinRadius(game, system, ents, x, y, r);
-    m_br->getAllWithinRadius(game, system, ents, x, y, r);
   }
 }
 

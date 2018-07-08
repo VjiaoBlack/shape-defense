@@ -13,9 +13,9 @@
 
 void TdCollisionQuadTree::update(TdGame *game, TdECSSystem *system) {
   m_root->refreshNode(game, system, m_root->m_entIDs);
-  printf("\n");
-  printf("QuadTree Sz: %d\n", m_root->getNumEnts());
-  printf("QuadTre Lvl: %d\n", m_root->getDeepestLayer(0));
+//  printf("\n");
+//  printf("QuadTree Sz: %d\n", m_root->getNumEnts());
+//  printf("QuadTre Lvl: %d\n", m_root->getDeepestLayer(0));
 }
 
 bool TdCollisionQuadTree::tryAddEntID(TdGame *game, TdECSSystem *system, int entID) {

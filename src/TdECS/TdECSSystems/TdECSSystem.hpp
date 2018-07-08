@@ -7,16 +7,6 @@
  * <DETAILS>
  */
 
-#pragma once
-
-/**
- * TdGUISystem.hpp
- *
- * Victor Jiao
- *
- * Handles a GUI System.
- */
-
 #include <map>
 #include <memory>
 #include "TdECS/TdECSComponents/TdECSLaserShooterComponent.hpp"
@@ -39,6 +29,8 @@ class TdECSEntity;
 class TdGame;
 
 class TdECSSystem {
+ private:
+
  public:
   int m_nextEntityId = 0;
 
@@ -49,11 +41,16 @@ class TdECSSystem {
 
   TdECSCollisionSystem m_collisions;
 
+
+  std::map<int, std::unique_ptr<TdECSEntity>> m_enemies;
+  std::map<int, std::unique_ptr<TdECSEntity>> m_allies;
   std::map<int, std::unique_ptr<TdECSEntity>> m_entities;
 
   std::vector<std::unique_ptr<TdECSTilePositionComponent>>
       m_tilePositionComponents;
   std::vector<std::unique_ptr<TdECSShapeComponent>> m_shapeComponents;
+
+  TdECSEntity* getEnt(int entID);
 
   void update(TdGame *game, bool updateGraphics = true);
 

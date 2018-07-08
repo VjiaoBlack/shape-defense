@@ -8,6 +8,18 @@
 #include "TdECSSystem.hpp"
 #include "../TdECSEntity.hpp"
 
+TdECSEntity* TdECSSystem::getEnt(int entID) {
+  if (m_entities.count(entID)) {
+    return m_entities[entID].get();
+  } else if (m_enemies.count(entID)) {
+    return m_enemies[entID].get();
+  } else if (m_allies.count(entID)) {
+    return m_allies[entID].get();
+  } else {
+    return nullptr;
+  }
+}
+
 bool TdECSSystem::isColliding(TdECSEntity* ent1, TdECSEntity* ent2) {
   if (!ent1 || !ent2) {
     std::cerr << "Collision system passed a Null ent." << std::endl;
