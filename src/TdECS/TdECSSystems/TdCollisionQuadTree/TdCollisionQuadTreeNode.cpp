@@ -6,10 +6,27 @@
  * <DETAILS>
  */
 #include "TdCollisionQuadTreeNode.hpp"
+#include <TdECS/TdECSSystems/TdECSSystemPosUtils.hpp>
 #include <TdGame.hpp>
 #include <csignal>
-#include <TdECS/TdECSSystems/TdECSSystemPosUtils.hpp>
 #include "../../TdECSEntity.hpp"
+
+void TdCollisionQuadTreeNode::getAdjacentNodes(
+    list<TdCollisionQuadTreeNode *> &nodes) {
+  nodes.push_back(this);
+
+  if (!m_parent) {
+    return;
+  }
+
+  nodes.push_back(m_parent);
+
+  if (!m_parent->m_parent) {
+    return;
+  }
+
+  nodes.push_back(m_parent->m_parent);
+}
 
 TdCollisionQuadTreeNode *TdCollisionQuadTreeNode::getContainingNode(
     TdECSSystem *system, int entID) {
@@ -150,7 +167,7 @@ void TdCollisionQuadTreeNode::refreshNode(
     if (m_bl) m_bl->refreshNode(game, system, outside);
     if (m_br) m_br->refreshNode(game, system, outside);
   } else {
-    if (m_ents.size() > 8) {
+    if (m_ents.size() > 4) {
       TdECSRect newBaseRect = m_rect;
       newBaseRect.w /= 2.0;
       newBaseRect.h /= 2.0;
@@ -246,8 +263,8 @@ void TdCollisionQuadTreeNode::refreshNode(
 }
 
 void TdCollisionQuadTreeNode::getAllWithinRadius(
-    TdECSSystem *system, std::unordered_map<int, TdECSEntity *> &ents, double x,
-    double y, double r) {
+    TdECSSystem *system, std::vector<TdECSEntity *> &ents, double x, double y,
+    double r) {
   if (m_tl) {
     if (m_tl->m_rect.cheapIntersectsCircle(glm::dvec2(x, y), r)) {
       m_tl->getAllWithinRadius(system, ents, x, y, r);
@@ -264,13 +281,13 @@ void TdCollisionQuadTreeNode::getAllWithinRadius(
   }
 
   for (auto entID : m_ents) {
-    glm::dvec2 entp = getPosition(entID.second);
+    glm::dvec2 entp = entID.second->getPosition();
 
     double dist =
         std::sqrt((x - entp.x) * (x - entp.x) + (y - entp.y) * (y - entp.y));
 
     if (dist <= r) {
-      ents.insert(entID);
+      ents.push_back(entID.second);
     }
   }
 }

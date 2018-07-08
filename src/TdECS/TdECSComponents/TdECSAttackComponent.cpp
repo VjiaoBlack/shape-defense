@@ -7,9 +7,10 @@
  */
 
 #include "TdECSAttackComponent.hpp"
-#include <TdGame.hpp>
 #include <TdECS/TdECSSystems/TdECSSystemPosUtils.hpp>
+#include <TdGame.hpp>
 #include "../TdECSEntity.hpp"
+#include "../TdECSSystems/TdCollisionQuadTree/TdCollisionQuadTree.hpp"
 
 void TdECSAttackComponent::damage(TdGame *game, TdECSSystem *system) {
   system->getEnt(m_targetEntID)->get<TdECSHealthComponent>()->m_curHealth -=
@@ -29,8 +30,8 @@ void TdECSAttackComponent::update(TdGame *game, TdECSSystem *system) {
   double minDist = -1.0;
   TdECSEntity *itEnt = nullptr;
 
-  glm::dvec2 entp = getCenterPosition(myEnt);
-  std::unordered_map<int, TdECSEntity *> closeEntsIDs;
+  glm::dvec2 entp = myEnt->getCenterPosition();
+  std::vector<TdECSEntity *> closeEntsIDs;
 
   switch (m_target) {
     case 0:  // targets enemies
@@ -38,14 +39,14 @@ void TdECSAttackComponent::update(TdGame *game, TdECSSystem *system) {
       system->m_collisions.m_qtree->m_root->getAllWithinRadius(
           system, closeEntsIDs, entp.x, entp.y, 160.0);
 
-      for (auto itID : closeEntsIDs) {
-        auto itIDEnt = itID.second;
+      for (auto itTempEnt : closeEntsIDs) {
+        auto itIDEnt = itTempEnt;
         double dist = findCenterDistance(myEnt, itIDEnt);
 
         if (itIDEnt && itIDEnt->has<TdECSFighterComponent>()) {
           if (dist < 160.0 && (minDist < 0 || dist < minDist)) {
             minDist = dist;
-            m_targetEntID = itID.first;
+            m_targetEntID = itTempEnt->m_id;
             itEnt = itIDEnt;
           }
         }
@@ -84,9 +85,10 @@ void TdECSAttackComponent::update(TdGame *game, TdECSSystem *system) {
         }
       }
 
-      if (!system->bubbleWillCollide(itEnt, myEnt)) {
+      //      if (!system->bubbleWillCollide(itEnt, myEnt)) {
+      if (!system->isColliding(itEnt, myEnt)) {
         // if closest tower is too far, move towards it
-        glm::dvec2 entp = getCenterPosition(itEnt);
+        glm::dvec2 entp = itEnt->getCenterPosition();
 
         myEnt->get<TdECSPathingComponent>()->move(game, system, entp.x, entp.y);
       } else {

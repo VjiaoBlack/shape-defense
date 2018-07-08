@@ -38,6 +38,40 @@ class TdECSEntity {
   bool m_dead = false;
   int m_id;
 
+  inline glm::dvec2 getPosition() {
+    if (this->has<TdECSTilePositionComponent>()) {
+      return glm::dvec2(
+          this->get<TdECSTilePositionComponent>()->m_x * 16 + K_DISPLAY_SIZE_X / 2,
+          this->get<TdECSTilePositionComponent>()->m_y * 16 +
+              K_DISPLAY_SIZE_Y / 2);
+    } else if (this->has<TdECSPositionComponent>()) {
+      return glm::dvec2(this->get<TdECSPositionComponent>()->m_x,
+                        this->get<TdECSPositionComponent>()->m_y);
+    } else {
+      std::string msg = "missing component: general position";
+      throw TdECSMissingComponentException(msg);
+    }
+  };
+
+  inline glm::dvec2 getCenterPosition() {
+    if (this->has<TdECSTilePositionComponent>()) {
+      return glm::dvec2(this->get<TdECSTilePositionComponent>()->m_x * 16 +
+                            K_DISPLAY_SIZE_X / 2 +
+                            this->get<TdECSShapeComponent>()->m_width / 2.0,
+                        this->get<TdECSTilePositionComponent>()->m_y * 16 +
+                            K_DISPLAY_SIZE_Y / 2 +
+                            this->get<TdECSShapeComponent>()->m_height / 2.0);
+    } else if (this->has<TdECSPositionComponent>()) {
+      return glm::dvec2(this->get<TdECSPositionComponent>()->m_x +
+                            this->get<TdECSShapeComponent>()->m_width / 2.0,
+                        this->get<TdECSPositionComponent>()->m_y +
+                            this->get<TdECSShapeComponent>()->m_height / 2.0);
+    } else {
+      std::string msg = "missing component: general position";
+      throw TdECSMissingComponentException(msg);
+    }
+  };
+
   // add component pointers to this tuple later
   // TODO: restrict m_components access
   std::map<std::string, TdECSComponent *> m_components;
@@ -66,7 +100,7 @@ class TdECSEntity {
   }
 
   template <class T>
-  T *get() {
+  inline T *get() {
     if (!m_components.count(typeid(T).name())) {
       std::string msg = "missing component: ";
       msg += typeid(T).name();
@@ -76,7 +110,7 @@ class TdECSEntity {
   }
 
   template <class T>
-  bool has() {
+  inline bool has() {
     return m_components.count(typeid(T).name()) > 0;
   }
 

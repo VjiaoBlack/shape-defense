@@ -18,7 +18,7 @@ void TdECSPathingComponent::move(TdGame* game, TdECSSystem* system, double x,
   m_goalX = x;
   m_goalY = y;
   auto myEnt = system->getEnt(m_entID);
-  glm::dvec2 entp = getCenterPosition(myEnt);
+  glm::dvec2 entp = myEnt->getCenterPosition();
 
   double entXDist = m_goalX - entp.x;
   double entYDist = m_goalY - entp.y;
@@ -42,7 +42,8 @@ void TdECSPathingComponent::update(TdGame* game, TdECSSystem* system) {
   if (m_isMoving) {
     // find collision
     auto myEnt = system->getEnt(m_entID);
-    bool willCollide = system->willCollide(myEnt);
+//    bool willCollide = system->willCollide(myEnt);
+    bool willCollide = system->isColliding(myEnt);
 
     if (willCollide) {
       // if there is a collision, wait

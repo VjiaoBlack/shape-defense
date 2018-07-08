@@ -7,17 +7,19 @@
  * <DETAILS>
  */
 
-#include "TdCollisionQuadTree/TdCollisionQuadTree.hpp"
+#include <memory>
+
+class TdGame;
+class TdECSSystem;
+class TdCollisionQuadTree;
 
 class TdECSCollisionSystem {
  public:
-  std::unique_ptr<TdCollisionQuadTree> m_qtree;
+  TdCollisionQuadTree* m_qtree;
 
-  TdECSCollisionSystem() {
-    m_qtree = std::make_unique<TdCollisionQuadTree>();
-  }
+  TdECSCollisionSystem();
 
-  void update(TdGame* game, TdECSSystem* system) {
-    m_qtree->update(game, system);
-  }
+  ~TdECSCollisionSystem();
+
+  void update(TdGame* game, TdECSSystem* system);
 };

@@ -10,6 +10,8 @@
 #include <memory>
 #include <vector>
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/glm.hpp>
 
 class TdGame;
 class TdECSSystem;
@@ -17,15 +19,6 @@ class TdECSEntity;
 
 class TdECSShapeComponent;
 
-struct TdECSRect {
-  glm::dvec2 pos;
-  double w;
-  double h;
-
-  TdECSRect(glm::dvec2 _pos, double _w, double _h) : pos(_pos), w(_w), h(_h) {};
-  bool contains(TdECSEntity* ent);
-  bool cheapIntersectsCircle(glm::dvec2 pos, double r);
-};
 
 struct TdECSSegment {
   glm::dvec2 p1;

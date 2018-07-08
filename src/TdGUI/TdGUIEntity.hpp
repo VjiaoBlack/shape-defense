@@ -52,6 +52,7 @@ public:
     return static_cast<T *>(m_components[typeid(T).name()]);
   }
 
+
   static TdGUIEntity *addButton(TdGame *game, TdGUISystem *system,
                                 SDL_Rect rect, std::string &&label) {
     SDL_Rect textRect = rect;

@@ -9,6 +9,9 @@
 
 #include <SDL_rect.h>
 #include <unordered_map>
+#include <set>
+#include <list>
+#include <TdECS/TdECSSystems/TdECSRect.hpp>
 #include "../../TdECSSystems/TdECSSystemUtils.hpp"
 
 class TdGame;
@@ -50,11 +53,13 @@ class TdCollisionQuadTreeNode {
   void refreshNode(TdGame *game, TdECSSystem *system,
                    std::unordered_map<int, TdECSEntity *> &outside);
   void getAllWithinRadius(TdECSSystem *system,
-                          std::unordered_map<int, TdECSEntity *> &ents,
+                          std::vector<TdECSEntity *> &ents,
                           double x, double y, double r);
 
   bool tryAddEntID(TdECSSystem *system, int entID, TdECSEntity *ent);
   void removeEntID(TdECSSystem *system, int entID);
+
+  void getAdjacentNodes(std::list<TdCollisionQuadTreeNode *> &nodes);
 
   int getNumEnts();
   int getDeepestLayer(int start);

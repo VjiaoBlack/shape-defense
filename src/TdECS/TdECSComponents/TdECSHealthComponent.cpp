@@ -10,6 +10,7 @@
 #include "../TdECSEntity.hpp"
 
 #include "TdRenderLoop/TdGameLoop.hpp"
+#include "../TdECSSystems/TdCollisionQuadTree/TdCollisionQuadTree.hpp"
 
 void TdECSHealthComponent::update(TdGame *game, TdECSSystem *system) {
   if (m_curHealth <= 0.0) {

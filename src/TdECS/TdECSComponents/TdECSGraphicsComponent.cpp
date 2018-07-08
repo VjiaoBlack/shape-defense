@@ -28,9 +28,9 @@ void TdECSGraphicsComponent::update(TdGame *game, TdECSSystem *system) {
   }
 
   auto shape = ent->get<TdECSShapeComponent>();
-  glm::dvec2 pos = getPosition(ent);
+  glm::dvec2 pos = ent->getPosition();
 
-  glm::dvec2 centerp = getCenterPosition(ent);
+  glm::dvec2 centerp = ent->getCenterPosition();
 
   for (int i = 0; i < shape->m_points.size() - 1; i++) {
     SDL_RenderDrawLine(game->m_SDLRenderer,
@@ -57,7 +57,7 @@ void TdECSGraphicsComponent::update(TdGame *game, TdECSSystem *system) {
       } else if (ent->has<TdECSFighterComponent>()) {
         SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0x00, 0x00, 0xFF);
       }
-      glm::dvec2 entp = getCenterPosition(system->getEnt(attackComp->m_targetEntID));
+      glm::dvec2 entp = system->getEnt(attackComp->m_targetEntID)->getCenterPosition();
 
       SDL_RenderDrawLine(game->m_SDLRenderer, (int) std::round(centerp.x),
                          (int) std::round(centerp.y), (int) std::round(entp.x),
@@ -65,7 +65,7 @@ void TdECSGraphicsComponent::update(TdGame *game, TdECSSystem *system) {
     }
   } else if (ent->get<TdECSShapeComponent>()->m_height == 16) {
     // draw some diagonal lines
-    glm::dvec2 xy = getPosition(ent);
+    glm::dvec2 xy = ent->getPosition();
 
     SDL_RenderDrawLine(game->m_SDLRenderer, xy.x + 8, xy.y, xy.x, xy.y + 8);
     SDL_RenderDrawLine(game->m_SDLRenderer, xy.x + 16, xy.y, xy.x, xy.y + 16);

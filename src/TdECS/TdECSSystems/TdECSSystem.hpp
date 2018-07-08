@@ -65,12 +65,12 @@ class TdECSSystem {
 
   // currently uses rectangle collisions
   bool isColliding(TdECSEntity* ent1, TdECSEntity* ent2);
-  bool willCollide(TdECSEntity* ent1, TdECSEntity* ent2);
-  bool bubbleWillCollide(TdECSEntity* ent1, TdECSEntity* ent2);
+//  bool willCollide(TdECSEntity* ent1, TdECSEntity* ent2);
+//  bool bubbleWillCollide(TdECSEntity* ent1, TdECSEntity* ent2);
 
   bool isColliding(TdECSEntity* ent);
-  bool willCollide(TdECSEntity* ent);
-  bool bubbleWillCollide(TdECSEntity* ent);
+//  bool willCollide(TdECSEntity* ent);
+//  bool bubbleWillCollide(TdECSEntity* ent);
 
   void addEntity(TdGame *game, std::unique_ptr<TdECSEntity> &&e);
 

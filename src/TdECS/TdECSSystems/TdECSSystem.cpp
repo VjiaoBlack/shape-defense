@@ -5,6 +5,8 @@
  *
  * <DETAILS>
  */
+#include <TdECS/TdECSSystems/TdCollisionQuadTree/TdCollisionQuadTreeNode.hpp>
+#include <TdECS/TdECSSystems/TdCollisionQuadTree/TdCollisionQuadTree.hpp>
 #include "TdECSSystem.hpp"
 #include "../TdECSEntity.hpp"
 #include "TdECSSystemPosUtils.hpp"
@@ -25,145 +27,156 @@ bool TdECSSystem::isColliding(TdECSEntity* ent1, TdECSEntity* ent2) {
     return true;
   }
 
-  glm::dvec2 ent1p = getPosition(ent1);
+  glm::dvec2 ent1p = ent1->getPosition();
   double ent1x2 = ent1p.x + ent1->get<TdECSShapeComponent>()->m_width;
   double ent1y2 = ent1p.y + ent1->get<TdECSShapeComponent>()->m_height;
 
-  glm::dvec2 ent2p = getPosition(ent2);
+  glm::dvec2 ent2p = ent2->getPosition();
   double ent2x2 = ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
   double ent2y2 = ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
 
   return ent1p.x < ent2x2 && ent1x2 > ent2p.x && ent1p.y < ent2y2 &&
          ent1y2 > ent2p.y;
 }
-
-// note: only tests movement of ent1
-// also exaggerates ent1 movements
-bool TdECSSystem::willCollide(TdECSEntity* ent1, TdECSEntity* ent2) {
-  if (!ent1 || !ent2) {
-    std::cerr << "Collision system passed a Null ent." << std::endl;
-    return true;
-  }
-  double ent1vx = 0;
-  double ent1vy = 0;
-  double ent2vx = 0;
-  double ent2vy = 0;
-
-  if (ent1->has<TdECSPhysicsComponent>()) {
-    ent1vx = ent1->get<TdECSPhysicsComponent>()->m_vx;
-    ent1vy = ent1->get<TdECSPhysicsComponent>()->m_vy;
-  }
-
-  //  if (ent2->has<TdECSPhysicsComponent>()) {
-  //    ent2vx = ent2->get<TdECSPhysicsComponent>()->m_vx;
-  //    ent2vy = ent2->get<TdECSPhysicsComponent>()->m_vy;
-  //  }
-
-  glm::dvec2 ent1p = getPosition(ent1);
-  ent1p.x += ent1vx - 3.0;
-  ent1p.y += ent1vy - 3.0;
-  double ent1x2 = 3.0 + ent1p.x + ent1->get<TdECSShapeComponent>()->m_width;
-  double ent1y2 = 3.0 + ent1p.y + ent1->get<TdECSShapeComponent>()->m_height;
-
-  glm::dvec2 ent2p = getPosition(ent2);
-  ent2p.x += ent2vx - 3.0;
-  ent2p.y += ent2vy - 3.0;
-  double ent2x2 = 3.0 + ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
-  double ent2y2 = 3.0 + ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
-
-  return ent1p.x < ent2x2 && ent1x2 > ent2p.x && ent1p.y < ent2y2 &&
-         ent1y2 > ent2p.y;
-}
-
-// note: only tests movement of ent1
-// also exaggerates ent1 movements
-bool TdECSSystem::bubbleWillCollide(TdECSEntity* ent1, TdECSEntity* ent2) {
-  if (!ent1 || !ent2) {
-    std::cerr << "Collision system passed a Null ent." << std::endl;
-    return true;
-  }
-  double ent1vx = 0;
-  double ent1vy = 0;
-  double ent2vx = 0;
-  double ent2vy = 0;
-
-  if (ent1->has<TdECSPhysicsComponent>()) {
-    ent1vx = ent1->get<TdECSPhysicsComponent>()->m_vx;
-    ent1vy = ent1->get<TdECSPhysicsComponent>()->m_vy;
-  }
-
-  //  if (ent2->has<TdECSPhysicsComponent>()) {
-  //    ent2vx = ent2->get<TdECSPhysicsComponent>()->m_vx;
-  //    ent2vy = ent2->get<TdECSPhysicsComponent>()->m_vy;
-  //  }
-
-  glm::dvec2 ent1p = getPosition(ent1);
-  ent1p.x += ent1vx - 10.0;
-  ent1p.y += ent1vy - 10.0;
-  double ent1x2 = 10.0 + ent1p.x + ent1->get<TdECSShapeComponent>()->m_width;
-  double ent1y2 = 10.0 + ent1p.y + ent1->get<TdECSShapeComponent>()->m_height;
-
-  glm::dvec2 ent2p = getPosition(ent2);
-  ent2p.x += ent2vx - 10.0;
-  ent2p.y += ent2vy - 10.0;
-  double ent2x2 = 10.0 + ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
-  double ent2y2 = 10.0 + ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
-
-  return ent1p.x < ent2x2 && ent1x2 > ent2p.x && ent1p.y < ent2y2 &&
-         ent1y2 > ent2p.y;
-}
+//
+//// note: only tests movement of ent1
+//// also exaggerates ent1 movements
+// bool TdECSSystem::willCollide(TdECSEntity* ent1, TdECSEntity* ent2) {
+//  if (!ent1 || !ent2) {
+//    std::cerr << "Collision system passed a Null ent." << std::endl;
+//    return true;
+//  }
+//  double ent1vx = 0;
+//  double ent1vy = 0;
+//  double ent2vx = 0;
+//  double ent2vy = 0;
+//
+//  if (ent1->has<TdECSPhysicsComponent>()) {
+//    ent1vx = ent1->get<TdECSPhysicsComponent>()->m_vx;
+//    ent1vy = ent1->get<TdECSPhysicsComponent>()->m_vy;
+//  }
+//
+//  //  if (ent2->has<TdECSPhysicsComponent>()) {
+//  //    ent2vx = ent2->get<TdECSPhysicsComponent>()->m_vx;
+//  //    ent2vy = ent2->get<TdECSPhysicsComponent>()->m_vy;
+//  //  }
+//
+//  glm::dvec2 ent1p = ent1->getPosition();
+//  ent1p.x += ent1vx - 3.0;
+//  ent1p.y += ent1vy - 3.0;
+//  double ent1x2 = 3.0 + ent1p.x + ent1->get<TdECSShapeComponent>()->m_width;
+//  double ent1y2 = 3.0 + ent1p.y + ent1->get<TdECSShapeComponent>()->m_height;
+//
+//  glm::dvec2 ent2p = ent2->getPosition();
+//  ent2p.x += ent2vx - 3.0;
+//  ent2p.y += ent2vy - 3.0;
+//  double ent2x2 = 3.0 + ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
+//  double ent2y2 = 3.0 + ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
+//
+//  return ent1p.x < ent2x2 && ent1x2 > ent2p.x && ent1p.y < ent2y2 &&
+//         ent1y2 > ent2p.y;
+//}
+//
+//// note: only tests movement of ent1
+//// also exaggerates ent1 movements
+// bool TdECSSystem::bubbleWillCollide(TdECSEntity* ent1, TdECSEntity* ent2) {
+//  if (!ent1 || !ent2) {
+//    std::cerr << "Collision system passed a Null ent." << std::endl;
+//    return true;
+//  }
+//  double ent1vx = 0;
+//  double ent1vy = 0;
+//  double ent2vx = 0;
+//  double ent2vy = 0;
+//
+//  if (ent1->has<TdECSPhysicsComponent>()) {
+//    ent1vx = ent1->get<TdECSPhysicsComponent>()->m_vx;
+//    ent1vy = ent1->get<TdECSPhysicsComponent>()->m_vy;
+//  }
+//
+//  //  if (ent2->has<TdECSPhysicsComponent>()) {
+//  //    ent2vx = ent2->get<TdECSPhysicsComponent>()->m_vx;
+//  //    ent2vy = ent2->get<TdECSPhysicsComponent>()->m_vy;
+//  //  }
+//
+//  glm::dvec2 ent1p = ent1->getPosition();
+//  ent1p.x += ent1vx - 10.0;
+//  ent1p.y += ent1vy - 10.0;
+//  double ent1x2 = 10.0 + ent1p.x + ent1->get<TdECSShapeComponent>()->m_width;
+//  double ent1y2 = 10.0 + ent1p.y + ent1->get<TdECSShapeComponent>()->m_height;
+//
+//  glm::dvec2 ent2p = ent2->getPosition();
+//  ent2p.x += ent2vx - 10.0;
+//  ent2p.y += ent2vy - 10.0;
+//  double ent2x2 = 10.0 + ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
+//  double ent2y2 = 10.0 + ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
+//
+//  return ent1p.x < ent2x2 && ent1x2 > ent2p.x && ent1p.y < ent2y2 &&
+//         ent1y2 > ent2p.y;
+//}
 
 bool TdECSSystem::isColliding(TdECSEntity* ent) {
-  std::unordered_map<int, TdECSEntity*> nearbyEntIDs;
-  glm::dvec2 centerp = getCenterPosition(ent);
+  std::list<TdCollisionQuadTreeNode*> nearbyNodes;
+  m_collisions.m_qtree->m_root->getContainingNode(this, ent->m_id)
+      ->getAdjacentNodes(nearbyNodes);
 
-  double L1 = ent->get<TdECSShapeComponent>()->m_width +
-              ent->get<TdECSShapeComponent>()->m_height;
-
-  m_collisions.m_qtree->m_root->getAllWithinRadius(this, nearbyEntIDs,
-                                                   centerp.x, centerp.y, L1);
-  for (auto& itEntID : nearbyEntIDs) {
-    if (ent->m_id != itEntID.first && this->isColliding(ent, itEntID.second)) {
-      return true;
+  for (auto n : nearbyNodes) {
+    for (auto e : n->m_ents) {
+      if (ent->m_id != e.first && this->isColliding(ent, e.second)) {
+        return true;
+      }
     }
   }
+
+  //  std::vector<TdECSEntity*> nearbyEntIDs;
+  //  glm::dvec2 centerp = ent->getCenterPosition();
+  //  double L1 = ent->get<TdECSShapeComponent>()->m_width +
+  //              ent->get<TdECSShapeComponent>()->m_height;
+  //  m_collisions.m_qtree->m_root->getAllWithinRadius(this, nearbyEntIDs,
+  //                                                   centerp.x, centerp.y,
+  //                                                   L1);
+  //  for (auto& itEnt : nearbyEntIDs) {
+  //    if (ent->m_id != itEnt->m_id && this->isColliding(ent, itEnt)) {
+  //      return true;
+  //    }
+  //  }
   return false;
 }
-
-bool TdECSSystem::willCollide(TdECSEntity* ent) {
-  std::unordered_map<int, TdECSEntity*> nearbyEntIDs;
-  glm::dvec2 centerp = getCenterPosition(ent);
-
-  double L1 = ent->get<TdECSShapeComponent>()->m_width +
-              ent->get<TdECSShapeComponent>()->m_height;
-
-  m_collisions.m_qtree->m_root->getAllWithinRadius(this, nearbyEntIDs,
-                                                   centerp.x, centerp.y, L1);
-  for (auto& itEntID : nearbyEntIDs) {
-    if (ent->m_id != itEntID.first && this->willCollide(ent, itEntID.second)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-bool TdECSSystem::bubbleWillCollide(TdECSEntity* ent) {
-  std::unordered_map<int, TdECSEntity*> nearbyEntIDs;
-  glm::dvec2 centerp = getCenterPosition(ent);
-
-  double L1 = ent->get<TdECSShapeComponent>()->m_width +
-              ent->get<TdECSShapeComponent>()->m_height;
-
-  m_collisions.m_qtree->m_root->getAllWithinRadius(this, nearbyEntIDs,
-                                                   centerp.x, centerp.y, L1);
-  for (auto& itEntID : nearbyEntIDs) {
-    if (ent->m_id != itEntID.first &&
-        this->bubbleWillCollide(ent, itEntID.second)) {
-      return true;
-    }
-  }
-  return false;
-}
+//
+// bool TdECSSystem::willCollide(TdECSEntity* ent) {
+//  std::vector<TdECSEntity*> nearbyEntIDs;
+//  glm::dvec2 centerp = ent->getCenterPosition();
+//
+//  double L1 = ent->get<TdECSShapeComponent>()->m_width +
+//              ent->get<TdECSShapeComponent>()->m_height;
+//
+//  m_collisions.m_qtree->m_root->getAllWithinRadius(this, nearbyEntIDs,
+//                                                   centerp.x, centerp.y, L1);
+//  for (auto& itEnt : nearbyEntIDs) {
+//    if (ent->m_id != itEnt->m_id && this->willCollide(ent, itEnt)) {
+//      return true;
+//    }
+//  }
+//  return false;
+//}
+//
+// bool TdECSSystem::bubbleWillCollide(TdECSEntity* ent) {
+//  std::vector<TdECSEntity*> nearbyEntIDs;
+//  glm::dvec2 centerp = ent->getCenterPosition();
+//
+//  double L1 = ent->get<TdECSShapeComponent>()->m_width +
+//              ent->get<TdECSShapeComponent>()->m_height;
+//
+//  m_collisions.m_qtree->m_root->getAllWithinRadius(this, nearbyEntIDs,
+//                                                   centerp.x, centerp.y, L1);
+//  for (auto& itEnt : nearbyEntIDs) {
+//    if (ent->m_id != itEnt->m_id &&
+//        this->bubbleWillCollide(ent, itEnt)) {
+//      return true;
+//    }
+//  }
+//  return false;
+//}
 
 void TdECSSystem::addEntity(TdGame* game, std::unique_ptr<TdECSEntity>&& e) {
   int id = e->m_id;
