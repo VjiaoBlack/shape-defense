@@ -32,16 +32,14 @@ class TdGame;
 
 class TdECSSystem {
  private:
-//  std::map<int, std::unique_ptr<TdECSEntity>> m_entities;
 
  public:
   int m_nextEntityId = 0;
 
-  TdECSGraphicsSystem m_graphics;
-  TdECSPhysicsSystem m_physics;
-  TdECSPlanningSystem m_planning;
-  TdECSHealthSystem m_health;
-
+  TdECSGraphicsSystem  m_graphics;
+  TdECSPhysicsSystem   m_physics;
+  TdECSPlanningSystem  m_planning;
+  TdECSHealthSystem    m_health;
   TdECSCollisionSystem m_collisions;
 
   std::unordered_map<int, std::unique_ptr<TdECSEntity>> m_enemies;
@@ -51,7 +49,7 @@ class TdECSSystem {
     std::list<std::unordered_map<int, std::unique_ptr<TdECSEntity>>*> itList;
     itList.push_back(&m_enemies);
     itList.push_back(&m_allies);
-//    itList.push_back(&m_entities);
+
     return itList;
   };
 
@@ -65,12 +63,7 @@ class TdECSSystem {
 
   // currently uses rectangle collisions
   bool isColliding(TdECSEntity* ent1, TdECSEntity* ent2);
-//  bool willCollide(TdECSEntity* ent1, TdECSEntity* ent2);
-//  bool bubbleWillCollide(TdECSEntity* ent1, TdECSEntity* ent2);
-
   bool isColliding(TdECSEntity* ent);
-//  bool willCollide(TdECSEntity* ent);
-//  bool bubbleWillCollide(TdECSEntity* ent);
 
   void addEntity(TdGame *game, std::unique_ptr<TdECSEntity> &&e);
 

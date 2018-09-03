@@ -42,6 +42,7 @@ void TdECSPathingComponent::update(TdGame* game, TdECSSystem* system) {
   if (m_isMoving) {
     // find collision
     auto myEnt = system->getEnt(m_entID);
+
 //    bool willCollide = system->willCollide(myEnt);
     bool willCollide = system->isColliding(myEnt);
 
