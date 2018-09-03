@@ -61,10 +61,6 @@ class TdECSSystem {
 
   void update(TdGame *game, bool updateGraphics = true);
 
-  // currently uses rectangle collisions
-  bool isColliding(TdECSEntity* ent1, TdECSEntity* ent2);
-  bool isColliding(TdECSEntity* ent);
-
   void addEntity(TdGame *game, std::unique_ptr<TdECSEntity> &&e);
 
   void addComponent(std::unique_ptr<TdECSPositionComponent> c) {

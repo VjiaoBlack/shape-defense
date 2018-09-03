@@ -43,10 +43,9 @@ void TdECSPathingComponent::update(TdGame* game, TdECSSystem* system) {
     // find collision
     auto myEnt = system->getEnt(m_entID);
 
-//    bool willCollide = system->willCollide(myEnt);
-    bool willCollide = system->isColliding(myEnt);
+    bool isColliding = system->m_collisions.isColliding(system, myEnt);
 
-    if (willCollide) {
+    if (isColliding) {
       // if there is a collision, wait
       system->getEnt(m_entID)->get<TdECSPhysicsComponent>()->m_vx = 0;
       system->getEnt(m_entID)->get<TdECSPhysicsComponent>()->m_vy = 0;
