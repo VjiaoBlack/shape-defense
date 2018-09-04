@@ -152,10 +152,11 @@ bool TdCollisionQuadTreeNode::containsEntID(TdECSSystem *system, int entID) {
 void TdCollisionQuadTreeNode::refreshNode(
     TdGame *game, TdECSSystem *system,
     std::unordered_map<int, TdECSEntity *> &outside) {
-  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0x80, 0x80, 0xFF, 0xFF);
-  SDL_Rect draw{(int)m_rect.pos.x, (int)m_rect.pos.y, (int)m_rect.w,
-                (int)m_rect.h};
-  SDL_RenderDrawRect(game->m_SDLRenderer, &draw);
+  // draw rect
+//  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0x80, 0x80, 0xFF, 0xFF);
+//  SDL_Rect draw{(int)m_rect.pos.x, (int)m_rect.pos.y, (int)m_rect.w,
+//                (int)m_rect.h};
+//  SDL_RenderDrawRect(game->m_SDLRenderer, &draw);
 
   // collect entIDs that don't belong
   if (m_tl) {
