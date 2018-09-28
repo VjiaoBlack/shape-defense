@@ -99,6 +99,8 @@ TdRenderLoop *TdGameLoop::update(TdGame *game) {
 }
 
 void TdGameLoop::render(TdGame *game) {
+  SDL_RenderSetScale(game->m_SDLRenderer, 2.0, 2.0);
+
   //  game->m_entitySystem->m_graphics.update(game);
 
   // draw grid

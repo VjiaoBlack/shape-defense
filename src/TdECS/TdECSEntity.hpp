@@ -101,11 +101,11 @@ class TdECSEntity {
 
   template <class T>
   inline T *get() {
-    if (!m_components.count(typeid(T).name())) {
-      std::string msg = "missing component: ";
-      msg += typeid(T).name();
-      throw TdECSMissingComponentException(msg);
-    }
+//    if (!m_components.count(typeid(T).name())) {
+//      std::string msg = "missing component: ";
+//      msg += typeid(T).name();
+//      throw TdECSMissingComponentException(msg);
+//    }
     return static_cast<T *>(m_components[typeid(T).name()]);
   }
 
@@ -195,7 +195,7 @@ class TdECSEntity {
 
     auto graphicsComp =
         std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFC06060));
-    auto shapeComp = std::make_unique<TdECSShapeComponent>(8, 8);
+    auto shapeComp = std::make_unique<TdECSShapeComponent>(10, 10);
     auto positionComp = std::make_unique<TdECSPositionComponent>(x, y);
     auto physicsComp = std::make_unique<TdECSPhysicsComponent>();
     auto healthComp = std::make_unique<TdECSHealthComponent>(10, 0);

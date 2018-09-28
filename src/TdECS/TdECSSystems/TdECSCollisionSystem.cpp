@@ -18,11 +18,63 @@ TdECSCollisionSystem::~TdECSCollisionSystem() {
   delete m_qtree;
 }
 
-void TdECSCollisionSystem::update(TdGame* game, TdECSSystem* system) {
+void TdECSCollisionSystem::update(TdGame *game, TdECSSystem *system) {
   m_qtree->update(game, system);
+
+  m_collidingIds.clear();
+
+  std::list<TdCollisionQuadTreeNode *> node_path;
+  std::list<TdCollisionQuadTreeNode *> node_stack;
+
+  // go from root downwards with DFS
+  // for every node, intersect all ents with ents of nodes in path_to_root
+  // keep track of colliding pairs, don't look at those twice
+
+  // use nullpointer to indicate pop node
+
+  node_stack.push_front(m_qtree->m_root.get());
+
+  while (node_stack.size() > 0) {
+    auto cur_node = node_stack.front();
+    node_stack.pop_front();
+
+    if (cur_node == nullptr) {
+      node_path.pop_front();
+      continue;
+    } else {
+      node_path.push_front(cur_node);
+
+      if (cur_node->m_tl != nullptr) {
+        node_stack.push_front(nullptr);
+        node_stack.push_front(cur_node->m_tl.get());
+        node_stack.push_front(cur_node->m_tr.get());
+        node_stack.push_front(cur_node->m_bl.get());
+        node_stack.push_front(cur_node->m_br.get());
+      } else {
+        node_path.pop_front();
+      }
+
+    }
+
+    // intersect all current ents with ents of nodes in path_to_root;
+
+    for (auto node : node_path) {
+      for (auto ent1 : node->m_ents) {
+        for (auto ent2 : cur_node->m_ents) {
+          if (ent1.first != ent2.first &&
+              ent1.second->has<TdECSFighterComponent>() !=
+                  ent2.second->has<TdECSFighterComponent> () &&
+              isColliding(system, ent1.second, ent2.second)) {
+            m_collidingIds.insert(std::make_pair(std::min(ent1.first, ent2.first),
+                                            std::max(ent1.first, ent2.first)));
+          }
+        }
+      }
+    }
+  }
 }
 
-bool TdECSCollisionSystem::isColliding(TdECSSystem* system, TdECSEntity* ent1, TdECSEntity* ent2) {
+bool TdECSCollisionSystem::isColliding(TdECSSystem *system, TdECSEntity *ent1, TdECSEntity *ent2) {
   if (!ent1 || !ent2) {
     std::cerr << "Collision system passed a Null ent." << std::endl;
     return true;
@@ -40,8 +92,8 @@ bool TdECSCollisionSystem::isColliding(TdECSSystem* system, TdECSEntity* ent1, T
       ent1y2 > ent2p.y;
 }
 
-bool TdECSCollisionSystem::isColliding(TdECSSystem* system, TdECSEntity* ent) {
-  std::list<TdCollisionQuadTreeNode*> nearbyNodes;
+bool TdECSCollisionSystem::isColliding(TdECSSystem *system, TdECSEntity *ent) {
+  std::list<TdCollisionQuadTreeNode *> nearbyNodes;
 
   // getAdjacentNodes is faulty.
 //  m_qtree->m_root->getContainingNode(system, ent->m_id)
@@ -55,23 +107,22 @@ bool TdECSCollisionSystem::isColliding(TdECSSystem* system, TdECSEntity* ent) {
 //    }
 //  }
 
-  for (auto& e : system->m_enemies) {
+  for (auto &e : system->m_enemies) {
     if (ent->m_id != e.first && this->isColliding(system, ent, e.second.get())) {
       return true;
     }
   }
 
-  for (auto& e : system->m_allies) {
+  for (auto &e : system->m_allies) {
     if (ent->m_id != e.first && this->isColliding(system, ent, e.second.get())) {
       return true;
     }
   }
-
 
   return false;
 }
 
-bool TdECSCollisionSystem::willCollide(TdECSSystem* system, TdECSEntity* ent1, TdECSEntity* ent2) {
+bool TdECSCollisionSystem::willCollide(TdECSSystem *system, TdECSEntity *ent1, TdECSEntity *ent2) {
   if (!ent1 || !ent2) {
     std::cerr << "Collision system passed a Null ent." << std::endl;
     return true;
@@ -135,7 +186,7 @@ bool TdECSCollisionSystem::willCollide(TdECSSystem* system, TdECSEntity* ent1, T
   return willCollideBothFuture || willCollide1Future || willCollide2Future;
 }
 
-bool TdECSCollisionSystem::willCollide(TdECSSystem* system, TdECSEntity* ent) {
+bool TdECSCollisionSystem::willCollide(TdECSSystem *system, TdECSEntity *ent) {
   // getAdjacentNodes is faulty.
 //  std::list<TdCollisionQuadTreeNode*> nearbyNodes;
 //  m_qtree->m_root->getContainingNode(system, ent->m_id)
@@ -149,13 +200,13 @@ bool TdECSCollisionSystem::willCollide(TdECSSystem* system, TdECSEntity* ent) {
 //    }
 //  }
 
-  for (auto& e : system->m_enemies) {
+  for (auto &e : system->m_enemies) {
     if (ent->m_id != e.first && this->willCollide(system, ent, e.second.get())) {
       return true;
     }
   }
 
-  for (auto& e : system->m_allies) {
+  for (auto &e : system->m_allies) {
     if (ent->m_id != e.first && this->willCollide(system, ent, e.second.get())) {
       return true;
     }

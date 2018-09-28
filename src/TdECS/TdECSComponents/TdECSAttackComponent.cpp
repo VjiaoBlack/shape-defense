@@ -85,8 +85,12 @@ void TdECSAttackComponent::update(TdGame *game, TdECSSystem *system) {
         }
       }
 
-      //      if (!system->bubbleWillCollide(itEnt, myEnt)) {
-      if (!system->m_collisions.isColliding(system, itEnt, myEnt)) {
+//      if (!system->bubbleWillCollide(itEnt, myEnt)) {
+//      if (!system->m_collisions.isColliding(system, itEnt, myEnt)) {
+      if (!system->m_collisions.m_collidingIds.count(std::make_pair(std::min(itEnt->m_id,
+                                                                             myEnt->m_id),
+                                                                    std::max(itEnt->m_id,
+                                                                             myEnt->m_id)))) {
         // if closest tower is too far, move towards it
         glm::dvec2 entp = itEnt->getCenterPosition();
 
