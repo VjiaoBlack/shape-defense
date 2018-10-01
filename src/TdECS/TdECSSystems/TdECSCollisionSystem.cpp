@@ -22,6 +22,7 @@ void TdECSCollisionSystem::update(TdGame *game, TdECSSystem *system) {
   m_qtree->update(game, system);
 
   m_collidingIds.clear();
+  m_collidingIdsSingle.clear();
 
   std::list<TdCollisionQuadTreeNode *> node_path;
   std::list<TdCollisionQuadTreeNode *> node_stack;
@@ -64,9 +65,12 @@ void TdECSCollisionSystem::update(TdGame *game, TdECSSystem *system) {
           if (ent1.first != ent2.first &&
               ent1.second->has<TdECSFighterComponent>() !=
                   ent2.second->has<TdECSFighterComponent> () &&
-              isColliding(system, ent1.second, ent2.second)) {
+              willCollide(system, ent1.second, ent2.second)) {
+//            isColliding(system, ent1.second, ent2.second)) {
             m_collidingIds.insert(std::make_pair(std::min(ent1.first, ent2.first),
                                             std::max(ent1.first, ent2.first)));
+            m_collidingIdsSingle.insert(ent1.first);
+            m_collidingIdsSingle.insert(ent2.first);
           }
         }
       }
@@ -88,8 +92,8 @@ bool TdECSCollisionSystem::isColliding(TdECSSystem *system, TdECSEntity *ent1, T
   double ent2x2 = ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
   double ent2y2 = ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
 
-  return ent1p.x < ent2x2 && ent1x2 > ent2p.x && ent1p.y < ent2y2 &&
-      ent1y2 > ent2p.y;
+  return ent1p.x <= ent2x2 && ent1x2 >= ent2p.x && ent1p.y <= ent2y2 &&
+      ent1y2 >= ent2p.y;
 }
 
 bool TdECSCollisionSystem::isColliding(TdECSSystem *system, TdECSEntity *ent) {
@@ -155,8 +159,8 @@ bool TdECSCollisionSystem::willCollide(TdECSSystem *system, TdECSEntity *ent1, T
   double ent2x2 = v2x + ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
   double ent2y2 = v2y + ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
 
-  bool willCollideBothFuture = ent1p.x < ent2x2 && ent1x2 > ent2p.x && ent1p.y < ent2y2 &&
-      ent1y2 > ent2p.y;
+  bool willCollideBothFuture = ent1p.x <= ent2x2 && ent1x2 >= ent2p.x && ent1p.y <= ent2y2 &&
+      ent1y2 >= ent2p.y;
 
   bool willCollide1Future = false;
   bool willCollide2Future = false;
@@ -168,8 +172,8 @@ bool TdECSCollisionSystem::willCollide(TdECSSystem *system, TdECSEntity *ent1, T
     ent2x2 = ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
     ent2y2 = ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
 
-    willCollide1Future = ent1p.x < ent2x2 && ent1x2 > ent2p.x && ent1p.y < ent2y2 &&
-        ent1y2 > ent2p.y;
+    willCollide1Future = ent1p.x <= ent2x2 && ent1x2 >= ent2p.x && ent1p.y <= ent2y2 &&
+        ent1y2 >= ent2p.y;
   }
 
   if (moving2) {
@@ -179,8 +183,8 @@ bool TdECSCollisionSystem::willCollide(TdECSSystem *system, TdECSEntity *ent1, T
     ent2x2 = v2x + ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
     ent2y2 = v2y + ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
 
-    willCollide2Future = ent1p.x < ent2x2 && ent1x2 > ent2p.x && ent1p.y < ent2y2 &&
-        ent1y2 > ent2p.y;
+    willCollide2Future = ent1p.x <= ent2x2 && ent1x2 >= ent2p.x && ent1p.y <= ent2y2 &&
+        ent1y2 >= ent2p.y;
   }
 
   return willCollideBothFuture || willCollide1Future || willCollide2Future;

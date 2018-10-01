@@ -101,7 +101,7 @@ TdRenderLoop *TdGameLoop::update(TdGame *game) {
 void TdGameLoop::render(TdGame *game) {
   SDL_RenderSetScale(game->m_SDLRenderer, 2.0, 2.0);
 
-  //  game->m_entitySystem->m_graphics.update(game);
+  // game->m_entitySystem->m_graphics.update(game);
 
   // draw grid
   SDL_SetRenderDrawColor(game->m_SDLRenderer, 0x10, 0x20, 0x10, 0xFF);
@@ -111,13 +111,13 @@ void TdGameLoop::render(TdGame *game) {
   while (posx <= K_DISPLAY_SIZE_X / 2) {
     SDL_RenderDrawLine(game->m_SDLRenderer, K_DISPLAY_SIZE_X / 2 + posx, 0,
                        K_DISPLAY_SIZE_X / 2 + posx, K_DISPLAY_SIZE_Y);
-    SDL_RenderDrawLine(game->m_SDLRenderer, 1 + K_DISPLAY_SIZE_X / 2 + posx, 0,
-                       1 + K_DISPLAY_SIZE_X / 2 + posx, K_DISPLAY_SIZE_Y);
+    SDL_RenderDrawLine(game->m_SDLRenderer, -1 + K_DISPLAY_SIZE_X / 2 + posx, 0,
+                       -1 + K_DISPLAY_SIZE_X / 2 + posx, K_DISPLAY_SIZE_Y);
 
     SDL_RenderDrawLine(game->m_SDLRenderer, K_DISPLAY_SIZE_X / 2 - posx, 0,
                        K_DISPLAY_SIZE_X / 2 - posx, K_DISPLAY_SIZE_Y);
-    SDL_RenderDrawLine(game->m_SDLRenderer, 1 + K_DISPLAY_SIZE_X / 2 - posx, 0,
-                       1 + K_DISPLAY_SIZE_X / 2 - posx, K_DISPLAY_SIZE_Y);
+    SDL_RenderDrawLine(game->m_SDLRenderer, -1 + K_DISPLAY_SIZE_X / 2 - posx, 0,
+                       -1 + K_DISPLAY_SIZE_X / 2 - posx, K_DISPLAY_SIZE_Y);
     posx += 16;
   }
 
@@ -126,13 +126,13 @@ void TdGameLoop::render(TdGame *game) {
   while (posy <= K_DISPLAY_SIZE_Y / 2) {
     SDL_RenderDrawLine(game->m_SDLRenderer, 0, K_DISPLAY_SIZE_Y / 2 + posy,
                        K_DISPLAY_SIZE_X, K_DISPLAY_SIZE_Y / 2 + posy);
-    SDL_RenderDrawLine(game->m_SDLRenderer, 0, 1 + K_DISPLAY_SIZE_Y / 2 + posy,
-                       K_DISPLAY_SIZE_X, 1 + K_DISPLAY_SIZE_Y / 2 + posy);
+    SDL_RenderDrawLine(game->m_SDLRenderer, 0, -1 + K_DISPLAY_SIZE_Y / 2 + posy,
+                       K_DISPLAY_SIZE_X, -1 + K_DISPLAY_SIZE_Y / 2 + posy);
 
     SDL_RenderDrawLine(game->m_SDLRenderer, 0, K_DISPLAY_SIZE_Y / 2 - posy,
                        K_DISPLAY_SIZE_X, K_DISPLAY_SIZE_Y / 2 - posy);
-    SDL_RenderDrawLine(game->m_SDLRenderer, 0, 1 + K_DISPLAY_SIZE_Y / 2 - posy,
-                       K_DISPLAY_SIZE_X, 1 + K_DISPLAY_SIZE_Y / 2 - posy);
+    SDL_RenderDrawLine(game->m_SDLRenderer, 0, -1 + K_DISPLAY_SIZE_Y / 2 - posy,
+                       K_DISPLAY_SIZE_X, -1 + K_DISPLAY_SIZE_Y / 2 - posy);
     posy += 16;
   }
 

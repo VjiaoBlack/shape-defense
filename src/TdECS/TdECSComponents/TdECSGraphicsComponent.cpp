@@ -71,8 +71,8 @@ void TdECSGraphicsComponent::update(TdGame *game, TdECSSystem *system) {
     // draw some diagonal lines
     glm::dvec2 xy = ent->getPosition();
 
-    SDL_RenderDrawLine(game->m_SDLRenderer, xy.x + 8, xy.y, xy.x, xy.y + 8);
-    SDL_RenderDrawLine(game->m_SDLRenderer, xy.x + 16, xy.y, xy.x, xy.y + 16);
+    SDL_RenderDrawLine(game->m_SDLRenderer, xy.x + 8 , xy.y    , xy.x    , xy.y + 8 );
+    SDL_RenderDrawLine(game->m_SDLRenderer, xy.x + 16, xy.y    , xy.x    , xy.y + 16);
     SDL_RenderDrawLine(game->m_SDLRenderer, xy.x + 16, xy.y + 8, xy.x + 8, xy.y + 16);
   }
 

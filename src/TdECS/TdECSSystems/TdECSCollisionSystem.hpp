@@ -33,6 +33,7 @@ class TdECSCollisionSystem {
 
   // TODO: consider using bloom filter or something??
   std::unordered_set<std::pair<int, int>, pair_hash> m_collidingIds;
+  std::unordered_set<int> m_collidingIdsSingle;
 
   TdECSCollisionSystem();
 

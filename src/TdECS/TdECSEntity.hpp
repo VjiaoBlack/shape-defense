@@ -195,7 +195,7 @@ class TdECSEntity {
 
     auto graphicsComp =
         std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFC06060));
-    auto shapeComp = std::make_unique<TdECSShapeComponent>(10, 10);
+    auto shapeComp = std::make_unique<TdECSShapeComponent>(8, 8);
     auto positionComp = std::make_unique<TdECSPositionComponent>(x, y);
     auto physicsComp = std::make_unique<TdECSPhysicsComponent>();
     auto healthComp = std::make_unique<TdECSHealthComponent>(10, 0);
