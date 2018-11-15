@@ -41,6 +41,7 @@ class TdECSCollisionSystem {
 
   void update(TdGame* game, TdECSSystem* system);
 
+ private:
   // currently uses rectangle collisions
   bool isColliding(TdECSSystem* system, TdECSEntity* ent1, TdECSEntity* ent2);
   bool isColliding(TdECSSystem* system, TdECSEntity* ent);

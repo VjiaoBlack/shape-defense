@@ -25,9 +25,9 @@ void TdECSCollisionSystem::update(TdGame *game, TdECSSystem *system) {
   m_collidingIdsSingle.clear();
 
   std::list<TdCollisionQuadTreeNode *> node_path;
-  std::list<TdCollisionQuadTreeNode *> node_stack;
+  std::list<TdCollisionQuadTreeNode *> node_stack; // depth, node*
 
-  // go from root downwards with DFS
+  // go from root downwards with Depth First Traversal
   // for every node, intersect all ents with ents of nodes in path_to_root
   // keep track of colliding pairs, don't look at those twice
 
@@ -36,25 +36,22 @@ void TdECSCollisionSystem::update(TdGame *game, TdECSSystem *system) {
   node_stack.push_front(m_qtree->m_root.get());
 
   while (node_stack.size() > 0) {
+    // wishing for C++17 structured bindings
     auto cur_node = node_stack.front();
-    node_stack.pop_front();
 
-    if (cur_node == nullptr) {
+    if (node_path.size() - 1 == cur_node->m_depth) {
       node_path.pop_front();
       continue;
     } else {
+      node_stack.pop_front();
       node_path.push_front(cur_node);
 
       if (cur_node->m_tl != nullptr) {
-        node_stack.push_front(nullptr);
         node_stack.push_front(cur_node->m_tl.get());
         node_stack.push_front(cur_node->m_tr.get());
         node_stack.push_front(cur_node->m_bl.get());
         node_stack.push_front(cur_node->m_br.get());
-      } else {
-        node_path.pop_front();
       }
-
     }
 
     // intersect all current ents with ents of nodes in path_to_root;
@@ -63,10 +60,7 @@ void TdECSCollisionSystem::update(TdGame *game, TdECSSystem *system) {
       for (auto ent1 : node->m_ents) {
         for (auto ent2 : cur_node->m_ents) {
           if (ent1.first != ent2.first &&
-              ent1.second->has<TdECSFighterComponent>() !=
-                  ent2.second->has<TdECSFighterComponent> () &&
               willCollide(system, ent1.second, ent2.second)) {
-//            isColliding(system, ent1.second, ent2.second)) {
             m_collidingIds.insert(std::make_pair(std::min(ent1.first, ent2.first),
                                             std::max(ent1.first, ent2.first)));
             m_collidingIdsSingle.insert(ent1.first);
@@ -74,6 +68,9 @@ void TdECSCollisionSystem::update(TdGame *game, TdECSSystem *system) {
           }
         }
       }
+    }
+    if (cur_node->m_tl == nullptr) {
+      node_path.pop_front();
     }
   }
 }

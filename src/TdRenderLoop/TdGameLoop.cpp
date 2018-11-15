@@ -97,8 +97,8 @@ TdRenderLoop *TdGameLoop::update(TdGame *game) {
 }
 
 void TdGameLoop::render(TdGame *game) {
-  // set scale for rendering
-  SDL_RenderSetScale(game->m_SDLRenderer, 2.0, 2.0);
+  // set scale for rendering debug
+//  SDL_RenderSetScale(game->m_SDLRenderer, 2.0, 2.0);
 
   // game->m_entitySystem->m_graphics.update(game);
 
