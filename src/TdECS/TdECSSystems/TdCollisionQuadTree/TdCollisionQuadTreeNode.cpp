@@ -30,10 +30,6 @@ void TdCollisionQuadTreeNode::getAdjacentNodes(
 
 TdCollisionQuadTreeNode *TdCollisionQuadTreeNode::getContainingNode(
     TdECSSystem *system, int entID) {
-  //  printf("  node pos: %d, %d : %d, %d\n", (int)m_rect.pos.x,
-  //  (int)m_rect.pos.y,
-  //         (int)m_rect.w, (int)m_rect.h);
-
   auto ent = system->getEnt(entID);
   if (m_tl) {
     if (m_tl->m_rect.contains(ent)) {
@@ -50,10 +46,8 @@ TdCollisionQuadTreeNode *TdCollisionQuadTreeNode::getContainingNode(
     }
   }
   if (m_rect.contains(system->getEnt(entID))) {
-    //    printf("  RECT CONTAINS\n");
     return this;
   } else {
-    //    printf("  RECT CANT CONTAIN\n");
     return nullptr;
   }
 }
@@ -105,32 +99,22 @@ bool TdCollisionQuadTreeNode::tryAddEntID(TdECSSystem *system, int entID,
 void TdCollisionQuadTreeNode::removeEntID(TdECSSystem *system, int entID) {
   auto node = getContainingNode(system, entID);
   if (!node) {
-    std::cerr << "ERROR: collision quad tree attempted to remove from "
-                 "nonexistent node."
-              << std::endl;
-    raise(SIGSEGV);
-    //    exit(2);
-    return;
+    LOG_FAT("ERROR: collision quad tree attempted to remove from nonexistent node.");
+    exit(2);
   }
 
   if (node->m_ents.count(entID) == 0) {
-    std::cerr << "ERROR: collision quad tree attempted to remove ent from "
-                 "incorrect node."
-              << std::endl;
+    LOG_FAT("ERROR: collision quad tree attempted to remove ent from incorrect node.");
 
     // where the hell is it then???
-
     //    auto node =
     //        system->m_collisions.m_qtree->m_root->forceSearch(game, system,
     //        entID);
-
     //    printf("  FOUND %d, %d: %d, %d\n", (int)node->m_rect.pos.x,
     //           (int)node->m_rect.pos.y, (int)node->m_rect.w,
     //           (int)node->m_rect.h);
 
-    raise(SIGSEGV);
-    //        exit(1);
-    return;
+    exit(1);
   }
 
   node->m_ents.erase(entID);

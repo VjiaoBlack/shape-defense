@@ -50,11 +50,10 @@ TdRenderLoop *TdGameLoop::update(TdGame *game) {
         if (!game->m_keysDownPrev.count(SDLK_b)) {
           m_isBuilding = !m_isBuilding;
           if (m_isBuilding) {
-            printf("BUILDING MODE ON\n");
+            LOG_INF("BUILDING MODE ON");
             m_constructionManager->m_isOn = true;
           } else {
-            printf("building mode off\n");
-            // disable building manager
+            LOG_INF("building mode off");
             m_constructionManager->m_isOn = false;
           }
         }
@@ -62,11 +61,10 @@ TdRenderLoop *TdGameLoop::update(TdGame *game) {
       case SDLK_n:
         if (!game->m_keysDownPrev.count(SDLK_n)) {
           if (m_constructionManager->m_isTower) {
-            printf("WALL MODE ON\n");
+            LOG_INF("WALL MODE ON");
             m_constructionManager->m_isTower = false;
           } else {
-            printf("wall mode off\n");
-            // disable building manager
+            LOG_INF("wall mode off");
             m_constructionManager->m_isTower = true;
           }
         }

@@ -30,7 +30,7 @@ void TdECSSystem::addEntity(TdGame* game, std::unique_ptr<TdECSEntity>&& e) {
     m_allies[m_nextEntityId++] = std::move(e);
   }
   if (!m_collisions.m_qtree->tryAddEntID(game, this, id, ent)) {
-    std::cerr << "Error: FAILED TO ADD ENTITY" << std::endl;
+    LOG_ERR("Error: FAILED TO ADD ENTITY");
   }
 }
 
@@ -55,5 +55,5 @@ void TdECSSystem::update(TdGame* game, bool updateGraphics) {
   }
   m_collisions.update(game, this);
 
-  printf("numEntities: %lu\n", m_allies.size() + m_enemies.size());
+  LOG_VRB("numEntities: %lu\n", m_allies.size() + m_enemies.size());
 }

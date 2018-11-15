@@ -25,6 +25,38 @@
 #define K_B_MASK 0x000000ffu
 #define K_A_MASK 0xff000000u
 
+#define VRB 3
+#define INF 2
+#define ERR 1
+#define FAT 0
+
+#define K_LOG_LEVEL INF
+
+#if K_LOG_LEVEL >= VRB
+#define LOG_VRB(msg, ...) printf("VRB: " msg "\n", ##__VA_ARGS__)
+#else
+#define LOG_VRB(msg, ...)
+#endif
+
+#if K_LOG_LEVEL >= INF
+#define LOG_INF(msg, ...) printf("INF: " msg "\n", ##__VA_ARGS__)
+#else
+#define LOG_INF(msg, ...)
+#endif
+
+#if K_LOG_LEVEL >= ERR
+#define LOG_ERR(msg, ...) fprintf(stderr, "ERR: " msg "\n", ##__VA_ARGS__)
+#else
+#define LOG_ERR(msg, ...)
+#endif
+
+#if K_LOG_LEVEL >= FAT
+#define LOG_FAT(msg, ...) fprintf(stderr, "FAT: " msg "\n", ##__VA_ARGS__)
+#else
+#define LOG_FAT(msg, ...)
+#endif
+
+
 #define K_RGBA_BYTES 32
 
 #define K_FPS 30

@@ -80,7 +80,7 @@ void TdECSCollisionSystem::update(TdGame *game, TdECSSystem *system) {
 
 bool TdECSCollisionSystem::isColliding(TdECSSystem *system, TdECSEntity *ent1, TdECSEntity *ent2) {
   if (!ent1 || !ent2) {
-    std::cerr << "Collision system passed a Null ent." << std::endl;
+    LOG_ERR("Collision system passed a Null ent.");
     return true;
   }
 
@@ -128,7 +128,7 @@ bool TdECSCollisionSystem::isColliding(TdECSSystem *system, TdECSEntity *ent) {
 
 bool TdECSCollisionSystem::willCollide(TdECSSystem *system, TdECSEntity *ent1, TdECSEntity *ent2) {
   if (!ent1 || !ent2) {
-    std::cerr << "Collision system passed a Null ent." << std::endl;
+    LOG_ERR("Collision system passed a Null ent.");
     return true;
   }
 

@@ -9,7 +9,7 @@
 void TdGame::setupSDL() {
   // Initialize
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-    printf("SDL could not initialize - SDL Error: %s\n", SDL_GetError());
+    LOG_FAT("SDL could not initialize - SDL Error: %s", SDL_GetError());
     exit(1);
   }
 
@@ -17,37 +17,36 @@ void TdGame::setupSDL() {
   SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
   // "antialiasing"
-//  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-//  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+  //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+  //SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
 
   // Create window
   m_SDLWindow = TrWindow(SDL_CreateWindow("athena", SDL_WINDOWPOS_UNDEFINED,
                                           SDL_WINDOWPOS_UNDEFINED, sz(K_DISPLAY_SIZE_X),
                                           sz(K_DISPLAY_SIZE_Y), SDL_WINDOW_SHOWN));
   if (m_SDLWindow == nullptr) {
-    printf("Window could not be created - SDL Error: %s\n", SDL_GetError());
+    LOG_FAT("Window could not be created - SDL Error: %s", SDL_GetError());
     exit(1);
   }
 
   // Create renderer for window
   m_SDLRenderer = TrRenderer(SDL_CreateRenderer(m_SDLWindow, -1, SDL_RENDERER_ACCELERATED));
   if (m_SDLRenderer == nullptr) {
-    printf("Renderer could not be created - SDL Error: %s\n", SDL_GetError());
+    LOG_FAT("Renderer could not be created - SDL Error: %s", SDL_GetError());
     exit(1);
   }
 
   SDL_SetRenderDrawBlendMode(m_SDLRenderer, SDL_BLENDMODE_BLEND);
 
   if (TTF_Init() == -1) {
-    printf("TTF_Init: %s\n", TTF_GetError());
+    LOG_FAT("TTF_Init: %s", TTF_GetError());
     exit(2);
   }
 
   // Initialize PNG loading
   int imgFlags = IMG_INIT_PNG;
   if (!(IMG_Init(imgFlags) & imgFlags)) {
-    printf("SDL_image could not initialize! SDL_image Error: %s\n",
-           IMG_GetError());
+    LOG_FAT("SDL_image could not initialize! SDL_image Error: %s", IMG_GetError());
     exit(2);
   }
 
@@ -69,14 +68,14 @@ TdGame::TdGame()
 
   m_font.reset(TTF_OpenFont("anirb.ttf", 72));
   if (!m_font) {
-    printf("TTF_OpenFont: %s\n", TTF_GetError());
+    LOG_FAT("TTF_OpenFont: %s", TTF_GetError());
     // handle error
     exit(2);
   }
 
   m_menuFont.reset(TTF_OpenFont("anirb.ttf", 36));
   if (!m_menuFont) {
-    printf("TTF_OpenFont: %s\n", TTF_GetError());
+    LOG_FAT("TTF_OpenFont: %s", TTF_GetError());
     // handle error
     exit(2);
   }
