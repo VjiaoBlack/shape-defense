@@ -7,15 +7,15 @@
  * <DETAILS>
  */
 
+#include <glm/vec2.hpp>
 #include "TdECSComponent.hpp"
 
 class TdECSTilePositionComponent : public TdECSComponent {
  public:
-  int m_x;
-  int m_y;
+  glm::ivec2 m_xy;
 
   TdECSTilePositionComponent(int x, int y)
-      : m_x(x), m_y(y) {};
+      : m_xy(x, y) {};
 
   virtual void update(TdGame *game, TdECSSystem *system) {}
 };

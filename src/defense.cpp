@@ -6,6 +6,10 @@
  *
  */
 
+#define GLM_SWIZZLE
+#define GLM_MESSAGES
+#define GLM_INLINE
+
 #include "TdGame.hpp"
 
 int main(int argv, char *argc[]) {

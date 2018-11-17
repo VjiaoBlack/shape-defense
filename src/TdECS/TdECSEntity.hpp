@@ -40,13 +40,10 @@ class TdECSEntity {
 
   inline glm::dvec2 getPosition() {
     if (this->has<TdECSTilePositionComponent>()) {
-      return glm::dvec2(
-          this->get<TdECSTilePositionComponent>()->m_x * 16 + K_DISPLAY_SIZE_X / 2,
-          this->get<TdECSTilePositionComponent>()->m_y * 16 +
-              K_DISPLAY_SIZE_Y / 2);
+      return this->get<TdECSTilePositionComponent>()->m_xy * 16 +
+             glm::ivec2(K_DISPLAY_SIZE_X, K_DISPLAY_SIZE_Y) / 2;
     } else if (this->has<TdECSPositionComponent>()) {
-      return glm::dvec2(this->get<TdECSPositionComponent>()->m_x,
-                        this->get<TdECSPositionComponent>()->m_y);
+      return glm::dvec2(this->get<TdECSPositionComponent>()->m_p);
     } else {
       std::string msg = "missing component: general position";
       throw TdECSMissingComponentException(msg);
@@ -55,17 +52,12 @@ class TdECSEntity {
 
   inline glm::dvec2 getCenterPosition() {
     if (this->has<TdECSTilePositionComponent>()) {
-      return glm::dvec2(this->get<TdECSTilePositionComponent>()->m_x * 16 +
-                            K_DISPLAY_SIZE_X / 2 +
-                            this->get<TdECSShapeComponent>()->m_width / 2.0,
-                        this->get<TdECSTilePositionComponent>()->m_y * 16 +
-                            K_DISPLAY_SIZE_Y / 2 +
-                            this->get<TdECSShapeComponent>()->m_height / 2.0);
+      return this->get<TdECSTilePositionComponent>()->m_xy * 16 +
+             glm::ivec2(K_DISPLAY_SIZE_X, K_DISPLAY_SIZE_Y) / 2 +
+             glm::ivec2(this->get<TdECSShapeComponent>()->m_dimensions / 2.0);
     } else if (this->has<TdECSPositionComponent>()) {
-      return glm::dvec2(this->get<TdECSPositionComponent>()->m_x +
-                            this->get<TdECSShapeComponent>()->m_width / 2.0,
-                        this->get<TdECSPositionComponent>()->m_y +
-                            this->get<TdECSShapeComponent>()->m_height / 2.0);
+      return this->get<TdECSPositionComponent>()->m_p +
+             this->get<TdECSShapeComponent>()->m_dimensions / 2.0;
     } else {
       std::string msg = "missing component: general position";
       throw TdECSMissingComponentException(msg);
@@ -195,7 +187,7 @@ class TdECSEntity {
 
     auto graphicsComp =
         std::make_unique<TdECSGraphicsComponent>(convertColorType(0xFFC06060));
-    auto shapeComp = std::make_unique<TdECSShapeComponent>(8, 8);
+    auto shapeComp = std::make_unique<TdECSShapeComponent>(16, 16);
     auto positionComp = std::make_unique<TdECSPositionComponent>(x, y);
     auto physicsComp = std::make_unique<TdECSPhysicsComponent>();
     auto healthComp = std::make_unique<TdECSHealthComponent>(10, 0);
