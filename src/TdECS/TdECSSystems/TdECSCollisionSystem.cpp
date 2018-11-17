@@ -86,13 +86,8 @@ bool TdECSCollisionSystem::isColliding(TdECSSystem *system, TdECSEntity *ent1, T
     return true;
   }
 
-  glm::vec4 r1(ent1->getPosition(),
-               glm::vec2(ent1->get<TdECSShapeComponent>()->m_dimensions.x,
-                         ent1->get<TdECSShapeComponent>()->m_dimensions.y));
-
-  glm::vec4 r2(ent2->getPosition(),
-               glm::vec2(ent2->get<TdECSShapeComponent>()->m_dimensions.x,
-                         ent2->get<TdECSShapeComponent>()->m_dimensions.y));
+  glm::vec4 r1(ent1->getPosition(), ent1->get<TdECSShapeComponent>()->m_dimensions);
+  glm::vec4 r2(ent2->getPosition(), ent2->get<TdECSShapeComponent>()->m_dimensions);
 
   return intersect(r1, r2);
 }
@@ -103,59 +98,42 @@ bool TdECSCollisionSystem::willCollide(TdECSSystem *system, TdECSEntity *ent1, T
     return true;
   }
 
-  double v1x = 0.0;
-  double v1y = 0.0;
-  double v2x = 0.0;
-  double v2y = 0.0;
+  glm::dvec2 v1(0.0);
+  glm::dvec2 v2(0.0);
 
   bool moving1 = false;
   bool moving2 = false;
 
   if (ent1->has<TdECSPhysicsComponent>()) {
     moving1 = true;
-    v1x = ent1->get<TdECSPhysicsComponent>()->m_vx;
-    v1y = ent1->get<TdECSPhysicsComponent>()->m_vy;
+    v1 = ent1->get<TdECSPhysicsComponent>()->m_v;
   }
   if (ent2->has<TdECSPhysicsComponent>()) {
     moving2 = true;
-    v2x = ent2->get<TdECSPhysicsComponent>()->m_vx;
-    v2y = ent2->get<TdECSPhysicsComponent>()->m_vy;
+    v2 = ent2->get<TdECSPhysicsComponent>()->m_v;
   }
   glm::dvec2 ent1p = ent1->getPosition();
   glm::dvec2 ent2p = ent2->getPosition();
 
-  double ent1x2 = v1x + ent1p.x + ent1->get<TdECSShapeComponent>()->m_dimensions.x;
-  double ent1y2 = v1y + ent1p.y + ent1->get<TdECSShapeComponent>()->m_dimensions.y;
-
-  double ent2x2 = v2x + ent2p.x + ent2->get<TdECSShapeComponent>()->m_dimensions.x;
-  double ent2y2 = v2y + ent2p.y + ent2->get<TdECSShapeComponent>()->m_dimensions.y;
-
-  bool willCollideBothFuture = ent1p.x <= ent2x2 && ent1x2 >= ent2p.x && ent1p.y <= ent2y2 &&
-      ent1y2 >= ent2p.y;
+  bool willCollideBothFuture = intersect(
+      glm::dvec4(ent1p, v1 + ent1->get<TdECSShapeComponent>()->m_dimensions),
+      glm::dvec4(ent2p, v2 + ent2->get<TdECSShapeComponent>()->m_dimensions));
 
   bool willCollide1Future = false;
   bool willCollide2Future = false;
 
   if (moving1) {
-    ent1x2 = v1x + ent1p.x + ent1->get<TdECSShapeComponent>()->m_dimensions.x;
-    ent1y2 = v1y + ent1p.y + ent1->get<TdECSShapeComponent>()->m_dimensions.y;
+    willCollide1Future = intersect(
+        glm::dvec4(ent1p, v1 + ent1->get<TdECSShapeComponent>()->m_dimensions),
+        glm::dvec4(ent2p, ent2->get<TdECSShapeComponent>()->m_dimensions));
 
-    ent2x2 = ent2p.x + ent2->get<TdECSShapeComponent>()->m_dimensions.x;
-    ent2y2 = ent2p.y + ent2->get<TdECSShapeComponent>()->m_dimensions.y;
-
-    willCollide1Future = ent1p.x <= ent2x2 && ent1x2 >= ent2p.x && ent1p.y <= ent2y2 &&
-        ent1y2 >= ent2p.y;
   }
 
   if (moving2) {
-    ent1x2 = ent1p.x + ent1->get<TdECSShapeComponent>()->m_dimensions.x;
-    ent1y2 = ent1p.y + ent1->get<TdECSShapeComponent>()->m_dimensions.y;
+    willCollide2Future = intersect(
+        glm::dvec4(ent1p, ent1->get<TdECSShapeComponent>()->m_dimensions),
+        glm::dvec4(ent2p, v2 + ent2->get<TdECSShapeComponent>()->m_dimensions));
 
-    ent2x2 = v2x + ent2p.x + ent2->get<TdECSShapeComponent>()->m_dimensions.x;
-    ent2y2 = v2y + ent2p.y + ent2->get<TdECSShapeComponent>()->m_dimensions.y;
-
-    willCollide2Future = ent1p.x <= ent2x2 && ent1x2 >= ent2p.x && ent1p.y <= ent2y2 &&
-        ent1y2 >= ent2p.y;
   }
 
   return willCollideBothFuture || willCollide1Future || willCollide2Future;

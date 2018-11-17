@@ -12,6 +12,8 @@
 #include <SDL2/SDL_ttf.h>
 
 #include <glm/glm.hpp>
+#include <glm/detail/_swizzle.hpp>
+
 #include "TrGraphics.hpp"
 
 // set to 2 (or more) if it's a retina screen, 1 if not.

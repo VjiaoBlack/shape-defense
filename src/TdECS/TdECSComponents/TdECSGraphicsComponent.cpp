@@ -31,24 +31,11 @@ void TdECSGraphicsComponent::update(TdGame *game, TdECSSystem *system) {
   glm::dvec2 pos = ent->getPosition();
   glm::dvec2 centerp = ent->getCenterPosition();
 
-  SDL_Rect r{(int)std::round(pos.x), (int)std::round(pos.y), (int) shape->m_dimensions.x,
-      (int) shape->m_dimensions.y};
+  SDL_Rect r{(int) std::round(pos.x),
+             (int) std::round(pos.y),
+             (int) shape->m_dimensions.x,
+             (int) shape->m_dimensions.y};
   SDL_RenderDrawRect(game->m_SDLRenderer, &r);
-
-  // Disabled drawing by points
-//  for (int i = 0; i < shape->m_points.size() - 1; i++) {
-//    SDL_RenderDrawLine(game->m_SDLRenderer,
-//                       (int) std::round(pos.x + shape->m_points[i].x),
-//                       (int) std::round(pos.y + shape->m_points[i].y),
-//                       (int) std::round(pos.x + shape->m_points[i + 1].x),
-//                       (int) std::round(pos.y + shape->m_points[i + 1].y));
-//  }
-//
-//  SDL_RenderDrawLine(game->m_SDLRenderer,
-//                     (int) std::round(pos.x + shape->m_points.front().x),
-//                     (int) std::round(pos.y + shape->m_points.front().y),
-//                     (int) std::round(pos.x + shape->m_points.back().x),
-//                     (int) std::round(pos.y + shape->m_points.back().y) - 1);
 
   if (ent->has<TdECSLaserShooterComponent>()) {
     auto attackComp = ent->get<TdECSAttackComponent>();

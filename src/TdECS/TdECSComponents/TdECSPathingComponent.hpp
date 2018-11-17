@@ -7,14 +7,14 @@
  * <DETAILS>
  */
 
+#include <glm/vec2.hpp>
 #include "TdECSComponent.hpp"
 
 // uses TdECSCollisionSystem heavily.
 class TdECSPathingComponent : public TdECSComponent {
  public:
   bool m_isMoving = false;
-  double m_goalX = 0;
-  double m_goalY = 0;
+  glm::dvec2 m_goalxy;
 
   void move(TdGame* game, TdECSSystem* system, double x, double y);
 

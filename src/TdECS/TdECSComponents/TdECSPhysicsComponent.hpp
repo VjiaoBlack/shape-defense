@@ -7,12 +7,12 @@
  * <DETAILS>
  */
 
+#include <glm/vec2.hpp>
 #include "TdECSComponent.hpp"
 
 class TdECSPhysicsComponent : public TdECSComponent {
  public:
-  double m_vx = 0.0;
-  double m_vy = 0.0;
+  glm::vec2 m_v = {};
   double m_vtheta = 0.0;
 
   TdECSPhysicsComponent() {}

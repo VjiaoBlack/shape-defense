@@ -14,7 +14,7 @@
 
 class TdECSShapeComponent : public TdECSComponent {
  public:
-  glm::vec2 m_dimensions;
+  glm::dvec2 m_dimensions;
 
   TdECSShapeComponent(double width, double height);
   TdECSShapeComponent(glm::vec2 dimensions);

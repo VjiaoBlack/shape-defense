@@ -25,8 +25,7 @@ struct TdECSRect {
     glm::dvec2 pa2 = pa1 + glm::dvec2(this->w, this->h);
     glm::dvec2 pb2 = pb1;
 
-    pb2.x += ent->get<TdECSShapeComponent>()->m_dimensions.x;
-    pb2.y += ent->get<TdECSShapeComponent>()->m_dimensions.y;
+    pb2 += ent->get<TdECSShapeComponent>()->m_dimensions;
 
     if (pb1.x > pa1.x && pb2.x > pa1.x && pb1.x < pa2.x && pb2.x < pa2.x &&
         pb1.y > pa1.y && pb2.y > pa1.y && pb1.y < pa2.y && pb2.y < pa2.y) {
