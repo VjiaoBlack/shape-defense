@@ -14,10 +14,9 @@
 
 class TdECSShapeComponent : public TdECSComponent {
  public:
-  double m_width;
-  double m_height;
+  glm::vec2 m_dimensions;
 
-//  std::vector<glm::dvec2> m_points;  // clockwise
   TdECSShapeComponent(double width, double height);
+  TdECSShapeComponent(glm::vec2 dimensions);
   virtual void update(TdGame *game, TdECSSystem *system) {}
 };

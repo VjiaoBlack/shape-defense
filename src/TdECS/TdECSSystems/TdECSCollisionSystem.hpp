@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <unordered_set>
+#include <glm/vec4.hpp>
 
 class TdGame;
 class TdECSEntity;
@@ -26,6 +27,9 @@ struct pair_hash {
     return h1 ^ h2;
   }
 };
+
+// do two rectangles intersect?
+bool intersect(glm::vec4 r1, glm::vec4 r2);
 
 class TdECSCollisionSystem {
  public:

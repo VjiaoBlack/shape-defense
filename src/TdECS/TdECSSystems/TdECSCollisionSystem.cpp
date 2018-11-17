@@ -10,6 +10,11 @@
 #include <TdECS/TdECSSystems/TdCollisionQuadTree/TdCollisionQuadTreeNode.hpp>
 #include "TdCollisionQuadTree/TdCollisionQuadTree.hpp"
 
+bool intersect(glm::vec4 r1, glm::vec4 r2) {
+  return r1.x <= r2.z + r2.x && r1.x + r1.w >= r2.x && r1.y <= r2.y + r2.w &&
+      r1.y + r1.w >= r2.y;
+}
+
 TdECSCollisionSystem::TdECSCollisionSystem() {
   m_qtree = new TdCollisionQuadTree();
 }
@@ -81,46 +86,15 @@ bool TdECSCollisionSystem::isColliding(TdECSSystem *system, TdECSEntity *ent1, T
     return true;
   }
 
-  glm::dvec2 ent1p = ent1->getPosition();
-  double ent1x2 = ent1p.x + ent1->get<TdECSShapeComponent>()->m_width;
-  double ent1y2 = ent1p.y + ent1->get<TdECSShapeComponent>()->m_height;
+  glm::vec4 r1(ent1->getPosition(),
+               glm::vec2(ent1->get<TdECSShapeComponent>()->m_dimensions.x,
+                         ent1->get<TdECSShapeComponent>()->m_dimensions.y));
 
-  glm::dvec2 ent2p = ent2->getPosition();
-  double ent2x2 = ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
-  double ent2y2 = ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
+  glm::vec4 r2(ent2->getPosition(),
+               glm::vec2(ent2->get<TdECSShapeComponent>()->m_dimensions.x,
+                         ent2->get<TdECSShapeComponent>()->m_dimensions.y));
 
-  return ent1p.x <= ent2x2 && ent1x2 >= ent2p.x && ent1p.y <= ent2y2 &&
-      ent1y2 >= ent2p.y;
-}
-
-bool TdECSCollisionSystem::isColliding(TdECSSystem *system, TdECSEntity *ent) {
-  std::list<TdCollisionQuadTreeNode *> nearbyNodes;
-
-  // getAdjacentNodes is faulty.
-//  m_qtree->m_root->getContainingNode(system, ent->m_id)
-//      ->getAdjacentNodes(nearbyNodes);
-
-//  for (auto n : nearbyNodes) {
-//    for (auto e : n->m_ents) {
-//      if (ent->m_id != e.first && this->isColliding(system, ent, e.second)) {
-//        return true;
-//      }
-//    }
-//  }
-
-  for (auto &e : system->m_enemies) {
-    if (ent->m_id != e.first && this->isColliding(system, ent, e.second.get())) {
-      return true;
-    }
-  }
-
-  for (auto &e : system->m_allies) {
-    if (ent->m_id != e.first && this->isColliding(system, ent, e.second.get())) {
-      return true;
-    }
-  }
-
-  return false;
+  return intersect(r1, r2);
 }
 
 bool TdECSCollisionSystem::willCollide(TdECSSystem *system, TdECSEntity *ent1, TdECSEntity *ent2) {
@@ -150,11 +124,11 @@ bool TdECSCollisionSystem::willCollide(TdECSSystem *system, TdECSEntity *ent1, T
   glm::dvec2 ent1p = ent1->getPosition();
   glm::dvec2 ent2p = ent2->getPosition();
 
-  double ent1x2 = v1x + ent1p.x + ent1->get<TdECSShapeComponent>()->m_width;
-  double ent1y2 = v1y + ent1p.y + ent1->get<TdECSShapeComponent>()->m_height;
+  double ent1x2 = v1x + ent1p.x + ent1->get<TdECSShapeComponent>()->m_dimensions.x;
+  double ent1y2 = v1y + ent1p.y + ent1->get<TdECSShapeComponent>()->m_dimensions.y;
 
-  double ent2x2 = v2x + ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
-  double ent2y2 = v2y + ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
+  double ent2x2 = v2x + ent2p.x + ent2->get<TdECSShapeComponent>()->m_dimensions.x;
+  double ent2y2 = v2y + ent2p.y + ent2->get<TdECSShapeComponent>()->m_dimensions.y;
 
   bool willCollideBothFuture = ent1p.x <= ent2x2 && ent1x2 >= ent2p.x && ent1p.y <= ent2y2 &&
       ent1y2 >= ent2p.y;
@@ -163,55 +137,26 @@ bool TdECSCollisionSystem::willCollide(TdECSSystem *system, TdECSEntity *ent1, T
   bool willCollide2Future = false;
 
   if (moving1) {
-    ent1x2 = v1x + ent1p.x + ent1->get<TdECSShapeComponent>()->m_width;
-    ent1y2 = v1y + ent1p.y + ent1->get<TdECSShapeComponent>()->m_height;
+    ent1x2 = v1x + ent1p.x + ent1->get<TdECSShapeComponent>()->m_dimensions.x;
+    ent1y2 = v1y + ent1p.y + ent1->get<TdECSShapeComponent>()->m_dimensions.y;
 
-    ent2x2 = ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
-    ent2y2 = ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
+    ent2x2 = ent2p.x + ent2->get<TdECSShapeComponent>()->m_dimensions.x;
+    ent2y2 = ent2p.y + ent2->get<TdECSShapeComponent>()->m_dimensions.y;
 
     willCollide1Future = ent1p.x <= ent2x2 && ent1x2 >= ent2p.x && ent1p.y <= ent2y2 &&
         ent1y2 >= ent2p.y;
   }
 
   if (moving2) {
-    ent1x2 = ent1p.x + ent1->get<TdECSShapeComponent>()->m_width;
-    ent1y2 = ent1p.y + ent1->get<TdECSShapeComponent>()->m_height;
+    ent1x2 = ent1p.x + ent1->get<TdECSShapeComponent>()->m_dimensions.x;
+    ent1y2 = ent1p.y + ent1->get<TdECSShapeComponent>()->m_dimensions.y;
 
-    ent2x2 = v2x + ent2p.x + ent2->get<TdECSShapeComponent>()->m_width;
-    ent2y2 = v2y + ent2p.y + ent2->get<TdECSShapeComponent>()->m_height;
+    ent2x2 = v2x + ent2p.x + ent2->get<TdECSShapeComponent>()->m_dimensions.x;
+    ent2y2 = v2y + ent2p.y + ent2->get<TdECSShapeComponent>()->m_dimensions.y;
 
     willCollide2Future = ent1p.x <= ent2x2 && ent1x2 >= ent2p.x && ent1p.y <= ent2y2 &&
         ent1y2 >= ent2p.y;
   }
 
   return willCollideBothFuture || willCollide1Future || willCollide2Future;
-}
-
-bool TdECSCollisionSystem::willCollide(TdECSSystem *system, TdECSEntity *ent) {
-  // getAdjacentNodes is faulty.
-//  std::list<TdCollisionQuadTreeNode*> nearbyNodes;
-//  m_qtree->m_root->getContainingNode(system, ent->m_id)
-//      ->getAdjacentNodes(nearbyNodes);
-//
-//  for (auto n : nearbyNodes) {
-//    for (auto e : n->m_ents) {
-//      if (ent->m_id != e.first && this->willCollide(system, ent, e.second)) {
-//        return true;
-//      }
-//    }
-//  }
-
-  for (auto &e : system->m_enemies) {
-    if (ent->m_id != e.first && this->willCollide(system, ent, e.second.get())) {
-      return true;
-    }
-  }
-
-  for (auto &e : system->m_allies) {
-    if (ent->m_id != e.first && this->willCollide(system, ent, e.second.get())) {
-      return true;
-    }
-  }
-
-  return false;
 }

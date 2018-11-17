@@ -31,8 +31,8 @@ void TdECSGraphicsComponent::update(TdGame *game, TdECSSystem *system) {
   glm::dvec2 pos = ent->getPosition();
   glm::dvec2 centerp = ent->getCenterPosition();
 
-  SDL_Rect r{(int)std::round(pos.x), (int)std::round(pos.y), (int) shape->m_width,
-      (int) shape->m_height};
+  SDL_Rect r{(int)std::round(pos.x), (int)std::round(pos.y), (int) shape->m_dimensions.x,
+      (int) shape->m_dimensions.y};
   SDL_RenderDrawRect(game->m_SDLRenderer, &r);
 
   // Disabled drawing by points
@@ -67,7 +67,7 @@ void TdECSGraphicsComponent::update(TdGame *game, TdECSSystem *system) {
                          (int) std::round(centerp.y), (int) std::round(entp.x),
                          std::round(entp.y));
     }
-  } else if (ent->get<TdECSShapeComponent>()->m_height == 16) {
+  } else if (ent->get<TdECSShapeComponent>()->m_dimensions.y == 16) {
     // draw some diagonal lines
     glm::dvec2 xy = ent->getPosition();
 
