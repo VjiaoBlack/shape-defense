@@ -37,6 +37,7 @@ void TdECSSystem::addEntity(TdGame* game, std::unique_ptr<TdECSEntity>&& e) {
 void TdECSSystem::update(TdGame* game, bool updateGraphics) {
   m_health.update(game, this);
   m_planning.update(game, this);
+  m_collisions.update(game, this);
   m_physics.update(game, this);
 
   if (updateGraphics) {
@@ -53,7 +54,6 @@ void TdECSSystem::update(TdGame* game, bool updateGraphics) {
       }
     }
   }
-  m_collisions.update(game, this);
 
   LOG_VRB("numEntities: %lu\n", m_allies.size() + m_enemies.size());
 }

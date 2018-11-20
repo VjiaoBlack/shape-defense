@@ -9,7 +9,9 @@
 
 #include <memory>
 #include <unordered_set>
+#include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
+#include <bits/unordered_map.h>
 
 class TdGame;
 class TdECSEntity;
@@ -38,6 +40,7 @@ class TdECSCollisionSystem {
   // TODO: consider using bloom filter or something??
   std::unordered_set<std::pair<int, int>, pair_hash> m_collidingIds;
   std::unordered_set<int> m_collidingIdsSingle;
+  std::unordered_map<int, glm::vec2> m_closestDeltas;
 
   TdECSCollisionSystem();
 
