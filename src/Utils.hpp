@@ -14,7 +14,7 @@
 #include <glm/glm.hpp>
 #include <glm/detail/_swizzle.hpp>
 
-#include "TrGraphics.hpp"
+#include "Graphics.hpp"
 
 // set to 2 (or more) if it's a retina screen, 1 if not.
 #define K_RETINA 1
