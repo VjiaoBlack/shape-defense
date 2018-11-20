@@ -139,7 +139,7 @@ void TdGame::run() {
     m_deltaTime = clockToMilliseconds(endFrame - beginFrame);
     double rfps = (1000.0 / m_deltaTime);
     // display rFPS (rendering FPS)
-    std::cout << "rFPS: " << rfps << "       \r";
+    std::cout << "rFPS: " << rfps << std::endl;
     fflush(stdout);
     if (m_deltaTime < (1000.0 / 30.0)) {
       usleep(1000 * ((1000.0 / 30.0) - m_deltaTime));

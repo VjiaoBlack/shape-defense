@@ -28,6 +28,7 @@ void TdECSCollisionSystem::update(TdGame *game, TdECSSystem *system) {
 
   m_collidingIds.clear();
   m_collidingIdsSingle.clear();
+  m_closestDeltas.clear();
 
   std::list<TdCollisionQuadTreeNode *> node_path;
   std::list<TdCollisionQuadTreeNode *> node_stack; // depth, node*
@@ -70,6 +71,22 @@ void TdECSCollisionSystem::update(TdGame *game, TdECSSystem *system) {
                                             std::max(ent1.first, ent2.first)));
             m_collidingIdsSingle.insert(ent1.first);
             m_collidingIdsSingle.insert(ent2.first);
+
+            glm::vec2 disp = ent2.second->getPosition() -
+                             ent1.second->getPosition();
+            double dist = glm::max(glm::abs(disp.x), glm::abs(disp.y));
+
+            if (m_closestDeltas.find(ent1.first) == m_closestDeltas.end() ||
+                dist < glm::max(glm::abs(m_closestDeltas[ent1.first].x),
+                                glm::abs(m_closestDeltas[ent1.first].y))) {
+              m_closestDeltas[ent1.first] = disp;
+            }
+
+            if (m_closestDeltas.find(ent2.first) == m_closestDeltas.end() ||
+                dist < glm::max(glm::abs(m_closestDeltas[ent2.first].x),
+                                glm::abs(m_closestDeltas[ent2.first].y))) {
+              m_closestDeltas[ent2.first] = -disp;
+            }
           }
         }
       }
@@ -116,24 +133,22 @@ bool TdECSCollisionSystem::willCollide(TdECSSystem *system, TdECSEntity *ent1, T
   glm::dvec2 ent2p = ent2->getPosition();
 
   bool willCollideBothFuture = intersect(
-      glm::dvec4(ent1p, v1 + ent1->get<TdECSShapeComponent>()->m_dimensions),
-      glm::dvec4(ent2p, v2 + ent2->get<TdECSShapeComponent>()->m_dimensions));
+      glm::dvec4(v1 + ent1p, ent1->get<TdECSShapeComponent>()->m_dimensions),
+      glm::dvec4(v2 + ent2p, ent2->get<TdECSShapeComponent>()->m_dimensions));
 
   bool willCollide1Future = false;
   bool willCollide2Future = false;
 
   if (moving1) {
     willCollide1Future = intersect(
-        glm::dvec4(ent1p, v1 + ent1->get<TdECSShapeComponent>()->m_dimensions),
+        glm::dvec4(v1 + ent1p, ent1->get<TdECSShapeComponent>()->m_dimensions),
         glm::dvec4(ent2p, ent2->get<TdECSShapeComponent>()->m_dimensions));
-
   }
 
   if (moving2) {
     willCollide2Future = intersect(
         glm::dvec4(ent1p, ent1->get<TdECSShapeComponent>()->m_dimensions),
-        glm::dvec4(ent2p, v2 + ent2->get<TdECSShapeComponent>()->m_dimensions));
-
+        glm::dvec4(v2 + ent2p, ent2->get<TdECSShapeComponent>()->m_dimensions));
   }
 
   return willCollideBothFuture || willCollide1Future || willCollide2Future;
