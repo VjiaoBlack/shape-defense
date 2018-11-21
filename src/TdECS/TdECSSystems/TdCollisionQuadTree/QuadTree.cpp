@@ -1,4 +1,4 @@
-/** 
+/** q
  * TdCollisionQuadTree.cpp
  *  
  * Victor Jiao
@@ -16,10 +16,8 @@ void QuadTree::update(Game *game, System *system) {
   LOG_VRB("QuadTree Sz: %d  | Lvl: %d", m_root->getNumEnts(), m_root->getDeepestLayer(0));
 }
 
-bool QuadTree::tryAddEntID(Game *game,
-                                      System *system,
-                                      int entID,
-                                      Entity *ent) {
+bool QuadTree::tryAddEntID(Game *game, System *system,
+                           int entID, Entity *ent) {
   return m_root->tryAddEntID(system, entID, ent);
 }
 

@@ -10,6 +10,7 @@
 #include <Game.hpp>
 #include <csignal>
 #include "TdECS/Entity.hpp"
+#include "QuadTree.hpp"
 
 void Node::getAdjacentNodes(
     list<Node *> &nodes) {
@@ -52,8 +53,7 @@ Node *Node::getContainingNode(
   }
 }
 
-Node *Node::forceSearch(
-    System *system, int entID) {
+Node *Node::forceSearch(System *system, int entID) {
   if (m_ents.count(entID)) {
     return this;
   }
@@ -99,21 +99,19 @@ bool Node::tryAddEntID(System *system, int entID,
 void Node::removeEntID(System *system, int entID) {
   auto node = getContainingNode(system, entID);
   if (!node) {
-    LOG_FAT("ERROR: collision quad tree attempted to remove from nonexistent node.");
-    exit(2);
+    LOG_FAT("collision quad tree attempted to remove from nonexistent node.");
+    exit(1);
   }
 
   if (node->m_ents.count(entID) == 0) {
-    LOG_FAT("ERROR: collision quad tree attempted to remove ent from incorrect node.");
+    LOG_FAT("collision quad tree attempted to remove ent from incorrect node.");
 
     // where the hell is it then???
-    //    auto node =
-    //        system->m_collisions.m_qtree->m_root->forceSearch(game, system,
-    //        entID);
-    //    printf("  FOUND %d, %d: %d, %d\n", (int)node->m_rect.pos.x,
-    //           (int)node->m_rect.pos.y, (int)node->m_rect.w,
-    //           (int)node->m_rect.h);
-
+    // TODO: need to fix
+//    auto node = system->m_collisions.m_qtree->m_root->forceSearch(system, entID);
+//    printf("  FOUND %d, %d: %d, %d\n", (int)node->m_rect.pos.x,
+//             (int)node->m_rect.pos.y, (int)node->m_rect.w,
+//             (int)node->m_rect.h);
     exit(1);
   }
 

@@ -31,8 +31,8 @@ void Graphics::update(Game *game, System *system) {
   glm::dvec2 pos = ent->getPosition();
   glm::dvec2 centerp = ent->getCenterPosition();
 
-  SDL_Rect r{(int) std::round(pos.x),
-             (int) std::round(pos.y),
+  SDL_Rect r{(int) std::floor(pos.x),
+             (int) std::floor(pos.y),
              (int) shape->m_dimensions.x,
              (int) shape->m_dimensions.y};
   SDL_RenderDrawRect(game->m_SDLRenderer, &r);

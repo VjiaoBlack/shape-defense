@@ -10,9 +10,18 @@
 #include <TdECS/TdECSSystems/TdCollisionQuadTree/Node.hpp>
 #include "TdECS/TdECSSystems/TdCollisionQuadTree/QuadTree.hpp"
 
-bool intersect(glm::vec4 r1, glm::vec4 r2) {
-  return r1.x <= r2.z + r2.x && r1.x + r1.w >= r2.x && r1.y <= r2.y + r2.w &&
-      r1.y + r1.w >= r2.y;
+inline bool intersect(glm::vec4 r1, glm::vec4 r2) {
+  return r1.x        <= r2.x + r2.z &&
+         r1.x + r1.z >= r2.x        &&
+         r1.y        <= r2.y + r2.w &&
+         r1.y + r1.w >= r2.y;
+}
+
+inline bool intersectPixel(glm::vec4 r1, glm::vec4 r2) {
+  return glm::floor(r1.x)              <= glm::ceil (r2.x + r2.z + 1.0) &&
+         glm::ceil(r1.x + r1.z + 1.0)  >= glm::floor(r2.x)              &&
+         glm::floor(r1.y)              <= glm::ceil (r2.y + r2.w + 1.0) &&
+         glm::ceil(r1.y + r1.w + 1.0)  >= glm::floor(r2.y);
 }
 
 CollisionSystem::CollisionSystem() {
@@ -106,7 +115,7 @@ bool CollisionSystem::isColliding(System *system, Entity *ent1, Entity *ent2) {
   glm::vec4 r1(ent1->getPosition(), ent1->get<Shape>()->m_dimensions);
   glm::vec4 r2(ent2->getPosition(), ent2->get<Shape>()->m_dimensions);
 
-  return intersect(r1, r2);
+  return intersectPixel(r1, r2);
 }
 
 bool CollisionSystem::willCollide(System *system, Entity *ent1, Entity *ent2) {
@@ -132,7 +141,7 @@ bool CollisionSystem::willCollide(System *system, Entity *ent1, Entity *ent2) {
   glm::dvec2 ent1p = ent1->getPosition();
   glm::dvec2 ent2p = ent2->getPosition();
 
-  bool willCollideBothFuture = intersect(
+  bool willCollideBothFuture = intersectPixel(
       glm::dvec4(v1 + ent1p, ent1->get<Shape>()->m_dimensions),
       glm::dvec4(v2 + ent2p, ent2->get<Shape>()->m_dimensions));
 
@@ -140,13 +149,13 @@ bool CollisionSystem::willCollide(System *system, Entity *ent1, Entity *ent2) {
   bool willCollide2Future = false;
 
   if (moving1) {
-    willCollide1Future = intersect(
+    willCollide1Future = intersectPixel(
         glm::dvec4(v1 + ent1p, ent1->get<Shape>()->m_dimensions),
         glm::dvec4(ent2p, ent2->get<Shape>()->m_dimensions));
   }
 
   if (moving2) {
-    willCollide2Future = intersect(
+    willCollide2Future = intersectPixel(
         glm::dvec4(ent1p, ent1->get<Shape>()->m_dimensions),
         glm::dvec4(v2 + ent2p, ent2->get<Shape>()->m_dimensions));
   }

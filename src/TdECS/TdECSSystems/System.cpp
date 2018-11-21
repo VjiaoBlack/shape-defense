@@ -36,8 +36,8 @@ void System::addEntity(Game* game, std::unique_ptr<Entity>&& e) {
 
 void System::update(Game* game, bool updateGraphics) {
   m_health.update(game, this);
-  m_planning.update(game, this);
   m_collisions.update(game, this);
+  m_planning.update(game, this);
   m_physics.update(game, this);
 
   if (updateGraphics) {
