@@ -19,6 +19,14 @@ struct Rect {
   Rect(glm::dvec2 _pos, double _w, double _h) : pos(_pos), w(_w), h(_h){};
 
   bool contains(Entity *ent) {
+    if (!ent) {
+      LOG_ERR("Rect passed a null ent");
+      return true;
+    }
+    if (ent->m_dead) {
+      LOG_ERR("Rect passed a dead ent");
+      return true;
+    }
     glm::dvec2 pa1 = this->pos;
     glm::dvec2 pb1 = ent->getPosition();
 

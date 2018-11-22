@@ -38,6 +38,7 @@ void CollisionSystem::update(Game *game, System *system) {
   m_collidingIds.clear();
   m_collidingIdsSingle.clear();
   m_closestDeltas.clear();
+  m_collidingDeltas.clear();
 
   std::list<Node *> node_path;
   std::list<Node *> node_stack; // depth, node*
@@ -74,6 +75,9 @@ void CollisionSystem::update(Game *game, System *system) {
     for (auto node : node_path) {
       for (auto ent1 : node->m_ents) {
         for (auto ent2 : cur_node->m_ents) {
+          if (ent1.second->m_dead || ent2.second->m_dead) {
+            continue;
+          }
           if (ent1.first != ent2.first &&
               willCollide(system, ent1.second, ent2.second)) {
             m_collidingIds.insert(std::make_pair(std::min(ent1.first, ent2.first),
@@ -83,6 +87,7 @@ void CollisionSystem::update(Game *game, System *system) {
 
             glm::vec2 disp = ent2.second->getPosition() -
                              ent1.second->getPosition();
+
             double dist = glm::max(glm::abs(disp.x), glm::abs(disp.y));
 
             if (m_closestDeltas.find(ent1.first) == m_closestDeltas.end() ||
@@ -96,6 +101,9 @@ void CollisionSystem::update(Game *game, System *system) {
                                 glm::abs(m_closestDeltas[ent2.first].y))) {
               m_closestDeltas[ent2.first] = -disp;
             }
+
+            m_collidingDeltas[ent1.first][ent2.first] = disp;
+            m_collidingDeltas[ent2.first][ent1.first] = -disp;
           }
         }
       }
@@ -121,6 +129,11 @@ bool CollisionSystem::isColliding(System *system, Entity *ent1, Entity *ent2) {
 bool CollisionSystem::willCollide(System *system, Entity *ent1, Entity *ent2) {
   if (!ent1 || !ent2) {
     LOG_ERR("Collision system passed a Null ent.");
+    return true;
+  }
+
+  if (ent1->m_dead || ent2->m_dead) {
+    LOG_ERR("Collision system passed a dead ent.");
     return true;
   }
 

@@ -32,6 +32,11 @@ void Node::getAdjacentNodes(
 Node *Node::getContainingNode(
     System *system, int entID) {
   auto ent = system->getEnt(entID);
+
+//  TODO: this is only to stop breaking when we can't find an ent on remove
+  if (ent == nullptr) {
+    return nullptr;
+  }
   if (m_tl) {
     if (m_tl->m_rect.contains(ent)) {
       return m_tl->getContainingNode(system, entID);
@@ -54,6 +59,9 @@ Node *Node::getContainingNode(
 }
 
 Node *Node::forceSearch(System *system, int entID) {
+  LOG_ERR("dim: %f, %f: %f, %f", m_rect.pos.x, m_rect.pos.y,
+                                 m_rect.pos.x + m_rect.w,
+                                 m_rect.pos.y + m_rect.h);
   if (m_ents.count(entID)) {
     return this;
   }
@@ -108,11 +116,24 @@ void Node::removeEntID(System *system, int entID) {
 
     // where the hell is it then???
     // TODO: need to fix
-//    auto node = system->m_collisions.m_qtree->m_root->forceSearch(system, entID);
-//    printf("  FOUND %d, %d: %d, %d\n", (int)node->m_rect.pos.x,
-//             (int)node->m_rect.pos.y, (int)node->m_rect.w,
-//             (int)node->m_rect.h);
+    // wait hold up, are they just not in the quadtree at all...
+    // are we handling logic right if deleting an ent means deleting a bunch of nodes?
+    auto node = system->m_collisions.m_qtree->m_root->forceSearch(system, entID);
+
+    if (node) {
+      printf("  FOUND %d, %d: %d, %d\n", (int)node->m_rect.pos.x,
+             (int)node->m_rect.pos.y, (int)node->m_rect.w,
+             (int)node->m_rect.h);
+
+      LOG_ERR("%f, %f",
+              system->getEnt(entID)->getPosition().x,
+              system->getEnt(entID)->getPosition().y);
+    } else {
+      printf("NOT FOUND\n");
+    }
+
     exit(1);
+//    return;
   }
 
   node->m_ents.erase(entID);
@@ -176,6 +197,9 @@ void Node::refreshNode(
 
       if (m_parent) {
         for (auto it = m_ents.begin(); it != m_ents.end(); it++) {
+          if (it->second->m_dead) {
+            continue;
+          }
           outside.insert(*it);
         }
         m_ents.clear();
@@ -184,9 +208,9 @@ void Node::refreshNode(
   }
 
   // put non-fitting objects upwards
-  if (m_parent) {
+  if (m_parent && this) {
     for (auto it = m_ents.begin(); it != m_ents.end();) {
-      if (!this->m_rect.contains(it->second)) {
+      if (it->second && !it->second->m_dead && !this->m_rect.contains(it->second)) {
         outside.insert(*it);
         it = m_ents.erase(it);
       } else {
@@ -199,6 +223,10 @@ void Node::refreshNode(
   if (m_parent) {
     for (auto it = outside.begin(); it != outside.end();) {
       // if entID is inside, put into m_ents
+      if (it->second->m_dead) {
+        continue;
+      }
+
       if (this->tryAddEntID(system, it->first, it->second)) {
         it = outside.erase(it);
       } else {
@@ -210,6 +238,10 @@ void Node::refreshNode(
   // attempt to redistribute entIDs DOWN
   if (m_tl) {
     for (auto it = m_ents.begin(); it != m_ents.end();) {
+      if (it->second->m_dead) {
+        continue;
+      }
+
       // if entID is inside, put into m_ents
       if (m_tl->tryAddEntID(system, it->first, it->second)) {
         it = m_ents.erase(it);
@@ -237,10 +269,28 @@ void Node::refreshNode(
         this->m_parent->m_br->m_ents.size() == 0) {
       // if this is a leaf and its parent and siblings have 0 entIDs,
       // delete this and its siblings
-      m_parent->m_tl.reset(nullptr);
-      m_parent->m_tr.reset(nullptr);
-      m_parent->m_bl.reset(nullptr);
-      m_parent->m_br.reset(nullptr);
+
+      std::unique_ptr<Node>* reset = &m_parent->m_tl;
+      if (m_parent->m_tl.get() != this) {
+        m_parent->m_tl.reset(nullptr);
+      }
+      if (m_parent->m_tr.get() != this) {
+        m_parent->m_tr.reset(nullptr);
+      } else {
+        reset = &m_parent->m_tr;
+      }
+      if (m_parent->m_bl.get() != this) {
+        m_parent->m_bl.reset(nullptr);
+      } else {
+        reset = &m_parent->m_bl;
+      }
+      if (m_parent->m_br.get() != this) {
+        m_parent->m_br.reset(nullptr);
+      } else {
+        reset = &m_parent->m_br;
+      }
+
+      (*reset).reset(nullptr);
     }
   }
 }
@@ -264,6 +314,10 @@ void Node::getAllWithinRadius(
   }
 
   for (auto entID : m_ents) {
+    if (entID.second->m_dead) {
+      continue;
+    }
+
     glm::dvec2 entp = entID.second->getPosition();
 
     double dist =

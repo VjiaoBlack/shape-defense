@@ -60,9 +60,122 @@ void Pathing::update(Game* game, System* system) {
       if (dist <= system->getEnt(m_entID)->get<Shape>()->m_dimensions.x) {
         system->getEnt(m_entID)->get<Graphics>()->m_color =
           (SDL_Color) {0x00, 0xFF, 0xFF, 0xFF};
+      } else {
+        system->getEnt(m_entID)->get<Graphics>()->m_color =
+            (SDL_Color) {0xFF, 0x00, 0x00, 0xFF};
       }
 
       myEnt->get<Physics>()->m_v = glm::vec2(0);
+
+      // only allow to move if there is space
+
+
+      // TODO: set velocity to zero only in colliding component
+      this->move(game, system, m_goalxy.x, m_goalxy.y);
+
+      glm::vec2 vel = system->getEnt(m_entID)->get<Physics>()->m_v;
+      glm::vec2 dim = system->getEnt(m_entID)->get<Shape>()->m_dimensions;
+      double max_posx = vel.x;
+      double max_posy = vel.y;
+      double min_negx = vel.x;
+      double min_negy = vel.y;
+
+      if (max_posx < 0) max_posx = 0;
+      if (max_posy < 0) max_posy = 0;
+      if (min_negx > 0) min_negx = 0;
+      if (min_negy > 0) min_negy = 0;
+
+      for (auto& pair : system->m_collisions.m_collidingDeltas[m_entID]) {
+        if (game->m_mouseX >= pos.x && game->m_mouseX <= pos.x + shape.x &&
+            game->m_mouseY >= pos.y && game->m_mouseY <= pos.y + shape.y) {
+          LOG_ERR("%f, %f :: %f, %f", pair.second.x, pair.second.y, dim.x, dim.y);
+        }
+
+        if (glm::abs(pair.second.x) > glm::abs(pair.second.y)) {
+          if (pair.second.x > 0) {
+            if (pair.second.x - dim.x >= 0 &&
+                pair.second.x - dim.x <= max_posx) {
+              max_posx = pair.second.x - dim.x;
+            }
+            if (pair.second.x - dim.x <= 0) {
+              //            LOG_ERR("what the fuck, %f", pair.second.x - dim.x);
+              system->getEnt(m_entID)->get<Graphics>()->m_color = {0x00, 0xFF, 0x00, 0xFF};
+              max_posx = 0;
+            }
+          }
+
+          if (pair.second.x <= 0) {
+            if (pair.second.x + dim.x <= 0 &&
+                pair.second.x + dim.x >= min_negx) {
+              min_negx = pair.second.x + dim.x;
+            }
+            if (pair.second.x + dim.x >= 0) {
+              //            LOG_ERR("what the fuck, %f", pair.second.x + dim.x);
+              system->getEnt(m_entID)->get<Graphics>()->m_color = {0x00, 0xFF, 0x00, 0xFF};
+              min_negx = 0;
+            }
+          }
+        } else {
+          if (pair.second.y > 0) {
+            if (pair.second.y - dim.y >= 0 &&
+                pair.second.y - dim.y <= max_posy) {
+              max_posy = pair.second.y - dim.y;
+            }
+            if (pair.second.y - dim.y <= 0) {
+              //            LOG_ERR("what the fuck, %f", pair.second.y - dim.y);
+              system->getEnt(m_entID)->get<Graphics>()->m_color = {0x00, 0xFF, 0x00, 0xFF};
+              max_posy = 0;
+            }
+          }
+
+          if (pair.second.y <= 0) {
+            if (pair.second.y + dim.y <= 0 &&
+                pair.second.y + dim.y >= min_negy) {
+              min_negy = pair.second.y + dim.y;
+            }
+            if (pair.second.y + dim.y >= 0) {
+              //            LOG_ERR("what the fuck, %f", pair.second.y + dim.y);
+              system->getEnt(m_entID)->get<Graphics>()->m_color = {0x00, 0xFF, 0x00, 0xFF};
+              min_negy = 0;
+            }
+          }
+        }
+
+
+        if (game->m_mouseX >= pos.x && game->m_mouseX <= pos.x + shape.x &&
+            game->m_mouseY >= pos.y && game->m_mouseY <= pos.y + shape.y) {
+               LOG_ERR("%f, %f : %f, %f", max_posx, max_posy, min_negx, min_negy);
+        }
+      }
+
+      if (vel.x > 0) {
+        vel.x = max_posx;
+      }
+      if (vel.x <= 0) {
+        vel.x = min_negx;
+      }
+      if (vel.y > 0) {
+        vel.y = max_posy;
+      }
+      if (vel.y <= 0) {
+        vel.y = min_negy;
+      }
+      system->getEnt(m_entID)->get<Physics>()->m_v = vel;
+
+
+      // this needs to be re-attempted with a LIST of neighboring objects.
+//      this->move(game, system, m_goalxy.x, m_goalxy.y);
+//      glm::vec2 disp = system->m_collisions.m_closestDeltas[m_entID];
+//      if (glm::abs(disp.x) >= glm::abs(disp.y)) {
+//        myEnt->get<Physics>()->m_v.y = 0;
+//      } else {
+//        myEnt->get<Physics>()->m_v.x = 0;
+//      }
+
+
+      //       or set position to match no collision...
+//      myEnt->get<Position>()->m_p += system->m_collisions.m_closestDeltas[m_entID] /
+//                                     glm::vec2(10.0);
     } else {
       // otherwise, keep going
       this->move(game, system, m_goalxy.x, m_goalxy.y);

@@ -27,6 +27,10 @@ void Attack::update(Game *game, System *system) {
   }
 
   Entity *myEnt = system->getEnt(m_entID);
+
+  if (!myEnt || myEnt->m_dead) {
+    return;
+  }
   double minDist = -1.0;
   Entity *itEnt = nullptr;
 
@@ -40,6 +44,10 @@ void Attack::update(Game *game, System *system) {
           system, closeEntsIDs, entp.x, entp.y, 160.0);
 
       for (auto itTempEnt : closeEntsIDs) {
+        if (!itTempEnt || itTempEnt->m_dead) {
+          continue;
+        }
+
         auto itIDEnt = itTempEnt;
         double dist = findCenterDistance(myEnt, itIDEnt);
 
@@ -74,6 +82,10 @@ void Attack::update(Game *game, System *system) {
       break;
     case 1:  // targets allies
       for (auto &itPair : system->m_allies) {
+        if (!itPair.second || itPair.second->m_dead) {
+          continue;
+        }
+
         double dist = findCenterDistance(myEnt, itPair.second.get());
 
         if (itPair.second && !itPair.second->has<Fighter>()) {
