@@ -33,7 +33,7 @@ template <class T>
 inline void updateComponents(Game* game, System* system,
                              std::vector<std::unique_ptr<T>>& vec) {
   for (auto c = vec.begin(); c != vec.end();) {
-    if ((*c)->m_dead) {
+    if (!(*c)->m_alive) {
       c = vec.erase(c);
     } else {
       (*c)->update(game, system);

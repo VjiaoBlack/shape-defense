@@ -47,7 +47,7 @@ void System::update(Game* game, bool updateGraphics) {
   auto entMapList = this->getEntityMaps();
   for (auto map : entMapList) {
     for (auto c = map->begin(); c != map->end();) {
-      if ((*c).second->m_dead) {
+      if (!(*c).second->m_alive) {
         c = map->erase(c);
       } else {
         c++;

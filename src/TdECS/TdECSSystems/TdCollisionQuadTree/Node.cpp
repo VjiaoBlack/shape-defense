@@ -59,9 +59,9 @@ Node *Node::getContainingNode(
 }
 
 Node *Node::forceSearch(System *system, int entID) {
-  LOG_ERR("dim: %f, %f: %f, %f", m_rect.pos.x, m_rect.pos.y,
-                                 m_rect.pos.x + m_rect.w,
-                                 m_rect.pos.y + m_rect.h);
+//  LOG_ERR("dim: %f, %f: %f, %f", m_rect.pos.x, m_rect.pos.y,
+//                                 m_rect.pos.x + m_rect.w,
+//                                 m_rect.pos.y + m_rect.h);
   if (m_ents.count(entID)) {
     return this;
   }
@@ -70,22 +70,34 @@ Node *Node::forceSearch(System *system, int entID) {
     if (m_tl->m_ents.count(entID)) {
       return m_tl.get();
     } else {
-      m_tl->forceSearch(system, entID);
+      auto tmp = m_tl->forceSearch(system, entID);
+      if (tmp) {
+        return tmp;
+      }
     }
     if (m_tr->m_ents.count(entID)) {
       return m_tr.get();
     } else {
-      m_tr->forceSearch(system, entID);
+      auto tmp = m_tr->forceSearch(system, entID);
+      if (tmp) {
+        return tmp;
+      }
     }
     if (m_bl->m_ents.count(entID)) {
       return m_bl.get();
     } else {
-      m_bl->forceSearch(system, entID);
+      auto tmp = m_bl->forceSearch(system, entID);
+      if (tmp) {
+        return tmp;
+      }
     }
     if (m_br->m_ents.count(entID)) {
       return m_br.get();
     } else {
-      m_br->forceSearch(system, entID);
+      auto tmp = m_br->forceSearch(system, entID);
+      if (tmp) {
+        return tmp;
+      }
     }
   }
 
@@ -104,21 +116,36 @@ bool Node::tryAddEntID(System *system, int entID,
   }
 }
 
+void Node::print(System* system, Game* game) {
+  printf("%d: ", m_depth);
+
+  for (auto entpair : m_ents) {
+    printf("%d, ", entpair.first);
+  }
+  printf("\n");
+
+  if (m_tl) m_tl->print(system, game);
+  if (m_tr) m_tr->print(system, game);
+  if (m_bl) m_bl->print(system, game);
+  if (m_br) m_br->print(system, game);
+}
+
 void Node::removeEntID(System *system, int entID) {
   auto node = getContainingNode(system, entID);
   if (!node) {
-    LOG_FAT("collision quad tree attempted to remove from nonexistent node.");
+    LOG_FAT("collision quad tree attempted to remove from nonexistent node. id: %d", entID);
     exit(1);
   }
 
   if (node->m_ents.count(entID) == 0) {
-    LOG_FAT("collision quad tree attempted to remove ent from incorrect node.");
+    LOG_FAT("collision quad tree attempted to remove ent from incorrect node. id: %d", entID);
 
+    auto ent = system->getEnt(entID);
     // where the hell is it then???
     // TODO: need to fix
     // wait hold up, are they just not in the quadtree at all...
     // are we handling logic right if deleting an ent means deleting a bunch of nodes?
-    auto node = system->m_collisions.m_qtree->m_root->forceSearch(system, entID);
+    node = system->m_collisions.m_qtree->m_root->forceSearch(system, entID);
 
     if (node) {
       printf("  FOUND %d, %d: %d, %d\n", (int)node->m_rect.pos.x,
@@ -128,12 +155,12 @@ void Node::removeEntID(System *system, int entID) {
       LOG_ERR("%f, %f",
               system->getEnt(entID)->getPosition().x,
               system->getEnt(entID)->getPosition().y);
+
     } else {
       printf("NOT FOUND\n");
+      exit(1);
     }
 
-    exit(1);
-//    return;
   }
 
   node->m_ents.erase(entID);
@@ -197,7 +224,7 @@ void Node::refreshNode(
 
       if (m_parent) {
         for (auto it = m_ents.begin(); it != m_ents.end(); it++) {
-          if (it->second->m_dead) {
+          if (!it->second->m_alive) {
             continue;
           }
           outside.insert(*it);
@@ -210,8 +237,9 @@ void Node::refreshNode(
   // put non-fitting objects upwards
   if (m_parent && this) {
     for (auto it = m_ents.begin(); it != m_ents.end();) {
-      if (it->second && !it->second->m_dead && !this->m_rect.contains(it->second)) {
+      if (it->second && it->second->m_alive && !this->m_rect.contains(it->second)) {
         outside.insert(*it);
+//        printf("moved ! %d", it->first);
         it = m_ents.erase(it);
       } else {
         it++;
@@ -223,7 +251,7 @@ void Node::refreshNode(
   if (m_parent) {
     for (auto it = outside.begin(); it != outside.end();) {
       // if entID is inside, put into m_ents
-      if (it->second->m_dead) {
+      if (!it->second->m_alive) {
         continue;
       }
 
@@ -238,7 +266,7 @@ void Node::refreshNode(
   // attempt to redistribute entIDs DOWN
   if (m_tl) {
     for (auto it = m_ents.begin(); it != m_ents.end();) {
-      if (it->second->m_dead) {
+      if (!it->second->m_alive) {
         continue;
       }
 
@@ -314,7 +342,7 @@ void Node::getAllWithinRadius(
   }
 
   for (auto entID : m_ents) {
-    if (entID.second->m_dead) {
+    if (!entID.second->m_alive) {
       continue;
     }
 

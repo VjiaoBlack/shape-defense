@@ -48,6 +48,7 @@ class Node {
   };
 
   ~Node() {}
+  void print (System* system, Game* game);
 
   bool containsEntID(System *system, int entID);
   void refreshNode(Game *game, System *system,

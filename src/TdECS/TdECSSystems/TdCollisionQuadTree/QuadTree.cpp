@@ -10,6 +10,9 @@
 #include "Game.hpp"
 #include "TdECS/Entity.hpp"
 
+void QuadTree::print(System* system, Game* game) {
+  m_root->print( system, game);
+}
 
 void QuadTree::update(Game *game, System *system) {
   m_root->refreshNode(game, system, m_root->m_ents);
@@ -22,5 +25,6 @@ bool QuadTree::tryAddEntID(Game *game, System *system,
 }
 
 void QuadTree::removeEntID(Game *game, System *system, int entID) {
+//  printf("Removing id %d", entID);
   m_root->removeEntID(system, entID);
 }

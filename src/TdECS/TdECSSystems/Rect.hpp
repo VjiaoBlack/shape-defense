@@ -23,8 +23,8 @@ struct Rect {
       LOG_ERR("Rect passed a null ent");
       return true;
     }
-    if (ent->m_dead) {
-      LOG_ERR("Rect passed a dead ent");
+    if (!ent->m_alive) {
+      LOG_ERR("Rect passed a dead ent. id: %d", ent->m_id);
       return true;
     }
     glm::dvec2 pa1 = this->pos;
