@@ -17,6 +17,7 @@ class QuadTree {
     m_root = std::make_unique<Node>(
         nullptr, Rect(glm::dvec2(-1500, -1500), 4000, 4000));
   }
+  void print (System* system, Game* game);
 
   bool tryAddEntID(Game *game,
                      System *system,

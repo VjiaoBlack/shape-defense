@@ -14,6 +14,6 @@ class System;
 class Component {
  public:
   int m_entID;
-  bool m_dead = false;
+  bool m_alive = true;
   virtual void update(Game *game, System *system) {};
 };

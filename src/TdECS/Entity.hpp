@@ -35,7 +35,7 @@ class MissingComponentException : public std::runtime_error {
 
 class Entity {
  public:
-  bool m_dead = false;
+  bool m_alive = true;
   int m_id;
 
   inline glm::dvec2 getPosition() {
@@ -86,9 +86,9 @@ class Entity {
 
   void die() {
     for (auto cp : m_components) {
-      cp.second->m_dead = true;
+      cp.second->m_alive = false;
     }
-    m_dead = true;
+    m_alive = false;
   }
 
   template <class T>

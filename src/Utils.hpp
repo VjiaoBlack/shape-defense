@@ -47,13 +47,13 @@
 #endif
 
 #if K_LOG_LEVEL >= ERR
-#define LOG_ERR(msg, ...) fprintf(stderr, "ERR: " msg "\n", ##__VA_ARGS__)
+#define LOG_ERR(msg, ...) printf("ERR: " msg "\n", ##__VA_ARGS__)
 #else
 #define LOG_ERR(msg, ...)
 #endif
 
 #if K_LOG_LEVEL >= FAT
-#define LOG_FAT(msg, ...) fprintf(stderr, "FAT: " msg "\n", ##__VA_ARGS__)
+#define LOG_FAT(msg, ...) printf("FAT: " msg "\n", ##__VA_ARGS__)
 #else
 #define LOG_FAT(msg, ...)
 #endif

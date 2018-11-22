@@ -75,7 +75,7 @@ void CollisionSystem::update(Game *game, System *system) {
     for (auto node : node_path) {
       for (auto ent1 : node->m_ents) {
         for (auto ent2 : cur_node->m_ents) {
-          if (ent1.second->m_dead || ent2.second->m_dead) {
+          if (!ent1.second->m_alive || !ent2.second->m_alive) {
             continue;
           }
           if (ent1.first != ent2.first &&
@@ -132,7 +132,7 @@ bool CollisionSystem::willCollide(System *system, Entity *ent1, Entity *ent2) {
     return true;
   }
 
-  if (ent1->m_dead || ent2->m_dead) {
+  if (!ent1->m_alive || !ent2->m_alive) {
     LOG_ERR("Collision system passed a dead ent.");
     return true;
   }

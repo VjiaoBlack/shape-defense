@@ -34,7 +34,8 @@ class System {
  private:
 
  public:
-  int m_nextEntityId = 0;
+  // makes sure no ents have id of 0; which would signal a corrupted ent.
+  int m_nextEntityId = 1;
 
   GraphicsSystem  m_graphics;
   PhysicsSystem   m_physics;
