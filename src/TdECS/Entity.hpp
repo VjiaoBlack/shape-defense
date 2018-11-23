@@ -27,6 +27,21 @@
 
 class Component;
 
+template<typename T>
+struct classToInt {};
+
+template<> struct classToInt<Attack>       { enum { value = 1 };  };
+template<> struct classToInt<Fighter>      { enum { value = 2 };  };
+template<> struct classToInt<Health>       { enum { value = 3 };  };
+template<> struct classToInt<LaserShooter> { enum { value = 4 };  };
+template<> struct classToInt<Pathing>      { enum { value = 5 };  };
+template<> struct classToInt<Physics>      { enum { value = 6 };  };
+template<> struct classToInt<TilePosition> { enum { value = 7 };  };
+template<> struct classToInt<Position>     { enum { value = 8 };  };
+template<> struct classToInt<Shooter>      { enum { value = 9 };  };
+template<> struct classToInt<Shape>        { enum { value = 10 }; };
+template<> struct classToInt<Graphics>     { enum { value = 11 }; };
+
 class MissingComponentException : public std::runtime_error {
  public:
   MissingComponentException(const std::string &__arg)
@@ -66,19 +81,19 @@ class Entity {
 
   // add component pointers to this tuple later
   // TODO: restrict m_components access
-  std::map<std::string, Component *> m_components;
+  std::map<int, Component *> m_components;
   System *m_GUISystem;
 
   Entity() = delete;
   Entity(System *GUISystem)
       : m_id(GUISystem->m_nextEntityId), m_GUISystem(GUISystem) {
-    m_components = std::map<std::string, Component *>();
+    m_components = std::map<int, Component *>();
   }
 
   template <class T>
   void addComponent(std::unique_ptr<T> &&component) {
     component->m_entID = m_id;
-    m_components[typeid(T).name()] = component.get();
+    m_components[classToInt<T>::value] = component.get();
     if (m_GUISystem) {
       m_GUISystem->addComponent(std::move(component));
     }
@@ -93,17 +108,17 @@ class Entity {
 
   template <class T>
   inline T *get() {
-//    if (!m_components.count(typeid(T).name())) {
+//    if (!m_components.count(classToInt<T>::value)) {
 //      std::string msg = "missing component: ";
-//      msg += typeid(T).name();
+//      msg += classToInt<T>::value;
 //      throw MissingComponentException(msg);
 //    }
-    return static_cast<T *>(m_components[typeid(T).name()]);
+    return static_cast<T *>(m_components[classToInt<T>::value]);
   }
 
   template <class T>
   inline bool has() {
-    return m_components.count(typeid(T).name()) > 0;
+    return m_components.count(classToInt<T>::value) > 0;
   }
 
   static Entity *addPlayerBase(Game *game, System *system) {
