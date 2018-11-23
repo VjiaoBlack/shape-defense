@@ -14,11 +14,9 @@
 #include "TdECS/TdECSComponents/LaserShooter.hpp"
 #include "TdECS/TdECSComponents/Attack.hpp"
 
-#include "TdECS/TdECSComponents/Fighter.hpp"
 #include "TdECS/TdECSComponents/Health.hpp"
 #include "TdECS/TdECSComponents/Physics.hpp"
 #include "TdECS/TdECSComponents/Position.hpp"
-#include "TdECS/TdECSComponents/Shooter.hpp"
 #include "TdECS/TdECSComponents/TilePosition.hpp"
 
 #include "GraphicsSystem.hpp"
@@ -78,14 +76,6 @@ class System {
 
   void addComponent(std::unique_ptr<Graphics> c) {
     m_graphics.m_graphicsComponents.push_back(std::move(c));
-  }
-
-  void addComponent(std::unique_ptr<Fighter> c) {
-    m_planning.m_fighterComponents.push_back(std::move(c));
-  }
-
-  void addComponent(std::unique_ptr<Shooter> c) {
-    m_planning.m_shooterComponents.push_back(std::move(c));
   }
 
   void addComponent(std::unique_ptr<Health> c) {

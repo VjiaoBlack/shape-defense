@@ -9,9 +9,7 @@
 
 #include <memory>
 #include <vector>
-#include "TdECS/TdECSComponents/Fighter.hpp"
 #include "TdECS/TdECSComponents/Health.hpp"
-#include "TdECS/TdECSComponents/Shooter.hpp"
 #include "SystemUtils.hpp"
 
 class Game;

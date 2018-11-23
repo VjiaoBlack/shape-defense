@@ -6,7 +6,6 @@
  * <DETAILS>
  */
 #include "LaserShooter.hpp"
-#include "Shooter.hpp"
 #include <Game.hpp>
 #include "TdECS/Entity.hpp"
 #include "Attack.hpp"

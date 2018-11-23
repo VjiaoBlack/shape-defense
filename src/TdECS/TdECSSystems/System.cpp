@@ -24,7 +24,7 @@ Entity* System::getEnt(int entID) {
 void System::addEntity(Game* game, std::unique_ptr<Entity>&& e) {
   int id = e->m_id;
   Entity* ent = e.get();
-  if (e->has<Fighter>()) {
+  if (e->get<Attack>()->m_type == Attack::FIGHTER) {
     m_enemies[m_nextEntityId++] = std::move(e);
   } else {
     m_allies[m_nextEntityId++] = std::move(e);

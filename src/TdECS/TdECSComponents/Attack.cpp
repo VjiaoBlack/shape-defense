@@ -51,7 +51,7 @@ void Attack::update(Game *game, System *system) {
         auto itIDEnt = itTempEnt;
         double dist = findCenterDistance(myEnt, itIDEnt);
 
-        if (itIDEnt && itIDEnt->has<Fighter>()) {
+        if (itIDEnt && itIDEnt->get<Attack>()->m_type == Attack::FIGHTER) {
           if (dist < 160.0 && (minDist < 0 || dist < minDist)) {
             minDist = dist;
             m_targetEntID = itTempEnt->m_id;
@@ -59,19 +59,6 @@ void Attack::update(Game *game, System *system) {
           }
         }
       }
-
-      //      for (auto &itPair : system->m_entities) {
-      //        double dist = findCenterDistance(myEnt, itPair.second.get());
-      //
-      //        if (itPair.second &&
-      //        itPair.second->has<Fighter>()) {
-      //          if (dist < 160.0 && (minDist < 0 || dist < minDist)) {
-      //            minDist = dist;
-      //            m_targetEntID = itPair.first;
-      //            itEnt = itPair.second.get();
-      //          }
-      //        }
-      //      }
 
       if (itEnt) {
         // open fire
@@ -88,7 +75,7 @@ void Attack::update(Game *game, System *system) {
 
         double dist = findCenterDistance(myEnt, itPair.second.get());
 
-        if (itPair.second && !itPair.second->has<Fighter>()) {
+        if (itPair.second && itPair.second->get<Attack>()->m_type == Attack::SHOOTER) {
           if (minDist < 0 || dist < minDist) {
             minDist = dist;
             m_targetEntID = itPair.first;
@@ -97,8 +84,6 @@ void Attack::update(Game *game, System *system) {
         }
       }
 
-//      if (!system->bubbleWillCollide(itEnt, myEnt)) {
-//      if (!system->m_collisions.isColliding(system, itEnt, myEnt)) {
       if (!system->m_collisions.m_collidingIds.count(std::make_pair(std::min(itEnt->m_id,
                                                                              myEnt->m_id),
                                                                     std::max(itEnt->m_id,

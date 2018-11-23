@@ -15,13 +15,11 @@
 #include <string>
 #include "../Utils.hpp"
 #include "TdECS/TdECSComponents/Attack.hpp"
-#include "TdECS/TdECSComponents/Fighter.hpp"
 #include "TdECS/TdECSComponents/Health.hpp"
 #include "TdECS/TdECSComponents/LaserShooter.hpp"
 #include "TdECS/TdECSComponents/Pathing.hpp"
 #include "TdECS/TdECSComponents/Physics.hpp"
 #include "TdECS/TdECSComponents/Position.hpp"
-#include "TdECS/TdECSComponents/Shooter.hpp"
 
 #include "TdECS/TdECSSystems/System.hpp"
 
@@ -31,14 +29,12 @@ template<typename T>
 struct classToInt {};
 
 template<> struct classToInt<Attack>       { enum { value = 1 };  };
-template<> struct classToInt<Fighter>      { enum { value = 2 };  };
 template<> struct classToInt<Health>       { enum { value = 3 };  };
 template<> struct classToInt<LaserShooter> { enum { value = 4 };  };
 template<> struct classToInt<Pathing>      { enum { value = 5 };  };
 template<> struct classToInt<Physics>      { enum { value = 6 };  };
 template<> struct classToInt<TilePosition> { enum { value = 7 };  };
 template<> struct classToInt<Position>     { enum { value = 8 };  };
-template<> struct classToInt<Shooter>      { enum { value = 9 };  };
 template<> struct classToInt<Shape>        { enum { value = 10 }; };
 template<> struct classToInt<Graphics>     { enum { value = 11 }; };
 
@@ -128,15 +124,13 @@ class Entity {
         std::make_unique<Graphics>(convertColorType(0xFFFFFFFF));
     auto shapeComp = std::make_unique<Shape>(48, 48);
     auto tilePosComp = std::make_unique<TilePosition>(0, 0);
-    auto shooterComp = std::make_unique<Shooter>();
     auto healthComp = std::make_unique<Health>(3000000, 2);
-    auto attackComp = std::make_unique<Attack>(0, 10, 0.3);
+    auto attackComp = std::make_unique<Attack>(0, 10, 0.3, Attack::SHOOTER);
     auto laserComp = std::make_unique<LaserShooter>();
 
     entity->addComponent(std::move(graphicsComp));
     entity->addComponent(std::move(shapeComp));
     entity->addComponent(std::move(tilePosComp));
-    entity->addComponent(std::move(shooterComp));
     entity->addComponent(std::move(healthComp));
     entity->addComponent(std::move(attackComp));
     entity->addComponent(std::move(laserComp));
@@ -156,15 +150,13 @@ class Entity {
     auto tilePosComp =
         std::make_unique<TilePosition>(tileX, tileY);
     auto healthComp = std::make_unique<Health>(100, 0);
-    auto shooterComp = std::make_unique<Shooter>();
-    auto attackComp = std::make_unique<Attack>(0, 5, 1.5);
+    auto attackComp = std::make_unique<Attack>(0, 5, 1.5, Attack::SHOOTER);
     auto laserComp = std::make_unique<LaserShooter>();
 
     entity->addComponent(std::move(graphicsComp));
     entity->addComponent(std::move(shapeComp));
     entity->addComponent(std::move(tilePosComp));
     entity->addComponent(std::move(healthComp));
-    entity->addComponent(std::move(shooterComp));
     entity->addComponent(std::move(attackComp));
     entity->addComponent(std::move(laserComp));
 
@@ -206,8 +198,7 @@ class Entity {
     auto positionComp = std::make_unique<Position>(x, y);
     auto physicsComp = std::make_unique<Physics>();
     auto healthComp = std::make_unique<Health>(10, 0);
-    auto fighterComp = std::make_unique<Fighter>();
-    auto attackComp = std::make_unique<Attack>(1, 3, 0.5);
+    auto attackComp = std::make_unique<Attack>(1, 3, 0.5, Attack::FIGHTER);
     auto laserComp = std::make_unique<LaserShooter>();
 
     entity->addComponent(std::move(graphicsComp));
@@ -215,7 +206,6 @@ class Entity {
     entity->addComponent(std::move(positionComp));
     entity->addComponent(std::move(physicsComp));
     entity->addComponent(std::move(healthComp));
-    entity->addComponent(std::move(fighterComp));
     entity->addComponent(std::move(attackComp));
     entity->addComponent(std::move(laserComp));
     entity->addComponent(std::make_unique<Pathing>());

@@ -43,9 +43,9 @@ void Graphics::update(Game *game, System *system) {
         ent->get<LaserShooter>();
     if (laserComp->m_isShooting &&
         system->getEnt(attackComp->m_targetEntID)) {
-      if (ent->has<Shooter>()) {
+      if (ent->get<Attack>()->m_type == Attack::SHOOTER) {
         SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-      } else if (ent->has<Fighter>()) {
+      } else if (ent->get<Attack>()->m_type == Attack::FIGHTER) {
         SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0x00, 0x00, 0xFF);
       }
       glm::dvec2 entp = system->getEnt(attackComp->m_targetEntID)->getCenterPosition();
