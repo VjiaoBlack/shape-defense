@@ -44,6 +44,8 @@ class System {
   std::unordered_map<int, std::unique_ptr<Entity>> m_enemies;
   std::unordered_map<int, std::unique_ptr<Entity>> m_allies;
 
+  std::vector<Entity> m_entitiesTEMP;
+
   std::list<std::unordered_map<int, std::unique_ptr<Entity>>*> getEntityMaps() {
     std::list<std::unordered_map<int, std::unique_ptr<Entity>>*> itList;
     itList.push_back(&m_enemies);
@@ -52,9 +54,11 @@ class System {
     return itList;
   };
 
-  std::vector<std::unique_ptr<TilePosition>>
-      m_tilePositionComponents;
+  std::vector<std::unique_ptr<TilePosition>> m_tilePositionComponents;
   std::vector<std::unique_ptr<Shape>> m_shapeComponents;
+
+  std::vector<TilePosition> m_tilePositionComponentsTEMP;
+  std::vector<Shape> m_shapeComponentsTEMP;
 
   Entity* getEnt(int entID);
 

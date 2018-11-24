@@ -22,5 +22,9 @@ class PhysicsSystem {
   std::vector<std::unique_ptr<Position>> m_positionComponents;
   std::vector<std::unique_ptr<Physics>>  m_physicsComponents;
 
+  std::vector<Position> m_positionComponentsTEMP;
+  std::vector<Physics>  m_physicsComponentsTEMP;
+
+
   void update(Game *game, System* system);
 };
