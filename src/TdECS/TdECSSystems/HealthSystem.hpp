@@ -18,8 +18,5 @@ class HealthSystem {
  public:
   std::vector<std::unique_ptr<Health>> m_healthComponents;
 
-  void update(Game *game, System* system) {
-    updateComponents(game, system, m_healthComponents); // updates health
-    updateComponents(game, system, m_healthComponents); // removes dead health comps
-  }
+  void update(Game *game, System* system);
 };

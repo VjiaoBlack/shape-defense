@@ -16,12 +16,12 @@ class LaserShooter : public Component {
   bool m_isShooting = false;
   double m_curLaserDuration = 0;
 
-  void fire() {
+  inline void fire() {
     m_curLaserDuration = m_laserDuration;
     m_isShooting = true;
   }
 
   LaserShooter() {}
 
-  virtual void update(Game *game, System *system);
+//  virtual void update(Game *game, System *system);
 };

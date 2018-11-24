@@ -17,5 +17,5 @@ class Physics : public Component {
 
   Physics() {}
 
-  virtual void update(Game *game, System *system);
+//  virtual void update(Game *game, System *system);
 };

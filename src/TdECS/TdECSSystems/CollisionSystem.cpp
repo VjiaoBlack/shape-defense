@@ -7,7 +7,7 @@
  */
 #include "CollisionSystem.hpp"
 
-#include <TdECS/TdECSSystems/TdCollisionQuadTree/Node.hpp>
+#include "TdECS/TdECSSystems/TdCollisionQuadTree/Node.hpp"
 #include "TdECS/TdECSSystems/TdCollisionQuadTree/QuadTree.hpp"
 
 inline bool intersect(glm::vec4 r1, glm::vec4 r2) {

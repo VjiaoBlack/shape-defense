@@ -16,6 +16,4 @@ class Position : public Component {
 
   Position(double x, double y)
       : m_p(x, y) {};
-
-  virtual void update(Game *game, System *system) {}
 };

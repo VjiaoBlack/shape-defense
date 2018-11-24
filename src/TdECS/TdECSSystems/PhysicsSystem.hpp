@@ -18,10 +18,9 @@ class Game;
 
 class PhysicsSystem {
  public:
+  // don't need to update position components?
   std::vector<std::unique_ptr<Position>> m_positionComponents;
   std::vector<std::unique_ptr<Physics>>  m_physicsComponents;
 
-  void update(Game *game, System* system) {
-    updateComponents(game, system, m_physicsComponents);
-  }
+  void update(Game *game, System* system);
 };

@@ -19,7 +19,5 @@ class Pathing : public Component {
   void move(Game* game, System* system, double x, double y);
 
   void stop(Game* game, System* system);
-
-  virtual void update(Game* game, System* system);
 };
 

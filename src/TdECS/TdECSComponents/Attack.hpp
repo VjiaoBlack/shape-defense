@@ -1,5 +1,4 @@
 #pragma once
-#include "Component.hpp"
 /**
  * TdECSAttackComponent.hpp
  *  
@@ -7,6 +6,7 @@
  *
  * <DETAILS>
  */
+#include "Component.hpp"
 
 class Attack : public Component {
  public:
@@ -28,6 +28,4 @@ class Attack : public Component {
       : m_target(target), m_damage(damage), m_cooldown(cooldown), m_type(type) {}
 
   void damage(Game *game, System *system);
-
-  virtual void update(Game *game, System *system);
 };
