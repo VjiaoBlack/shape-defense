@@ -82,7 +82,9 @@ void PlanningSystem::update(Game *game, System* system) {
           auto itIDEnt = itTempEnt;
           double dist = findCenterDistance(myEnt, itIDEnt);
 
-          if (itIDEnt && itIDEnt->get<Attack>()->m_type == Attack::FIGHTER) {
+          if (itIDEnt &&
+              itIDEnt->has<Attack>() &&
+              itIDEnt->get<Attack>()->m_type == Attack::FIGHTER) {
             if (dist < 160.0 && (minDist < 0 || dist < minDist)) {
               minDist = dist;
               c->m_targetEntID = itTempEnt->m_id;
