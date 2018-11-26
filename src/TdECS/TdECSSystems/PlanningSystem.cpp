@@ -106,7 +106,9 @@ void PlanningSystem::update(Game *game, System* system) {
 
           double dist = findCenterDistance(myEnt, itPair.second.get());
 
-          if (itPair.second && itPair.second->get<Attack>()->m_type == Attack::SHOOTER) {
+          if (itPair.second &&
+              itPair.second->has<Attack>() &&
+              itPair.second->get<Attack>()->m_type == Attack::SHOOTER) {
             if (minDist < 0 || dist < minDist) {
               minDist = dist;
               c->m_targetEntID = itPair.first;
