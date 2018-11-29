@@ -17,8 +17,7 @@ class Game;
 
 class GraphicsSystem {
  public:
-  std::vector<std::unique_ptr<Graphics>> m_graphicsComponents;
-  std::vector<Graphics> m_graphicsComponentsTEMP;
+  std::array<Graphics, 1000> m_graphicsComponents;
 
   void update(Game *game, System* system);
 };

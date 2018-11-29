@@ -14,6 +14,7 @@ class Position : public Component {
  public:
   glm::dvec2 m_p;
 
+  Position() {}
   Position(double x, double y)
       : m_p(x, y) {};
 };

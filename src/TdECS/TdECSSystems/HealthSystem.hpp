@@ -16,8 +16,7 @@ class Game;
 
 class HealthSystem {
  public:
-  std::vector<std::unique_ptr<Health>> m_healthComponents;
-  std::vector<Health> m_healthComponentsTEMP;
+  std::array<Health, 1000> m_healthComponents;
 
   void update(Game *game, System* system);
 };

@@ -50,6 +50,7 @@ void System::update(Game* game, bool updateGraphics) {
   for (auto map : entMapList) {
     for (auto c = map->begin(); c != map->end();) {
       if (!(*c).second->m_alive) {
+//        printf("ERASE ENT %d FROM MAP\n", c->first);
         c = map->erase(c);
       } else {
         c++;
@@ -57,5 +58,5 @@ void System::update(Game* game, bool updateGraphics) {
     }
   }
 
-  LOG_VRB("numEntities: %lu\n", m_allies.size() + m_enemies.size());
+  LOG_ERR("numEntities: %lu\n", m_allies.size() + m_enemies.size());
 }

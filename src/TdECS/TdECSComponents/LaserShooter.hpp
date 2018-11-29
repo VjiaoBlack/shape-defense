@@ -22,6 +22,4 @@ class LaserShooter : public Component {
   }
 
   LaserShooter() {}
-
-//  virtual void update(Game *game, System *system);
 };

@@ -44,8 +44,6 @@ class System {
   std::unordered_map<int, std::unique_ptr<Entity>> m_enemies;
   std::unordered_map<int, std::unique_ptr<Entity>> m_allies;
 
-  std::vector<Entity> m_entitiesTEMP;
-
   std::list<std::unordered_map<int, std::unique_ptr<Entity>>*> getEntityMaps() {
     std::list<std::unordered_map<int, std::unique_ptr<Entity>>*> itList;
     itList.push_back(&m_enemies);
@@ -54,11 +52,8 @@ class System {
     return itList;
   };
 
-  std::vector<std::unique_ptr<TilePosition>> m_tilePositionComponents;
-  std::vector<std::unique_ptr<Shape>> m_shapeComponents;
-
-  std::vector<TilePosition> m_tilePositionComponentsTEMP;
-  std::vector<Shape> m_shapeComponentsTEMP;
+  std::array<TilePosition, 1000> m_tilePositionComponents;
+  std::array<Shape, 1000> m_shapeComponents;
 
   Entity* getEnt(int entID);
 
@@ -66,39 +61,48 @@ class System {
 
   void addEntity(Game *game, std::unique_ptr<Entity> &&e);
 
-  void addComponent(std::unique_ptr<Position> c) {
-    m_physics.m_positionComponents.push_back(std::move(c));
+  Position* addComponent(Position c) {
+    m_physics.m_positionComponents[c.m_entID] = c;
+    return &m_physics.m_positionComponents[c.m_entID];
   }
 
-  void addComponent(std::unique_ptr<TilePosition> c) {
-    m_tilePositionComponents.push_back(std::move(c));
+  TilePosition* addComponent(TilePosition c) {
+    m_tilePositionComponents[c.m_entID] = c;
+    return &m_tilePositionComponents[c.m_entID];
   }
 
-  void addComponent(std::unique_ptr<Shape> c) {
-    m_shapeComponents.push_back(std::move(c));
+  Shape* addComponent(Shape c) {
+    m_shapeComponents[c.m_entID] = c;
+    return &m_shapeComponents[c.m_entID];
   }
 
-  void addComponent(std::unique_ptr<Graphics> c) {
-    m_graphics.m_graphicsComponents.push_back(std::move(c));
+  Graphics* addComponent(Graphics c) {
+    m_graphics.m_graphicsComponents[c.m_entID] = c;
+    return &m_graphics.m_graphicsComponents[c.m_entID];
   }
 
-  void addComponent(std::unique_ptr<Health> c) {
-    m_health.m_healthComponents.push_back(std::move(c));
+  Health* addComponent(Health c) {
+    m_health.m_healthComponents[c.m_entID] = c;
+    return &m_health.m_healthComponents[c.m_entID];
   }
 
-  void addComponent(std::unique_ptr<Physics> c) {
-    m_physics.m_physicsComponents.push_back(std::move(c));
+  Physics* addComponent(Physics c) {
+    m_physics.m_physicsComponents[c.m_entID] = c;
+    return &m_physics.m_physicsComponents[c.m_entID];
   }
 
-  void addComponent(std::unique_ptr<LaserShooter> c) {
-    m_planning.m_laserComponents.push_back(std::move(c));
+  LaserShooter* addComponent(LaserShooter c) {
+    m_planning.m_laserComponents[c.m_entID] = c;
+    return &m_planning.m_laserComponents[c.m_entID];
   }
 
-  void addComponent(std::unique_ptr<Attack> c) {
-    m_planning.m_attackComponents.push_back(std::move(c));
+  Attack* addComponent(Attack c) {
+    m_planning.m_attackComponents[c.m_entID] = c;
+    return &m_planning.m_attackComponents[c.m_entID];
   }
 
-  void addComponent(std::unique_ptr<Pathing> c) {
-    m_planning.m_pathingComponents.push_back(std::move(c));
+  Pathing* addComponent(Pathing c) {
+    m_planning.m_pathingComponents[c.m_entID] = c;
+    return &m_planning.m_pathingComponents[c.m_entID];
   }
 };

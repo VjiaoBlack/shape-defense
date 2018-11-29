@@ -11,29 +11,34 @@
 
 void GraphicsSystem::update(Game *game, System* system) {
   for (auto c = m_graphicsComponents.begin(); c != m_graphicsComponents.end();) {
-    if (!(*c)->m_alive) {
-      c = m_graphicsComponents.erase(c);
+    if (!c->m_alive || c->m_entID == 0) {
+      c++;
     } else {
-      (*c)->update(game, system);
+      c->update(game, system);
       c++;
     }
   }
 
-
   for (auto& comp : m_graphicsComponents) {
+
+    if (!comp.m_alive || comp.m_entID == 0) {
+      continue;
+    }
+
     SDL_Color c;
     SDL_GetRenderDrawColor(game->m_SDLRenderer, &c.r, &c.g, &c.b, &c.a);
 
-    auto ent = system->getEnt(comp->m_entID);
+    auto ent = system->getEnt(comp.m_entID);
+
     if (ent->has<Health>()) {
       auto healthComp = ent->get<Health>();
       SDL_SetRenderDrawColor(
-          game->m_SDLRenderer, comp->m_color.r, comp->m_color.g, comp->m_color.b,
+          game->m_SDLRenderer, comp.m_color.r, comp.m_color.g, comp.m_color.b,
           (0.2 + 0.8 * healthComp->m_curHealth / healthComp->m_maxHealth) *
-              comp->m_color.a);
+              comp.m_color.a);
     } else {
-      SDL_SetRenderDrawColor(game->m_SDLRenderer, comp->m_color.r, comp->m_color.g, comp->m_color.b,
-                             comp->m_color.a);
+      SDL_SetRenderDrawColor(game->m_SDLRenderer, comp.m_color.r, comp.m_color.g, comp.m_color.b,
+                             comp.m_color.a);
     }
 
     auto shape = ent->get<Shape>();

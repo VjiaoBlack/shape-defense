@@ -78,20 +78,23 @@ class Entity {
   // add component pointers to this tuple later
   // TODO: restrict m_components access
   std::map<int, Component *> m_components;
-  System *m_GUISystem;
+  System *m_system;
 
   Entity() = delete;
   Entity(System *GUISystem)
-      : m_id(GUISystem->m_nextEntityId), m_GUISystem(GUISystem) {
+      : m_id(GUISystem->m_nextEntityId), m_system(GUISystem) {
     m_components = std::map<int, Component *>();
   }
 
   template <class T>
-  void addComponent(std::unique_ptr<T> &&component) {
-    component->m_entID = m_id;
-    m_components[classToInt<T>::value] = component.get();
-    if (m_GUISystem) {
-      m_GUISystem->addComponent(std::move(component));
+  void addComponent(T component) {
+    component.m_entID = m_id;
+
+    if (m_system) {
+      m_components[classToInt<T>::value] = m_system->addComponent(component);
+    } else {
+      printf("NO SYSTEM\n");
+      exit(1);
     }
   }
 
@@ -104,11 +107,6 @@ class Entity {
 
   template <class T>
   inline T *get() {
-//    if (!m_components.count(classToInt<T>::value)) {
-//      std::string msg = "missing component: ";
-//      msg += classToInt<T>::value;
-//      throw MissingComponentException(msg);
-//    }
     return static_cast<T *>(m_components[classToInt<T>::value]);
   }
 
@@ -120,20 +118,21 @@ class Entity {
   static Entity *addPlayerBase(Game *game, System *system) {
     auto entity = std::make_unique<Entity>(system);
 
-    auto graphicsComp =
-        std::make_unique<Graphics>(convertColorType(0xFFFFFFFF));
-    auto shapeComp = std::make_unique<Shape>(48, 48);
-    auto tilePosComp = std::make_unique<TilePosition>(0, 0);
-    auto healthComp = std::make_unique<Health>(3000000, 2);
-    auto attackComp = std::make_unique<Attack>(0, 10, 0.3, Attack::SHOOTER);
-    auto laserComp = std::make_unique<LaserShooter>();
+    auto graphicsComp = Graphics(convertColorType(0xFFFFFFFF));
+    auto shapeComp = Shape(48, 48);
+    auto tilePosComp = TilePosition(0, 0);
+    auto healthComp = Health(3000000, 2);
+    auto attackComp = Attack(0, 10, 0.3, Attack::SHOOTER);
+    auto laserComp = LaserShooter();
 
-    entity->addComponent(std::move(graphicsComp));
-    entity->addComponent(std::move(shapeComp));
-    entity->addComponent(std::move(tilePosComp));
-    entity->addComponent(std::move(healthComp));
-    entity->addComponent(std::move(attackComp));
-    entity->addComponent(std::move(laserComp));
+    // TODO: currently make a new copy of components for temp
+    // but we want to remove this later.
+    entity->addComponent(graphicsComp);
+    entity->addComponent(shapeComp);
+    entity->addComponent(tilePosComp);
+    entity->addComponent(healthComp);
+    entity->addComponent(attackComp);
+    entity->addComponent(laserComp);
 
     auto pt = entity.get();
     system->addEntity(game, std::move(entity));
@@ -144,21 +143,19 @@ class Entity {
                                int tileY) {
     auto entity = std::make_unique<Entity>(system);
 
-    auto graphicsComp =
-        std::make_unique<Graphics>(convertColorType(0xFFFFFFFF));
-    auto shapeComp = std::make_unique<Shape>(32, 32);
-    auto tilePosComp =
-        std::make_unique<TilePosition>(tileX, tileY);
-    auto healthComp = std::make_unique<Health>(100, 0);
-    auto attackComp = std::make_unique<Attack>(0, 5, 1.5, Attack::SHOOTER);
-    auto laserComp = std::make_unique<LaserShooter>();
+    auto graphicsComp = Graphics(convertColorType(0xFFFFFFFF));
+    auto shapeComp = Shape(32, 32);
+    auto tilePosComp = TilePosition(tileX, tileY);
+    auto healthComp = Health(100, 0);
+    auto attackComp = Attack(0, 5, 1.5, Attack::SHOOTER);
+    auto laserComp = LaserShooter();
 
-    entity->addComponent(std::move(graphicsComp));
-    entity->addComponent(std::move(shapeComp));
-    entity->addComponent(std::move(tilePosComp));
-    entity->addComponent(std::move(healthComp));
-    entity->addComponent(std::move(attackComp));
-    entity->addComponent(std::move(laserComp));
+    entity->addComponent(graphicsComp);
+    entity->addComponent(shapeComp);
+    entity->addComponent(tilePosComp);
+    entity->addComponent(healthComp);
+    entity->addComponent(attackComp);
+    entity->addComponent(laserComp);
 
     auto pt = entity.get();
     system->addEntity(game, std::move(entity));
@@ -170,17 +167,15 @@ class Entity {
                                int tileY) {
     auto entity = std::make_unique<Entity>(system);
 
-    auto graphicsComp =
-        std::make_unique<Graphics>(convertColorType(0xFFFFFFFF));
-    auto shapeComp = std::make_unique<Shape>(16, 16);
-    auto tilePosComp =
-        std::make_unique<TilePosition>(tileX, tileY);
-    auto healthComp = std::make_unique<Health>(500, 2);
+    auto graphicsComp = Graphics(convertColorType(0xFFFFFFFF));
+    auto shapeComp = Shape(16, 16);
+    auto tilePosComp = TilePosition(tileX, tileY);
+    auto healthComp = Health(500, 2);
 
-    entity->addComponent(std::move(graphicsComp));
-    entity->addComponent(std::move(shapeComp));
-    entity->addComponent(std::move(tilePosComp));
-    entity->addComponent(std::move(healthComp));
+    entity->addComponent(graphicsComp);
+    entity->addComponent(shapeComp);
+    entity->addComponent(tilePosComp);
+    entity->addComponent(healthComp);
 
     auto pt = entity.get();
     system->addEntity(game, std::move(entity));
@@ -192,23 +187,23 @@ class Entity {
                                double y) {
     auto entity = std::make_unique<Entity>(system);
 
-    auto graphicsComp =
-        std::make_unique<Graphics>(convertColorType(0xFFC06060));
-    auto shapeComp = std::make_unique<Shape>(16, 16);
-    auto positionComp = std::make_unique<Position>(x, y);
-    auto physicsComp = std::make_unique<Physics>();
-    auto healthComp = std::make_unique<Health>(10, 0);
-    auto attackComp = std::make_unique<Attack>(1, 3, 0.5, Attack::FIGHTER);
-    auto laserComp = std::make_unique<LaserShooter>();
+    auto graphicsComp = Graphics(convertColorType(0xFFC06060));
+    auto shapeComp = Shape(16, 16);
+    auto positionComp = Position(x, y);
+    auto physicsComp = Physics();
+    auto healthComp = Health(10, 0);
+    auto attackComp = Attack(1, 3, 0.5, Attack::FIGHTER);
+    auto laserComp = LaserShooter();
+    auto pathingComp = Pathing();
 
-    entity->addComponent(std::move(graphicsComp));
-    entity->addComponent(std::move(shapeComp));
-    entity->addComponent(std::move(positionComp));
-    entity->addComponent(std::move(physicsComp));
-    entity->addComponent(std::move(healthComp));
-    entity->addComponent(std::move(attackComp));
-    entity->addComponent(std::move(laserComp));
-    entity->addComponent(std::make_unique<Pathing>());
+    entity->addComponent(graphicsComp);
+    entity->addComponent(shapeComp);
+    entity->addComponent(positionComp);
+    entity->addComponent(physicsComp);
+    entity->addComponent(healthComp);
+    entity->addComponent(attackComp);
+    entity->addComponent(laserComp);
+    entity->addComponent(pathingComp);
 
     auto pt = entity.get();
     system->addEntity(game, std::move(entity));

@@ -16,6 +16,4 @@ class Physics : public Component {
   double m_vtheta = 0.0;
 
   Physics() {}
-
-//  virtual void update(Game *game, System *system);
 };

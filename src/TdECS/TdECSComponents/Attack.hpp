@@ -24,6 +24,7 @@ class Attack : public Component {
   double m_cooldown = 1.0;
   double m_curCooldown = 0;
 
+  Attack() {}
   Attack(int target, double damage, double cooldown, AttackType type)
       : m_target(target), m_damage(damage), m_cooldown(cooldown), m_type(type) {}
 

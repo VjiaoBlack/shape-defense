@@ -14,8 +14,7 @@ class TilePosition : public Component {
  public:
   glm::ivec2 m_xy;
 
+  TilePosition() {}
   TilePosition(int x, int y)
       : m_xy(x, y) {};
-
-  virtual void update(Game *game, System *system) {}
 };

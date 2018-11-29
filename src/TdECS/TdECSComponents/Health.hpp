@@ -15,8 +15,7 @@ class Health : public Component {
   double m_maxHealth;
   double m_armor;
 
+  Health() {}
   Health(double health, double armor)
       : m_curHealth(health), m_maxHealth(health), m_armor(armor) {}
-
-//  virtual void update(Game *game, System *system);
 };

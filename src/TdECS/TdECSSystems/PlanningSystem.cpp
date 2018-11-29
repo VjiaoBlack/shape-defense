@@ -40,24 +40,28 @@ void Pathing::stop(Game* game, System* system) {
 
 void PlanningSystem::update(Game *game, System* system) {
   for (auto c = m_attackComponents.begin(); c != m_attackComponents.end();) {
-    if (!(*c)->m_alive) {
-      c = m_attackComponents.erase(c);
+    if (!(c)->m_alive || c->m_entID == 0) {
+      c++;
     } else {
-      (*c)->update(game, system);
+      (c)->update(game, system);
       c++;
     }
   }
 
   for (auto &c : m_attackComponents) {
-    if (c->m_curCooldown > 0) {
-      c->m_curCooldown -= game->m_deltaTime / 1000.0;
-      if (c->m_curCooldown < 0) {
-        c->m_curCooldown = 0;
+
+    if (!c.m_alive || c.m_entID == 0) {
+      continue;
+    }
+    if (c.m_curCooldown > 0) {
+      c.m_curCooldown -= game->m_deltaTime / 1000.0;
+      if (c.m_curCooldown < 0) {
+        c.m_curCooldown = 0;
       }
       continue;
     }
 
-    Entity *myEnt = system->getEnt(c->m_entID);
+    Entity *myEnt = system->getEnt(c.m_entID);
 
     if (!myEnt || !myEnt->m_alive) {
       continue;
@@ -68,7 +72,7 @@ void PlanningSystem::update(Game *game, System* system) {
     glm::dvec2 entp = myEnt->getCenterPosition();
     std::vector<Entity *> closeEntsIDs;
 
-    switch (c->m_target) {
+    switch (c.m_target) {
       case 0:  // targets enemies
 
         system->m_collisions.m_qtree->m_root->getAllWithinRadius(
@@ -87,7 +91,7 @@ void PlanningSystem::update(Game *game, System* system) {
               itIDEnt->get<Attack>()->m_type == Attack::FIGHTER) {
             if (dist < 160.0 && (minDist < 0 || dist < minDist)) {
               minDist = dist;
-              c->m_targetEntID = itTempEnt->m_id;
+              c.m_targetEntID = itTempEnt->m_id;
               itEnt = itIDEnt;
             }
           }
@@ -96,7 +100,7 @@ void PlanningSystem::update(Game *game, System* system) {
         if (itEnt) {
           // open fire
           myEnt->get<LaserShooter>()->fire();
-          c->m_curCooldown = c->m_cooldown;
+          c.m_curCooldown = c.m_cooldown;
         }
 
         break;
@@ -113,12 +117,14 @@ void PlanningSystem::update(Game *game, System* system) {
               itPair.second->get<Attack>()->m_type == Attack::SHOOTER) {
             if (minDist < 0 || dist < minDist) {
               minDist = dist;
-              c->m_targetEntID = itPair.first;
+              c.m_targetEntID = itPair.first;
               itEnt = itPair.second.get();
             }
           }
         }
-
+        if (!itEnt) {
+          continue;
+        }
         if (!system->m_collisions.m_collidingIds.count(std::make_pair(std::min(itEnt->m_id,
                                                                                myEnt->m_id),
                                                                       std::max(itEnt->m_id,
@@ -131,88 +137,101 @@ void PlanningSystem::update(Game *game, System* system) {
           // otherwise, open fire
           myEnt->get<Pathing>()->stop(game, system);
           myEnt->get<LaserShooter>()->fire();
-          c->m_curCooldown = c->m_cooldown;
+          c.m_curCooldown = c.m_cooldown;
         }
         break;
     }
   }
 
+
+
+
   for (auto c = m_laserComponents.begin(); c != m_laserComponents.end();) {
-    if (!(*c)->m_alive) {
-      c = m_laserComponents.erase(c);
+    if (!(c)->m_alive || c->m_entID == 0) {
+      c++;
     } else {
-      (*c)->update(game, system);
+      (c)->update(game, system);
       c++;
     }
   }
   for (auto &comp : m_laserComponents) {
-    auto ent = system->getEnt(comp->m_entID);
+    if (!comp.m_alive || comp.m_entID == 0) {
+      continue;
+    }
+    auto ent = system->getEnt(comp.m_entID);
     int targetEntID = ent->get<Attack>()->m_targetEntID;
 
-    if (comp->m_isShooting) {
+    if (comp.m_isShooting) {
       if (!system->getEnt(targetEntID)) {
-        comp->m_isShooting = false;
+        comp.m_isShooting = false;
         ent->get<Attack>()->m_targetEntID = -1;
       } else {
-        comp->m_curLaserDuration -= game->m_deltaTime / 1000.0;
-        if (comp->m_curLaserDuration < 0) {
-          comp->m_curLaserDuration = 0;
+        comp.m_curLaserDuration -= game->m_deltaTime / 1000.0;
+        if (comp.m_curLaserDuration < 0) {
+          comp.m_curLaserDuration = 0;
           ent->get<Attack>()->damage(game, system);
           ent->get<Attack>()->m_targetEntID = -1;
-          comp->m_isShooting = false;
+          comp.m_isShooting = false;
         }
       }
     }
   }
 
 
+
+
+
   for (auto c = m_pathingComponents.begin(); c != m_pathingComponents.end();) {
-    if (!(*c)->m_alive) {
-      c = m_pathingComponents.erase(c);
+    if (!(c)->m_alive || c->m_entID == 0) {
+      c++;
     } else {
-      (*c)->update(game, system);
+      (c)->update(game, system);
       c++;
     }
   }
+
   for (auto& c : m_pathingComponents) {
-    if (c->m_isMoving) {
+    if (!c.m_alive || c.m_entID == 0) {
+      continue;
+    }
+    if (c.m_isMoving) {
       // find collision
-      auto myEnt = system->getEnt(c->m_entID);
+      auto myEnt = system->getEnt(c.m_entID);
 
       bool willCollide = system->m_collisions.m_collidingIdsSingle.count(myEnt->m_id);
 
       if (willCollide) {
         // if there is a collision, wait
-        system->getEnt(c->m_entID)->get<Physics>()->m_v = glm::vec2(0.0);
+        system->getEnt(c.m_entID)->get<Physics>()->m_v = glm::vec2(0.0);
 
-        double dist = glm::max(glm::abs(system->m_collisions.m_closestDeltas[c->m_entID].x),
-                               glm::abs(system->m_collisions.m_closestDeltas[c->m_entID].y));
+        double dist = glm::max(glm::abs(system->m_collisions.m_closestDeltas[c.m_entID].x),
+                               glm::abs(system->m_collisions.m_closestDeltas[c.m_entID].y));
 
-        glm::vec2 pos = system->getEnt(c->m_entID)->getPosition();
-        glm::vec2 shape = system->getEnt(c->m_entID)->get<Shape>()->m_dimensions;
+        glm::vec2 pos = system->getEnt(c.m_entID)->getPosition();
+        glm::vec2 shape = system->getEnt(c.m_entID)->get<Shape>()->m_dimensions;
 
         if (game->m_mouseX >= pos.x && game->m_mouseX <= pos.x + shape.x &&
             game->m_mouseY >= pos.y && game->m_mouseY <= pos.y + shape.y) {
           LOG_ERR("Min displacement: %f :: %f",
                   dist,
-                  system->getEnt(c->m_entID)->get<Shape>()->m_dimensions.x);
+                  system->getEnt(c.m_entID)->get<Shape>()->m_dimensions.x);
         }
 
-  //      if (dist <= system->getEnt(m_entID)->get<Shape>()->m_dimensions.x) {
-  //        system->getEnt(m_entID)->get<Graphics>()->m_color =
-  //          (SDL_Color) {0x00, 0xFF, 0xFF, 0xFF};
-  //      } else {
-  //        system->getEnt(m_entID)->get<Graphics>()->m_color =
-  //            (SDL_Color) {0xFF, 0x00, 0x00, 0xFF};
-  //      }
+        //      if (dist <= system->getEnt(m_entID)->get<Shape>()->m_dimensions.x) {
+        //        system->getEnt(m_entID)->get<Graphics>()->m_color =
+        //          (SDL_Color) {0x00, 0xFF, 0xFF, 0xFF};
+        //      } else {
+        //        system->getEnt(m_entID)->get<Graphics>()->m_color =
+        //            (SDL_Color) {0xFF, 0x00, 0x00, 0xFF};
+        //      }
 
         myEnt->get<Physics>()->m_v = glm::vec2(0);
 
         // only allow to move if there is space
-        c->move(game, system, c->m_goalxy.x, c->m_goalxy.y);
+        c.move(game, system, c.m_goalxy.x, c.m_goalxy.y);
 
-        glm::vec2 vel = system->getEnt(c->m_entID)->get<Physics>()->m_v;
-        glm::vec2 dim = system->getEnt(c->m_entID)->get<Shape>()->m_dimensions;
+        glm::vec2 vel = system->getEnt(c.m_entID)->get<Physics>()->m_v;
+        glm::vec2 dim = system->getEnt(c.m_entID)->get<Shape>()->m_dimensions;
         double max_posx = vel.x;
         double max_posy = vel.y;
         double min_negx = vel.x;
@@ -223,7 +242,7 @@ void PlanningSystem::update(Game *game, System* system) {
         if (min_negx > 0) min_negx = 0;
         if (min_negy > 0) min_negy = 0;
 
-        for (auto &pair : system->m_collisions.m_collidingDeltas[c->m_entID]) {
+        for (auto &pair : system->m_collisions.m_collidingDeltas[c.m_entID]) {
           if (game->m_mouseX >= pos.x && game->m_mouseX <= pos.x + shape.x &&
               game->m_mouseY >= pos.y && game->m_mouseY <= pos.y + shape.y) {
             LOG_ERR("%f, %f :: %f, %f", pair.second.x, pair.second.y, dim.x, dim.y);
@@ -236,7 +255,7 @@ void PlanningSystem::update(Game *game, System* system) {
                 max_posx = pair.second.x - dim.x;
               }
               if (pair.second.x - dim.x <= 0) {
-  //              system->getEnt(m_entID)->get<Graphics>()->m_color = {0x00, 0xFF, 0x00, 0xFF};
+                //              system->getEnt(m_entID)->get<Graphics>()->m_color = {0x00, 0xFF, 0x00, 0xFF};
                 max_posx = 0;
               }
             }
@@ -247,7 +266,7 @@ void PlanningSystem::update(Game *game, System* system) {
                 min_negx = pair.second.x + dim.x;
               }
               if (pair.second.x + dim.x >= 0) {
-  //              system->getEnt(m_entID)->get<Graphics>()->m_color = {0x00, 0xFF, 0x00, 0xFF};
+                //              system->getEnt(m_entID)->get<Graphics>()->m_color = {0x00, 0xFF, 0x00, 0xFF};
                 min_negx = 0;
               }
             }
@@ -258,7 +277,7 @@ void PlanningSystem::update(Game *game, System* system) {
                 max_posy = pair.second.y - dim.y;
               }
               if (pair.second.y - dim.y <= 0) {
-  //              system->getEnt(m_entID)->get<Graphics>()->m_color = {0x00, 0xFF, 0x00, 0xFF};
+                //              system->getEnt(m_entID)->get<Graphics>()->m_color = {0x00, 0xFF, 0x00, 0xFF};
                 max_posy = 0;
               }
             }
@@ -269,7 +288,7 @@ void PlanningSystem::update(Game *game, System* system) {
                 min_negy = pair.second.y + dim.y;
               }
               if (pair.second.y + dim.y >= 0) {
-  //              system->getEnt(m_entID)->get<Graphics>()->m_color = {0x00, 0xFF, 0x00, 0xFF};
+                //              system->getEnt(m_entID)->get<Graphics>()->m_color = {0x00, 0xFF, 0x00, 0xFF};
                 min_negy = 0;
               }
             }
@@ -293,10 +312,10 @@ void PlanningSystem::update(Game *game, System* system) {
         if (vel.y <= 0) {
           vel.y = min_negy;
         }
-        system->getEnt(c->m_entID)->get<Physics>()->m_v = vel;
+        system->getEnt(c.m_entID)->get<Physics>()->m_v = vel;
       } else {
         // otherwise, keep going
-        c->move(game, system, c->m_goalxy.x, c->m_goalxy.y);
+        c.move(game, system, c.m_goalxy.x, c.m_goalxy.y);
       }
     }
   }
