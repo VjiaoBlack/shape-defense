@@ -159,7 +159,8 @@ void PlanningSystem::update(Game *game, System* system) {
       continue;
     }
     auto ent = system->getEnt(comp.m_entID);
-    int targetEntID = ent->get<Attack>()->m_targetEntID;
+    auto blep = ent->get<Attack>();
+    int targetEntID = blep->m_targetEntID;
 
     if (comp.m_isShooting) {
       if (!system->getEnt(targetEntID)) {

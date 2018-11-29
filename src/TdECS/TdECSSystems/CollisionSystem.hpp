@@ -40,9 +40,9 @@ class CollisionSystem {
 
   // TODO: consider using bloom filter or something??
   std::unordered_set<std::pair<int, int>, pair_hash> m_collidingIds;
-  std::unordered_set<int> m_collidingIdsSingle;
-  std::unordered_map<int, std::map<int, glm::vec2>> m_collidingDeltas;
-  std::unordered_map<int, glm::vec2> m_closestDeltas;
+  std::unordered_set<int>                            m_collidingIdsSingle;
+  std::unordered_map<int, std::map<int, glm::vec2>>  m_collidingDeltas;
+  std::unordered_map<int, glm::vec2>                 m_closestDeltas;
 
   CollisionSystem();
 

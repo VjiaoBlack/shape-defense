@@ -11,6 +11,8 @@
 #include <unordered_map>
 #include <memory>
 #include <list>
+#include <array>
+
 #include "TdECS/TdECSComponents/LaserShooter.hpp"
 #include "TdECS/TdECSComponents/Attack.hpp"
 
@@ -25,7 +27,8 @@
 #include "PlanningSystem.hpp"
 #include "CollisionSystem.hpp"
 
-class Entity;
+#include "TdECS/Entity.hpp"
+
 class Game;
 
 class System {
@@ -41,6 +44,8 @@ class System {
   HealthSystem    m_health;
   CollisionSystem m_collisions;
 
+  std::array<Entity, 1000> m_enemiesTEMP;
+  std::array<Entity, 1000> m_alliesTEMP;
   std::unordered_map<int, std::unique_ptr<Entity>> m_enemies;
   std::unordered_map<int, std::unique_ptr<Entity>> m_allies;
 
@@ -48,6 +53,14 @@ class System {
     std::list<std::unordered_map<int, std::unique_ptr<Entity>>*> itList;
     itList.push_back(&m_enemies);
     itList.push_back(&m_allies);
+
+    return itList;
+  };
+
+  std::list<std::array<Entity, 1000>*> getEntityMapsTemp() {
+    std::list<std::array<Entity, 1000>*> itList;
+    itList.push_back(&m_enemiesTEMP);
+    itList.push_back(&m_alliesTEMP);
 
     return itList;
   };

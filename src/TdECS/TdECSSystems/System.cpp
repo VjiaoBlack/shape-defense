@@ -34,6 +34,11 @@ void System::addEntity(Game* game, std::unique_ptr<Entity>&& e) {
   if (!m_collisions.m_qtree->tryAddEntID(game, this, id, ent)) {
     LOG_ERR("Error: FAILED TO ADD ENTITY");
   }
+
+  if (m_nextEntityId >= 1000) {
+
+    exit(1);
+  }
 }
 
 void System::update(Game* game, bool updateGraphics) {

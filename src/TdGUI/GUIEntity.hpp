@@ -21,9 +21,9 @@
 #include <map>
 #include <stdexcept>
 
-class MissingComponentException : public std::runtime_error {
+class MissingGUIComponentException : public std::runtime_error {
 public:
-  MissingComponentException(const string &__arg) : runtime_error(__arg) {}
+  MissingGUIComponentException(const string &__arg) : runtime_error(__arg) {}
 };
 
 class GUIEntity {
@@ -47,7 +47,7 @@ public:
     if (!m_components.count(typeid(T).name())) {
       string msg = "missing component: ";
       msg += typeid(T).name();
-      throw MissingComponentException(msg);
+      throw MissingGUIComponentException(msg);
     }
     return static_cast<T *>(m_components[typeid(T).name()]);
   }
