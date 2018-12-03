@@ -26,7 +26,7 @@ void HealthSystem::update(Game *game, System* system) {
     }
     if (c.m_curHealth <= 0.0) {
       // if enemy, add to player's money
-      if (system->getEnt(c.m_entID)->get<Attack>()->m_type == Attack::FIGHTER) {
+      if (system->getEnt(c.m_entID)->get<Attack>()->m_team == Attack::ENEMY) {
         game->m_curMoney += 5.0;
         if (game->m_curMoney > game->m_maxMoney) {
           game->m_curMoney = game->m_maxMoney;

@@ -57,9 +57,9 @@ void GraphicsSystem::update(Game *game, System* system) {
           ent->get<LaserShooter>();
       if (laserComp->m_isShooting &&
           system->getEnt(attackComp->m_targetEntID)) {
-        if (ent->get<Attack>()->m_type == Attack::SHOOTER) {
+        if (ent->get<Attack>()->m_team == Attack::ALLIED) {
           SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-        } else if (ent->get<Attack>()->m_type == Attack::FIGHTER) {
+        } else if (ent->get<Attack>()->m_team == Attack::ENEMY) {
           SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0x00, 0x00, 0xFF);
         }
         glm::dvec2 entp = system->getEnt(attackComp->m_targetEntID)->getCenterPosition();

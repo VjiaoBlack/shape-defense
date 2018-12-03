@@ -49,7 +49,6 @@ void PlanningSystem::update(Game *game, System* system) {
   }
 
   for (auto &c : m_attackComponents) {
-
     if (!c.m_alive || c.m_entID == 0) {
       continue;
     }
@@ -72,9 +71,8 @@ void PlanningSystem::update(Game *game, System* system) {
     glm::dvec2 entp = myEnt->getCenterPosition();
     std::vector<Entity *> closeEntsIDs;
 
-    switch (c.m_target) {
-      case 0:  // targets enemies
-
+    switch (c.m_team) {
+      case Attack::ALLIED:  // targets enemies
         system->m_collisions.m_qtree->m_root->getAllWithinRadius(
             system, closeEntsIDs, entp.x, entp.y, 160.0);
 
@@ -88,7 +86,7 @@ void PlanningSystem::update(Game *game, System* system) {
 
           if (itIDEnt &&
               itIDEnt->has<Attack>() &&
-              itIDEnt->get<Attack>()->m_type == Attack::FIGHTER) {
+              itIDEnt->get<Attack>()->m_team == Attack::ENEMY) {
             if (dist < 160.0 && (minDist < 0 || dist < minDist)) {
               minDist = dist;
               c.m_targetEntID = itTempEnt->m_id;
@@ -104,7 +102,7 @@ void PlanningSystem::update(Game *game, System* system) {
         }
 
         break;
-      case 1:  // targets allies
+      case Attack::ENEMY:  // targets allies
         for (auto &itPair : system->m_allies) {
           if (!itPair.m_alive || itPair.m_id == 0) {
             continue;
@@ -112,13 +110,10 @@ void PlanningSystem::update(Game *game, System* system) {
 
           double dist = findCenterDistance(*myEnt, itPair);
 
-          if (itPair.has<Attack>() &&
-              itPair.get<Attack>()->m_type == Attack::SHOOTER) {
-            if (minDist < 0 || dist < minDist) {
-              minDist = dist;
-              c.m_targetEntID = itPair.m_id;
-              itEnt = &itPair;
-            }
+          if (minDist < 0 || dist < minDist) {
+            minDist = dist;
+            c.m_targetEntID = itPair.m_id;
+            itEnt = &itPair;
           }
         }
         if (!itEnt) {

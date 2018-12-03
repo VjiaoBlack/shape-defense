@@ -94,7 +94,7 @@ void Entity::addPlayerBase(Game *game, System *system) {
   auto shapeComp = Shape(48, 48);
   auto tilePosComp = TilePosition(0, 0);
   auto healthComp = Health(3000000, 2);
-  auto attackComp = Attack(0, 10, 0.3, Attack::SHOOTER);
+  auto attackComp = Attack(Attack::ALLIED, 10, 0.3, Attack::SHOOTER);
   auto laserComp = LaserShooter();
 
   entity.addComponent(graphicsComp);
@@ -116,7 +116,7 @@ void Entity::addTower(Game *game, System *system, int tileX,
   auto shapeComp = Shape(32, 32);
   auto tilePosComp = TilePosition(tileX, tileY);
   auto healthComp = Health(100, 0);
-  auto attackComp = Attack(0, 5, 1.5, Attack::SHOOTER);
+  auto attackComp = Attack(Attack::ALLIED, 5, 1.5, Attack::SHOOTER);
   auto laserComp = LaserShooter();
 
   entity.addComponent(graphicsComp);
@@ -157,7 +157,7 @@ void Entity::addEnemy(Game *game, System *system, double x,
   auto positionComp = Position(x, y);
   auto physicsComp = Physics();
   auto healthComp = Health(10, 0);
-  auto attackComp = Attack(1, 3, 0.5, Attack::FIGHTER);
+  auto attackComp = Attack(Attack::ENEMY, 3, 0.5, Attack::FIGHTER);
   auto laserComp = LaserShooter();
   auto pathingComp = Pathing();
 

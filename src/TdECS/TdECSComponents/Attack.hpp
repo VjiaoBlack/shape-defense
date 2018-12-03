@@ -11,13 +11,17 @@
 class Attack : public Component {
  public:
   enum AttackType {
-    FIGHTER = 0,
-    SHOOTER = 1,
-    NONE    = 2,
-    COUNT   = 3
+    NONE    = 0,
+    FIGHTER = 1,
+    SHOOTER = 2
   } m_type;
 
-  int m_target = 0;  // 0 targets enemies, 1 targets player
+  enum Team {
+    NEUTRAL = 0,
+    ALLIED  = 1,
+    ENEMY   = 2
+  } m_team;
+
   int m_targetEntID = -1;
 
   double m_damage = 5.0;
@@ -25,8 +29,8 @@ class Attack : public Component {
   double m_curCooldown = 0;
 
   Attack() {}
-  Attack(int target, double damage, double cooldown, AttackType type)
-      : m_target(target), m_damage(damage), m_cooldown(cooldown), m_type(type) {}
+  Attack(Team team, double damage, double cooldown, AttackType type)
+      : m_team(team), m_damage(damage), m_cooldown(cooldown), m_type(type) {}
 
   void damage(Game *game, System *system);
 };
