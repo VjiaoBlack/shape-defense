@@ -24,6 +24,7 @@ class ConstructionManager {
   }
 
   void update(Game* game);
+
   void build(Game* game); // right now just builds a tower
 
 };

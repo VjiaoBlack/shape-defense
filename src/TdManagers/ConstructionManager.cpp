@@ -10,7 +10,7 @@
 #include "TdECS/Entity.hpp"
 #include "Game.hpp"
 
-void ConstructionManager::update(Game* game) {
+void ConstructionManager::update(Game *game) {
   if (m_isOn) {
     m_rect.x = game->m_mouseX - 16;
     m_rect.y = game->m_mouseY - 16;
@@ -35,14 +35,16 @@ void ConstructionManager::update(Game* game) {
 }
 
 // right now just builds a tower
-void ConstructionManager::build(Game* game) {
+void ConstructionManager::build(Game *game) {
   if (m_isOn) {
-    if (m_isTower) {
+    if (m_isTower && game->m_curMoney > 20.0) {
       Entity::addTower(game, game->m_entitySystem.get(),
-                            m_rect.x / 16 - 50, m_rect.y / 16 - 28);
-    } else {
+                       m_rect.x / 16 - 50, m_rect.y / 16 - 28);
+      game->m_curMoney -= 20.0;
+    } else if (!m_isTower && game->m_curMoney > 5.0) {
       Entity::addWall(game, game->m_entitySystem.get(),
-                            m_rect.x / 16 - 49, m_rect.y / 16 - 27);
+                      m_rect.x / 16 - 49, m_rect.y / 16 - 27);
+      game->m_curMoney -= 5.0;
     }
   }
 }

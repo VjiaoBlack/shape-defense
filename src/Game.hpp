@@ -28,7 +28,6 @@ using namespace std;
 class GameLoop;
 class MainMenuLoop;
 class RenderLoop;
-class TdEntitySystem;
 
 class Game {
  public:
@@ -54,6 +53,12 @@ class Game {
   std::list<shared_ptr<RenderLoop>> m_gameStateStack;
 
   std::unique_ptr<System> m_entitySystem;
+
+  double m_curMoney = 10.0;
+  double m_maxMoney = 120.0;
+
+  double m_curEnergy = 0.0;
+  double m_maxEnergy = 120.0;
 
   // framerate counter
   double m_deltaTime;

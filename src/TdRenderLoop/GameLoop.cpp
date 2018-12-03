@@ -134,4 +134,16 @@ void GameLoop::render(Game *game) {
   }
 
   game->m_entitySystem->m_graphics.update(game, game->m_entitySystem.get());
+
+  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0x80);
+  SDL_RenderDrawLine(game->m_SDLRenderer, 50, 50, 50 + (int) game->m_maxMoney * 2.0, 50);
+
+  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0x80, 0x80, 0xFF, 0x80);
+  SDL_RenderDrawLine(game->m_SDLRenderer, 50, 75, 50 + (int) game->m_maxEnergy * 2.0, 75);
+
+  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+  SDL_RenderDrawLine(game->m_SDLRenderer, 50, 50, 50 + (int) game->m_curMoney * 2.0, 50);
+
+  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0x80, 0x80, 0xFF, 0xFF);
+  SDL_RenderDrawLine(game->m_SDLRenderer, 50, 75, 50 + (int) game->m_curEnergy * 2.0, 75);
 }

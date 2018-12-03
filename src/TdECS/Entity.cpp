@@ -119,8 +119,6 @@ void Entity::addTower(Game *game, System *system, int tileX,
   auto attackComp = Attack(0, 5, 1.5, Attack::SHOOTER);
   auto laserComp = LaserShooter();
 
-  printf("Add tower base id %d... %d, %d\n", entity.m_id, tileX, tileY);
-
   entity.addComponent(graphicsComp);
   entity.addComponent(shapeComp);
   entity.addComponent(tilePosComp);
@@ -140,7 +138,6 @@ void Entity::addWall(Game *game, System *system, int tileX,
   auto shapeComp = Shape(16, 16);
   auto tilePosComp = TilePosition(tileX, tileY);
   auto healthComp = Health(500, 2);
-  printf("Add wall base id %d\n", entity.m_id);
 
   entity.addComponent(graphicsComp);
   entity.addComponent(shapeComp);
