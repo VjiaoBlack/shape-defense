@@ -16,7 +16,7 @@ class Game;
 
 class HealthSystem {
  public:
-  std::array<Health, 1000> m_healthComponents;
+  std::array<Health, k_MAX_ENTS> m_healthComponents;
 
   void update(Game *game, System* system);
 };

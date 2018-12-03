@@ -104,12 +104,11 @@ Node *Node::forceSearch(System *system, int entID) {
   return nullptr;
 }
 
-bool Node::tryAddEntID(System *system, int entID,
-                                          Entity *ent) {
+bool Node::tryAddEntID(System *system, int entID) {
   auto node = getContainingNode(system, entID);
 
   if (node) {
-    node->m_ents[entID] = ent;
+    node->m_ents[entID] = system->getEnt(entID);
     return true;
   } else {
     return false;
@@ -225,6 +224,8 @@ void Node::refreshNode(
       if (m_parent) {
         for (auto it = m_ents.begin(); it != m_ents.end(); it++) {
           if (!it->second->m_alive) {
+            printf("SECRET DEAD\n");
+
             continue;
           }
           outside.insert(*it);
@@ -252,10 +253,11 @@ void Node::refreshNode(
     for (auto it = outside.begin(); it != outside.end();) {
       // if entID is inside, put into m_ents
       if (!it->second->m_alive) {
+        printf("SECRET DEAD\n");
         continue;
       }
 
-      if (this->tryAddEntID(system, it->first, it->second)) {
+      if (this->tryAddEntID(system, it->first)) {
         it = outside.erase(it);
       } else {
         it++;
@@ -271,13 +273,13 @@ void Node::refreshNode(
       }
 
       // if entID is inside, put into m_ents
-      if (m_tl->tryAddEntID(system, it->first, it->second)) {
+      if (m_tl->tryAddEntID(system, it->first)) {
         it = m_ents.erase(it);
-      } else if (m_tr->tryAddEntID(system, it->first, it->second)) {
+      } else if (m_tr->tryAddEntID(system, it->first)) {
         it = m_ents.erase(it);
-      } else if (m_bl->tryAddEntID(system, it->first, it->second)) {
+      } else if (m_bl->tryAddEntID(system, it->first)) {
         it = m_ents.erase(it);
-      } else if (m_br->tryAddEntID(system, it->first, it->second)) {
+      } else if (m_br->tryAddEntID(system, it->first)) {
         it = m_ents.erase(it);
       } else {
         it++;

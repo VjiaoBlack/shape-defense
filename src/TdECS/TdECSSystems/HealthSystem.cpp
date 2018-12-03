@@ -6,7 +6,6 @@
  * <DETAILS>
  */
 #include "HealthSystem.hpp"
-
 #include "System.hpp"
 #include "TdCollisionQuadTree/QuadTree.hpp"
 
@@ -27,6 +26,9 @@ void HealthSystem::update(Game *game, System* system) {
     if (c.m_curHealth <= 0.0) {
       system->m_collisions.m_qtree->removeEntID(game, system, c.m_entID);
       system->getEnt(c.m_entID)->die();
+      int id = c.m_entID;
+      system->m_enemies[id-1] = Entity();
+      system->m_allies[id-1] = Entity();
     }
   }
 }

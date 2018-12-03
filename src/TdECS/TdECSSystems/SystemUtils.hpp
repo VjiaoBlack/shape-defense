@@ -20,6 +20,7 @@ class Entity;
 
 class Shape;
 
+constexpr uint16_t k_MAX_ENTS = 512;
 
 struct TdECSSegment {
   glm::dvec2 p1;

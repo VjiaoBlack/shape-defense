@@ -20,8 +20,8 @@ void QuadTree::update(Game *game, System *system) {
 }
 
 bool QuadTree::tryAddEntID(Game *game, System *system,
-                           int entID, Entity *ent) {
-  return m_root->tryAddEntID(system, entID, ent);
+                           int entID) {
+  return m_root->tryAddEntID(system, entID);
 }
 
 void QuadTree::removeEntID(Game *game, System *system, int entID) {

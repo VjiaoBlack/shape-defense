@@ -35,9 +35,45 @@ glm::dvec2 Entity::getCenterPosition() {
   }
 };
 
-Entity::Entity(System *GUISystem) : m_id(GUISystem->m_nextEntityId), m_system(GUISystem) {
-    m_components = std::map<int, Component *>();
+Entity::Entity(System *system)
+    : m_id(system->m_openSlots[system->m_head])
+    , m_system(system) {
+  system->m_openSlots[system->m_head] = 0; // clear mem
+  system->m_head += 1;
+  if (system->m_head >= k_MAX_ENTS) {
+    system->m_head = 0;
+  }
+
+  if (system->m_head == system->m_tail) {
+    LOG_FAT("overflow of ents???, exiting.");
+    exit(1);
+  }
+
+  m_components = std::map<int, Component *>();
 }
+
+void Entity::die() {
+  for (auto cp : m_components) {
+    cp.second->m_alive = false;
+  }
+  m_alive = false;
+  m_system->m_tail += 1;
+  if (m_system->m_tail >= k_MAX_ENTS) {
+    m_system->m_tail = 0;
+  }
+  if (m_system->m_head == m_system->m_tail) {
+    LOG_FAT("overflow of ents???, exiting.");
+    exit(1);
+  }
+  if (m_system->m_openSlots[m_system->m_tail] != 0) {
+
+    LOG_FAT("... what? not enroaching onto 0 id for a new open slot... %d\n", m_system->m_openSlots[m_system->m_tail]);
+    exit(1);
+  }
+
+  m_system->m_openSlots[m_system->m_tail] = m_id;
+}
+
 
 template <class T>
 void Entity::addComponent(T component) {
@@ -51,8 +87,8 @@ void Entity::addComponent(T component) {
   }
 }
 
-Entity *Entity::addPlayerBase(Game *game, System *system) {
-  auto entity = std::make_unique<Entity>(system);
+void Entity::addPlayerBase(Game *game, System *system) {
+  auto entity = Entity(system);
 
   auto graphicsComp = Graphics(convertColorType(0xFFFFFFFF));
   auto shapeComp = Shape(48, 48);
@@ -61,24 +97,20 @@ Entity *Entity::addPlayerBase(Game *game, System *system) {
   auto attackComp = Attack(0, 10, 0.3, Attack::SHOOTER);
   auto laserComp = LaserShooter();
 
-  // TODO: currently make a new copy of components for temp
-  // but we want to remove this later.
-  entity->addComponent(graphicsComp);
-  entity->addComponent(shapeComp);
-  entity->addComponent(tilePosComp);
-  entity->addComponent(healthComp);
-  entity->addComponent(attackComp);
-  entity->addComponent(laserComp);
+  entity.addComponent(graphicsComp);
+  entity.addComponent(shapeComp);
+  entity.addComponent(tilePosComp);
+  entity.addComponent(healthComp);
+  entity.addComponent(attackComp);
+  entity.addComponent(laserComp);
 
-  auto pt = entity.get();
-  system->addEntity(game, std::move(entity));
-  return pt;
+  auto pt = entity;
+  system->addEntity(game, entity);
 }
 
-
-Entity *Entity::addTower(Game *game, System *system, int tileX,
+void Entity::addTower(Game *game, System *system, int tileX,
                         int tileY) {
-  auto entity = std::make_unique<Entity>(system);
+  auto entity = Entity(system);
 
   auto graphicsComp = Graphics(convertColorType(0xFFFFFFFF));
   auto shapeComp = Shape(32, 32);
@@ -87,42 +119,41 @@ Entity *Entity::addTower(Game *game, System *system, int tileX,
   auto attackComp = Attack(0, 5, 1.5, Attack::SHOOTER);
   auto laserComp = LaserShooter();
 
-  entity->addComponent(graphicsComp);
-  entity->addComponent(shapeComp);
-  entity->addComponent(tilePosComp);
-  entity->addComponent(healthComp);
-  entity->addComponent(attackComp);
-  entity->addComponent(laserComp);
+  printf("Add tower base id %d... %d, %d\n", entity.m_id, tileX, tileY);
 
-  auto pt = entity.get();
-  system->addEntity(game, std::move(entity));
+  entity.addComponent(graphicsComp);
+  entity.addComponent(shapeComp);
+  entity.addComponent(tilePosComp);
+  entity.addComponent(healthComp);
+  entity.addComponent(attackComp);
+  entity.addComponent(laserComp);
 
-  return pt;
+  auto pt = entity;
+  system->addEntity(game, entity);
 }
 
-Entity *Entity::addWall(Game *game, System *system, int tileX,
+void Entity::addWall(Game *game, System *system, int tileX,
                        int tileY) {
-  auto entity = std::make_unique<Entity>(system);
+  auto entity = Entity(system);
 
   auto graphicsComp = Graphics(convertColorType(0xFFFFFFFF));
   auto shapeComp = Shape(16, 16);
   auto tilePosComp = TilePosition(tileX, tileY);
   auto healthComp = Health(500, 2);
+  printf("Add wall base id %d\n", entity.m_id);
 
-  entity->addComponent(graphicsComp);
-  entity->addComponent(shapeComp);
-  entity->addComponent(tilePosComp);
-  entity->addComponent(healthComp);
+  entity.addComponent(graphicsComp);
+  entity.addComponent(shapeComp);
+  entity.addComponent(tilePosComp);
+  entity.addComponent(healthComp);
 
-  auto pt = entity.get();
-  system->addEntity(game, std::move(entity));
-
-  return pt;
+  auto pt = entity;
+  system->addEntity(game, entity);
 }
 
-Entity *Entity::addEnemy(Game *game, System *system, double x,
+void Entity::addEnemy(Game *game, System *system, double x,
                         double y) {
-  auto entity = std::make_unique<Entity>(system);
+  auto entity = Entity(system);
 
   auto graphicsComp = Graphics(convertColorType(0xFFC06060));
   auto shapeComp = Shape(16, 16);
@@ -133,17 +164,15 @@ Entity *Entity::addEnemy(Game *game, System *system, double x,
   auto laserComp = LaserShooter();
   auto pathingComp = Pathing();
 
-  entity->addComponent(graphicsComp);
-  entity->addComponent(shapeComp);
-  entity->addComponent(positionComp);
-  entity->addComponent(physicsComp);
-  entity->addComponent(healthComp);
-  entity->addComponent(attackComp);
-  entity->addComponent(laserComp);
-  entity->addComponent(pathingComp);
+  entity.addComponent(graphicsComp);
+  entity.addComponent(shapeComp);
+  entity.addComponent(positionComp);
+  entity.addComponent(physicsComp);
+  entity.addComponent(healthComp);
+  entity.addComponent(attackComp);
+  entity.addComponent(laserComp);
+  entity.addComponent(pathingComp);
 
-  auto pt = entity.get();
-  system->addEntity(game, std::move(entity));
-
-  return pt;
+  auto pt = entity;
+  system->addEntity(game, entity);
 }

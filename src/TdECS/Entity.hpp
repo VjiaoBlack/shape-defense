@@ -13,6 +13,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+
 #include "../Utils.hpp"
 #include "TdECS/TdECSComponents/Attack.hpp"
 #include "TdECS/TdECSComponents/Health.hpp"
@@ -59,36 +60,9 @@ class Entity {
   bool m_alive = true;
   int m_id;
 
-  // todo should i inline
+  // TODO: should I inline
   glm::dvec2 getPosition();
-
   glm::dvec2 getCenterPosition();
-
-//  inline glm::dvec2 getPosition() {
-//    if (this->has<TilePosition>()) {
-//      return this->get<TilePosition>()->m_xy * 16 +
-//             glm::ivec2(K_DISPLAY_SIZE_X, K_DISPLAY_SIZE_Y) / 2;
-//    } else if (this->has<Position>()) {
-//      return glm::dvec2(this->get<Position>()->m_p);
-//    } else {
-//      std::string msg = "missing component: general position";
-//      throw MissingComponentException(msg);
-//    }
-//  };
-//
-//  inline glm::dvec2 getCenterPosition() {
-//    if (this->has<TilePosition>()) {
-//      return this->get<TilePosition>()->m_xy * 16 +
-//             glm::ivec2(K_DISPLAY_SIZE_X, K_DISPLAY_SIZE_Y) / 2 +
-//             glm::ivec2(this->get<Shape>()->m_dimensions / 2.0);
-//    } else if (this->has<Position>()) {
-//      return this->get<Position>()->m_p +
-//             this->get<Shape>()->m_dimensions / 2.0;
-//    } else {
-//      std::string msg = "missing component: general position";
-//      throw MissingComponentException(msg);
-//    }
-//  };
 
   // add component pointers to this tuple later
   // TODO: restrict m_components access
@@ -99,18 +73,12 @@ class Entity {
     m_alive = false;
     m_id = 0;
   }
-//  Entity() = delete;
-  Entity(System *GUISystem);
+  Entity(System *system);
 
   template <class T>
   void addComponent(T component);
 
-  void die() {
-    for (auto cp : m_components) {
-      cp.second->m_alive = false;
-    }
-    m_alive = false;
-  }
+  void die();
 
   template <class T>
   inline T *get() {
@@ -122,14 +90,14 @@ class Entity {
     return m_components.count(classToInt<T>::value) > 0;
   }
 
-  static Entity *addPlayerBase(Game *game, System *system);
+  static void addPlayerBase(Game *game, System *system);
 
-  static Entity *addTower(Game *game, System *system, int tileX,
+  static void addTower(Game *game, System *system, int tileX,
                                int tileY);
 
-  static Entity *addWall(Game *game, System *system, int tileX,
+  static void addWall(Game *game, System *system, int tileX,
                                int tileY);
 
-  static Entity *addEnemy(Game *game, System *system, double x,
+  static void addEnemy(Game *game, System *system, double x,
                                double y);
 };

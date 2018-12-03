@@ -57,7 +57,7 @@ class Node {
                           std::vector<Entity *> &ents,
                           double x, double y, double r);
 
-  bool tryAddEntID(System *system, int entID, Entity *ent);
+  bool tryAddEntID(System *system, int entID);
   void removeEntID(System *system, int entID);
 
   void getAdjacentNodes(std::list<Node *> &nodes);

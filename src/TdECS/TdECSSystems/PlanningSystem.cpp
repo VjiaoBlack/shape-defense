@@ -84,7 +84,7 @@ void PlanningSystem::update(Game *game, System* system) {
           }
 
           auto itIDEnt = itTempEnt;
-          double dist = findCenterDistance(myEnt, itIDEnt);
+          double dist = findCenterDistance(*myEnt, *itIDEnt);
 
           if (itIDEnt &&
               itIDEnt->has<Attack>() &&
@@ -106,19 +106,18 @@ void PlanningSystem::update(Game *game, System* system) {
         break;
       case 1:  // targets allies
         for (auto &itPair : system->m_allies) {
-          if (!itPair.second || !itPair.second->m_alive) {
+          if (!itPair.m_alive || itPair.m_id == 0) {
             continue;
           }
 
-          double dist = findCenterDistance(myEnt, itPair.second.get());
+          double dist = findCenterDistance(*myEnt, itPair);
 
-          if (itPair.second &&
-              itPair.second->has<Attack>() &&
-              itPair.second->get<Attack>()->m_type == Attack::SHOOTER) {
+          if (itPair.has<Attack>() &&
+              itPair.get<Attack>()->m_type == Attack::SHOOTER) {
             if (minDist < 0 || dist < minDist) {
               minDist = dist;
-              c.m_targetEntID = itPair.first;
-              itEnt = itPair.second.get();
+              c.m_targetEntID = itPair.m_id;
+              itEnt = &itPair;
             }
           }
         }

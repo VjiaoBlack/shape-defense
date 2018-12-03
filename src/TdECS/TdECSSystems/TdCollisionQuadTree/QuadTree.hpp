@@ -21,8 +21,7 @@ class QuadTree {
 
   bool tryAddEntID(Game *game,
                      System *system,
-                     int entID,
-                     Entity *ent);
+                     int entID);
   void removeEntID(Game *game, System *system, int entID);
   void update(Game *game, System *system);
 };

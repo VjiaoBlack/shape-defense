@@ -18,8 +18,8 @@ class Game;
 
 class PhysicsSystem {
  public:
-  std::array<Position, 1000> m_positionComponents;
-  std::array<Physics, 1000>  m_physicsComponents;
+  std::array<Position, k_MAX_ENTS> m_positionComponents;
+  std::array<Physics, k_MAX_ENTS>  m_physicsComponents;
 
 
   void update(Game *game, System* system);
