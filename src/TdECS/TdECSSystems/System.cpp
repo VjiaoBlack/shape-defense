@@ -60,3 +60,41 @@ void System::update(Game* game, bool updateGraphics) {
 
 //  LOG_ERR("numEntities: %lu", m_allies.size() + m_enemies.size());
 }
+
+
+template<>
+std::array<Position,     k_MAX_ENTS>& System::getCompArray() {
+  return m_physics.m_positionComponents;
+};
+template<>
+std::array<TilePosition, k_MAX_ENTS>& System::getCompArray() {
+  return m_tilePositionComponents;
+};
+template<>
+std::array<Shape,        k_MAX_ENTS>& System::getCompArray() {
+  return m_shapeComponents;
+};
+template<>
+std::array<Graphics,     k_MAX_ENTS>& System::getCompArray() {
+  return m_graphics.m_graphicsComponents;
+};
+template<>
+std::array<Health,       k_MAX_ENTS>& System::getCompArray() {
+  return m_health.m_healthComponents;
+};
+template<>
+std::array<Physics,      k_MAX_ENTS>& System::getCompArray() {
+  return m_physics.m_physicsComponents;
+};
+template<>
+std::array<LaserShooter, k_MAX_ENTS>& System::getCompArray() {
+  return m_planning.m_laserComponents;
+};
+template<>
+std::array<Attack,       k_MAX_ENTS>& System::getCompArray() {
+  return m_planning.m_attackComponents;
+};
+template<>
+std::array<Pathing,      k_MAX_ENTS>& System::getCompArray() {
+  return m_planning.m_pathingComponents;
+};

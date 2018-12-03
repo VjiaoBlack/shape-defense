@@ -75,29 +75,13 @@ class System {
   void addEntity(Game *game, Entity e);
 
   template <typename T>
-  std::array<T,            k_MAX_ENTS>& getCompArray();
-  template<>
-  std::array<Position,     k_MAX_ENTS>& getCompArray() { return m_physics.m_positionComponents; };
-  template<>
-  std::array<TilePosition, k_MAX_ENTS>& getCompArray() { return m_tilePositionComponents; };
-  template<>
-  std::array<Shape,        k_MAX_ENTS>& getCompArray() { return m_shapeComponents; };
-  template<>
-  std::array<Graphics,     k_MAX_ENTS>& getCompArray() { return m_graphics.m_graphicsComponents; };
-  template<>
-  std::array<Health,       k_MAX_ENTS>& getCompArray() { return m_health.m_healthComponents; };
-  template<>
-  std::array<Physics,      k_MAX_ENTS>& getCompArray() { return m_physics.m_physicsComponents; };
-  template<>
-  std::array<LaserShooter, k_MAX_ENTS>& getCompArray() { return m_planning.m_laserComponents; };
-  template<>
-  std::array<Attack,       k_MAX_ENTS>& getCompArray() { return m_planning.m_attackComponents; };
-  template<>
-  std::array<Pathing,      k_MAX_ENTS>& getCompArray() { return m_planning.m_pathingComponents; };
-
-  template <typename T>
   T* addComponent(T c) {
     this->getCompArray<T>()[c.m_entID-1] = c;
     return &this->getCompArray<T>()[c.m_entID-1];
   }
+
+ private:
+  template <typename T>
+  std::array<T,            k_MAX_ENTS>& getCompArray();
 };
+
