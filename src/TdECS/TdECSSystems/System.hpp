@@ -49,8 +49,17 @@ class System {
   HealthSystem    m_health;
   CollisionSystem m_collisions;
 
+  std::array<TilePosition, k_MAX_ENTS> m_tilePositionComponents;
+  std::array<Shape,        k_MAX_ENTS> m_shapeComponents;
+
   std::array<Entity, k_MAX_ENTS> m_enemies;
   std::array<Entity, k_MAX_ENTS> m_allies;
+
+  System() {
+    for (uint16_t i = 0; i < k_MAX_ENTS; i++) {
+      m_openSlots[i] = i+1;
+    }
+  }
 
   std::list<std::array<Entity, k_MAX_ENTS>*> getEntityMaps() {
     std::list<std::array<Entity, k_MAX_ENTS>*> itList;
@@ -60,63 +69,35 @@ class System {
     return itList;
   };
 
-  std::array<TilePosition, k_MAX_ENTS> m_tilePositionComponents;
-  std::array<Shape, k_MAX_ENTS> m_shapeComponents;
-
-  System() {
-    for (uint16_t i = 0; i < k_MAX_ENTS; i++) {
-      m_openSlots[i] = i+1;
-    }
-  }
-
-  Entity* getEnt(int entID);
-
   void update(Game *game, bool updateGraphics = true);
 
+  Entity* getEnt(int entID);
   void addEntity(Game *game, Entity e);
 
-  Position* addComponent(Position c) {
-    m_physics.m_positionComponents[c.m_entID-1] = c;
-    return &m_physics.m_positionComponents[c.m_entID-1];
-  }
+  template <typename T>
+  std::array<T,            k_MAX_ENTS>& getCompArray();
+  template<>
+  std::array<Position,     k_MAX_ENTS>& getCompArray() { return m_physics.m_positionComponents; };
+  template<>
+  std::array<TilePosition, k_MAX_ENTS>& getCompArray() { return m_tilePositionComponents; };
+  template<>
+  std::array<Shape,        k_MAX_ENTS>& getCompArray() { return m_shapeComponents; };
+  template<>
+  std::array<Graphics,     k_MAX_ENTS>& getCompArray() { return m_graphics.m_graphicsComponents; };
+  template<>
+  std::array<Health,       k_MAX_ENTS>& getCompArray() { return m_health.m_healthComponents; };
+  template<>
+  std::array<Physics,      k_MAX_ENTS>& getCompArray() { return m_physics.m_physicsComponents; };
+  template<>
+  std::array<LaserShooter, k_MAX_ENTS>& getCompArray() { return m_planning.m_laserComponents; };
+  template<>
+  std::array<Attack,       k_MAX_ENTS>& getCompArray() { return m_planning.m_attackComponents; };
+  template<>
+  std::array<Pathing,      k_MAX_ENTS>& getCompArray() { return m_planning.m_pathingComponents; };
 
-  TilePosition* addComponent(TilePosition c) {
-    m_tilePositionComponents[c.m_entID-1] = c;
-    return &m_tilePositionComponents[c.m_entID-1];
-  }
-
-  Shape* addComponent(Shape c) {
-    m_shapeComponents[c.m_entID-1] = c;
-    return &m_shapeComponents[c.m_entID-1];
-  }
-
-  Graphics* addComponent(Graphics c) {
-    m_graphics.m_graphicsComponents[c.m_entID-1] = c;
-    return &m_graphics.m_graphicsComponents[c.m_entID-1];
-  }
-
-  Health* addComponent(Health c) {
-    m_health.m_healthComponents[c.m_entID-1] = c;
-    return &m_health.m_healthComponents[c.m_entID-1];
-  }
-
-  Physics* addComponent(Physics c) {
-    m_physics.m_physicsComponents[c.m_entID-1] = c;
-    return &m_physics.m_physicsComponents[c.m_entID-1];
-  }
-
-  LaserShooter* addComponent(LaserShooter c) {
-    m_planning.m_laserComponents[c.m_entID-1] = c;
-    return &m_planning.m_laserComponents[c.m_entID-1];
-  }
-
-  Attack* addComponent(Attack c) {
-    m_planning.m_attackComponents[c.m_entID-1] = c;
-    return &m_planning.m_attackComponents[c.m_entID-1];
-  }
-
-  Pathing* addComponent(Pathing c) {
-    m_planning.m_pathingComponents[c.m_entID-1] = c;
-    return &m_planning.m_pathingComponents[c.m_entID-1];
+  template <typename T>
+  T* addComponent(T c) {
+    this->getCompArray<T>()[c.m_entID-1] = c;
+    return &this->getCompArray<T>()[c.m_entID-1];
   }
 };
