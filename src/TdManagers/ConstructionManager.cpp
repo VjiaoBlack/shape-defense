@@ -22,11 +22,10 @@ void ConstructionManager::update(Game *game) {
 
     if (m_isTower) {
       SDL_RenderDrawRect(game->m_SDLRenderer, &m_rect);
-
     } else {
       SDL_Rect b = m_rect;
-      b.w = 16;
-      b.h = 16;
+      b.w  = 16;
+      b.h  = 16;
       b.x += 16;
       b.y += 16;
       SDL_RenderDrawRect(game->m_SDLRenderer, &b);
