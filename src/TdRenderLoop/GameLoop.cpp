@@ -100,8 +100,6 @@ void GameLoop::render(Game *game) {
   // set scale for rendering debug
 //  SDL_RenderSetScale(game->m_SDLRenderer, 2.0, 2.0);
 
-  // game->m_entitySystem->m_graphics.update(game);
-
   // draw grid
   SDL_SetRenderDrawColor(game->m_SDLRenderer, 0x10, 0x20, 0x10, 0xFF);
 

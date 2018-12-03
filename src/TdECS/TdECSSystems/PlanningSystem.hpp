@@ -13,8 +13,6 @@
 #include "TdECS/TdECSComponents/Attack.hpp"
 #include "TdECS/TdECSComponents/LaserShooter.hpp"
 
-
-
 class PlanningSystem {
  public:
   std::array<Pathing, k_MAX_ENTS> m_pathingComponents;
