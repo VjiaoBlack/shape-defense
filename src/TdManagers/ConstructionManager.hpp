@@ -1,5 +1,4 @@
 #pragma once
-#include <SDL_rect.h>
 /**
  * TdConstructionManager.hpp
  *  
@@ -8,13 +7,17 @@
  * <DETAILS>
  */
 
+#include <SDL_rect.h>
+#include "../TdECS/EntityType.hpp"
+
 class Game;
 
 class ConstructionManager {
  public:
-  SDL_Rect m_rect    = {0, 0, 32, 32};
-  bool     m_isOn    = false;
-  bool     m_isTower = true;
+  SDL_Rect   m_rect    = {0, 0, 32, 32};
+  bool       m_isOn    = false;
+  bool       m_isTower = true;
+//  EntityType m_type    = EntityType::NONE;
 
   ConstructionManager() {}
 

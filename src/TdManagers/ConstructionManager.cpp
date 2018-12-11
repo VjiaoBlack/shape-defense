@@ -15,8 +15,8 @@ void ConstructionManager::update(Game *game) {
     m_rect.x = game->m_mouseX - 16;
     m_rect.y = game->m_mouseY - 16;
 
-    m_rect.x = (m_rect.x / 16) * 16 + 0;
-    m_rect.y = (m_rect.y / 16) * 16 + 2;
+    m_rect.x = (1 + m_rect.x / 16) * 16 + 0;
+    m_rect.y = (1 + m_rect.y / 16) * 16 + 2;
 
     SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -26,8 +26,6 @@ void ConstructionManager::update(Game *game) {
       SDL_Rect b = m_rect;
       b.w  = 16;
       b.h  = 16;
-      b.x += 16;
-      b.y += 16;
       SDL_RenderDrawRect(game->m_SDLRenderer, &b);
     }
   }
@@ -36,13 +34,20 @@ void ConstructionManager::update(Game *game) {
 // right now just builds a tower
 void ConstructionManager::build(Game *game) {
   if (m_isOn) {
+//    switch (m_type) {
+//      case EntityType::WALL:
+//        break;
+//      case EntityType::TOWER:
+//        break;
+//    }
+
     if (m_isTower && game->m_curMoney >= 20.0) {
-      Entity::addTower(game, game->m_entitySystem.get(),
+      Entity::addEntity<EntityType::TOWER>(game, game->m_entitySystem.get(),
                        m_rect.x / 16 - 50, m_rect.y / 16 - 28);
       game->m_curMoney -= 20.0;
     } else if (!m_isTower && game->m_curMoney >= 5.0) {
-      Entity::addWall(game, game->m_entitySystem.get(),
-                      m_rect.x / 16 - 49, m_rect.y / 16 - 27);
+      Entity::addEntity<EntityType::WALL>(game, game->m_entitySystem.get(),
+                      m_rect.x / 16 - 50, m_rect.y / 16 - 28);
       game->m_curMoney -= 5.0;
     }
   }

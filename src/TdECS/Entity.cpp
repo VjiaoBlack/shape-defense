@@ -87,7 +87,8 @@ void Entity::addComponent(T component) {
   }
 }
 
-void Entity::addPlayerBase(Game *game, System *system) {
+template<>
+void Entity::addEntity<EntityType::BASE>(Game* game, System* system) {
   auto entity = Entity(system);
 
   auto graphicsComp = Graphics(convertColorType(0xFFFFFFFF));
@@ -108,8 +109,8 @@ void Entity::addPlayerBase(Game *game, System *system) {
   system->addEntity(game, entity);
 }
 
-void Entity::addTower(Game *game, System *system, int tileX,
-                        int tileY) {
+template<>
+void Entity::addEntity<EntityType::TOWER>(Game* game, System* system, int tileX, int tileY) {
   auto entity = Entity(system);
 
   auto graphicsComp = Graphics(convertColorType(0xFFFFFFFF));
@@ -130,8 +131,9 @@ void Entity::addTower(Game *game, System *system, int tileX,
   system->addEntity(game, entity);
 }
 
-void Entity::addWall(Game *game, System *system, int tileX,
-                       int tileY) {
+template<>
+void Entity::addEntity<EntityType::WALL>(Game *game, System *system, int tileX,
+                     int tileY) {
   auto entity = Entity(system);
 
   auto graphicsComp = Graphics(convertColorType(0xFFFFFFFF));
@@ -148,8 +150,9 @@ void Entity::addWall(Game *game, System *system, int tileX,
   system->addEntity(game, entity);
 }
 
-void Entity::addEnemy(Game *game, System *system, double x,
-                        double y) {
+template<>
+void Entity::addEntity<EntityType::ENEMY>(Game *game, System *system, double x,
+                      double y) {
   auto entity = Entity(system);
 
   auto graphicsComp = Graphics(convertColorType(0xFFC06060));

@@ -22,6 +22,7 @@
 #include "TdECS/TdECSComponents/Physics.hpp"
 #include "TdECS/TdECSComponents/Position.hpp"
 
+#include "EntityType.hpp"
 //#include "TdECS/TdECSSystems/System.hpp"
 
 class Component;
@@ -57,23 +58,24 @@ class MissingComponentException : public std::runtime_error {
 
 class Entity {
  public:
-  bool m_alive = true;
-  int m_id;
-
-  // TODO: should I inline
-  glm::dvec2 getPosition();
-  glm::dvec2 getCenterPosition();
+  bool       m_alive = true;
+  int        m_id;
+  EntityType m_type;
 
   // add component pointers to this tuple later
   // TODO: restrict m_components access
-  std::map<int, Component *> m_components;
-  System *m_system;
+  std::map<int, Component*> m_components;
+  System*                   m_system;
 
   Entity() {
     m_alive = false;
     m_id = 0;
   }
   Entity(System *system);
+
+  // TODO: should I inline
+  glm::dvec2 getPosition();
+  glm::dvec2 getCenterPosition();
 
   template <class T>
   void addComponent(T component);
@@ -90,14 +92,6 @@ class Entity {
     return m_components.count(classToInt<T>::value) > 0;
   }
 
-  static void addPlayerBase(Game *game, System *system);
-
-  static void addTower(Game *game, System *system, int tileX,
-                               int tileY);
-
-  static void addWall(Game *game, System *system, int tileX,
-                               int tileY);
-
-  static void addEnemy(Game *game, System *system, double x,
-                               double y);
+  template<EntityType, typename...Args>
+  static void addEntity(Game* game, System* system, Args...args);
 };

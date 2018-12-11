@@ -87,7 +87,7 @@ Game::Game()
   // setup entities
   m_entitySystem = make_unique<System>();
 
-  Entity::addPlayerBase(this, m_entitySystem.get());
+  Entity::addEntity<EntityType::BASE>(this, m_entitySystem.get());
 }
 
 Game::~Game() {
