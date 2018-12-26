@@ -23,7 +23,6 @@
 #include "TdECS/TdECSComponents/Position.hpp"
 
 #include "EntityType.hpp"
-//#include "TdECS/TdECSSystems/System.hpp"
 
 class Component;
 

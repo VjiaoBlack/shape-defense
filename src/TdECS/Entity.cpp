@@ -96,8 +96,8 @@ template<>
 void Entity::addEntity<EntityType::BASE>(Game* game, System* system) {
   auto entity = Entity(system);
 
-  auto graphicsComp = Graphics(convertColorType(0xFFFFFFFF));
-  auto shapeComp = Shape(48, 48);
+  auto graphicsComp = Graphics(EntityColor<EntityType::BASE>::c);
+  auto shapeComp = Shape(EntityShape<EntityType::BASE>::w, EntityShape<EntityType::BASE>::h);
   auto tilePosComp = TilePosition(0, 0);
   auto healthComp = Health(3000000, 2);
   auto attackComp = Attack(Attack::ALLIED, 10, 0.3, Attack::SHOOTER);
@@ -118,8 +118,8 @@ template<>
 void Entity::addEntity<EntityType::TOWER>(Game* game, System* system, int tileX, int tileY) {
   auto entity = Entity(system);
 
-  auto graphicsComp = Graphics(convertColorType(0xFFFFFFFF));
-  auto shapeComp = Shape(32, 32);
+  auto graphicsComp = Graphics(EntityColor<EntityType::TOWER>::c);
+  auto shapeComp = Shape(EntityShape<EntityType::TOWER>::w, EntityShape<EntityType::TOWER>::h);
   auto tilePosComp = TilePosition(tileX, tileY);
   auto healthComp = Health(100, 0);
   auto attackComp = Attack(Attack::ALLIED, 5, 1.5, Attack::SHOOTER);
@@ -141,8 +141,8 @@ void Entity::addEntity<EntityType::WALL>(Game *game, System *system, int tileX,
                      int tileY) {
   auto entity = Entity(system);
 
-  auto graphicsComp = Graphics(convertColorType(0xFFFFFFFF));
-  auto shapeComp = Shape(16, 16);
+  auto graphicsComp = Graphics(EntityColor<EntityType::WALL>::c);
+  auto shapeComp = Shape(EntityShape<EntityType::WALL>::w, EntityShape<EntityType::WALL>::h);
   auto tilePosComp = TilePosition(tileX, tileY);
   auto healthComp = Health(500, 2);
 
@@ -160,8 +160,8 @@ void Entity::addEntity<EntityType::ENEMY>(Game *game, System *system, double x,
                       double y) {
   auto entity = Entity(system);
 
-  auto graphicsComp = Graphics(convertColorType(0xFFC06060));
-  auto shapeComp = Shape(16, 16);
+  auto graphicsComp = Graphics(EntityColor<EntityType::ENEMY>::c);
+  auto shapeComp = Shape(EntityShape<EntityType::ENEMY>::w, EntityShape<EntityType::ENEMY>::h);
   auto positionComp = Position(x, y);
   auto physicsComp = Physics();
   auto healthComp = Health(10, 0);
