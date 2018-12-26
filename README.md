@@ -19,52 +19,52 @@ Feel free to contribute; just send me a message (preferably), or a pull request 
 * gnuprof
 
 ### Feature List:
-done, __future work__
+done, [n] __future work__
 
 * Game
   * Main Menu
   * Gameplay
     * Towers
       * Can build towers
-      * __can repair towers__
-      * __can destroy towers__
+      * [n] __can repair towers__
+      * [n] __can destroy towers__
     * Resource system
       * Can have and spend resources
-      * __can have buildings that modify resource usage / storage__
-    * __Upgrade system__
+      * [n] __can have buildings that modify resource usage / storage__
+    * [n] __Upgrade system__
     * Balancing
       * Has a few types of towers, one type of enemy
-      * __More types of towers and enemies__
+      * [n] __More types of towers and enemies__
 * Engine (very roughly an Entity-Component-System design)
   * Physics
     * efficient quadtree-based collision system
   * Graphics
     * Can render entities efficiently
-    * __Can render entity types__
-    * __Can move the camera around smoothly__
+    * [n] __Can render entity types__
+    * [n] __Can move the camera around smoothly__
     * 
-  * __Audio__
+  * [n] __Audio__
   * Basic AI
     * Enemies go towards closest player entity and will attack
-    * __"heuristic grid" of best places to go towards, i.e. around walls__
-  * __Advanced AI__
-    * __Limited enemy view range__
-    * __"Alive" enemies__
-  * __I/O__
-    * __serialization / deserialization__
+    * [n] __"heuristic grid" of best places to go towards, i.e. around walls__
+  * [n] __Advanced AI__
+    * [n] __Limited enemy view range__
+    * [n] __"Alive" enemies__
+  * [n] __I/O__
+    * [n] __serialization / deserialization__
   * UI
     * Have buttons, menus, etc.
     * Supports drawing from text files
-    * __Easily supports drawing from images__
+    * [n] __Easily supports drawing from images__
 * Misc
-  * __Write Wiki / Documentation__
-  * __Plan out game design and engine design__
-  * __write unit testing system__
+  * [n] __Write Wiki / Documentation__
+  * [n] __Plan out game design and engine design__
+  * [n] __write unit testing system__
 
 ### Known bugs:
 
-* __no unit testing system__: whoops, this is pretty important actually
-* __Quadtree__: sometimes, the quadtree system seems to "lose" elements, where 
+* [n] __no unit testing system__: whoops, this is pretty important actually
+* [n] __Quadtree__: sometimes, the quadtree system seems to "lose" elements, where 
   elements don't seem to be where we expect them to
-* __entity lifetimes__: needs checking
+* [n] __entity lifetimes__: needs checking
 
