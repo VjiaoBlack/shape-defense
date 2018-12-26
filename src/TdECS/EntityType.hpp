@@ -23,40 +23,40 @@ enum class EntityType {
   ENEMY
 };
 
-template<class T>
+template<EntityType T>
 struct EntityShape {
   SDL_Color c = 0x00000000;
   int w = 0;
   int h = 0;
 };
 
-template<EntityType::BASE>
-struct EntityShape {
-  SDL_Color c = 0xFFFFFFFF;
+template<>
+struct EntityShape<EntityType::BASE> {
+  SDL_Color c = {0xFF, 0xFF, 0xFF};
   int w = 48;
   int h = 48;
 };
 
 
-template<EntityType::TOWER>
-struct EntityShape {
-  SDL_Color c = 0xFFFFFFFF;
+template<>
+struct EntityShape<EntityType::TOWER> {
+  SDL_Color c = {0xFF, 0xFF, 0xFF};
   int w = 32;
   int h = 32;
 };
 
 
-template<EntityType::WALL>
-struct EntityShape {
-  SDL_Color c = 0xFFFFFFFF;
+template<>
+struct EntityShape<EntityType::WALL> {
+  SDL_Color c = {0xFF, 0xFF, 0xFF};
   int w = 16;
   int h = 16;
 };
 
 
-template<EntityType::ENEMY>
-struct EntityShape {
-  SDL_Color c = 0xFFC06060;
+template<>
+struct EntityShape<EntityType::ENEMY> {
+  SDL_Color c = {0xC0, 0x60, 0x60};
   int w = 16;
   int h = 16;
 };
