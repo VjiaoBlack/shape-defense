@@ -41,14 +41,14 @@ class Shape;
 class Graphics;
 
 template<> struct classToInt<Attack>       { enum { value = 1 };  };
-template<> struct classToInt<Health>       { enum { value = 3 };  };
-template<> struct classToInt<LaserShooter> { enum { value = 4 };  };
-template<> struct classToInt<Pathing>      { enum { value = 5 };  };
-template<> struct classToInt<Physics>      { enum { value = 6 };  };
-template<> struct classToInt<TilePosition> { enum { value = 7 };  };
-template<> struct classToInt<Position>     { enum { value = 8 };  };
-template<> struct classToInt<Shape>        { enum { value = 10 }; };
-template<> struct classToInt<Graphics>     { enum { value = 11 }; };
+template<> struct classToInt<Health>       { enum { value = 2 };  };
+template<> struct classToInt<LaserShooter> { enum { value = 3 };  };
+template<> struct classToInt<Pathing>      { enum { value = 4 };  };
+template<> struct classToInt<Physics>      { enum { value = 5 };  };
+template<> struct classToInt<TilePosition> { enum { value = 6 };  };
+template<> struct classToInt<Position>     { enum { value = 7 };  };
+template<> struct classToInt<Shape>        { enum { value = 8 }; };
+template<> struct classToInt<Graphics>     { enum { value = 9 }; };
 
 class MissingComponentException : public std::runtime_error {
  public:
@@ -64,7 +64,8 @@ class Entity {
 
   // add component pointers to this tuple later
   // TODO: restrict m_components access
-  std::map<int, Component*> m_components;
+//  std::map<int, Component*> m_components;
+  std::array<Component*, 10>  m_components;
   System*                   m_system;
 
   Entity() {
@@ -89,7 +90,8 @@ class Entity {
 
   template <class T>
   inline bool has() {
-    return m_components.count(classToInt<T>::value) > 0;
+//    return m_components.count(classToInt<T>::value) > 0;
+    return m_components[classToInt<T>::value] != nullptr;
   }
 
   template<EntityType, typename...Args>

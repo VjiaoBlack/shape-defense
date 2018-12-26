@@ -59,6 +59,7 @@ void System::update(Game* game, bool updateGraphics) {
 //  }
 
 //  LOG_ERR("numEntities: %lu", m_allies.size() + m_enemies.size());
+//  printf("%d, %d\n", m_head, m_tail);
 }
 
 

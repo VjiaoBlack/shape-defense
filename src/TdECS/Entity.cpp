@@ -49,12 +49,17 @@ Entity::Entity(System *system)
     exit(1);
   }
 
-  m_components = std::map<int, Component *>();
+//  m_components = std::map<int, Component *>();
+  for (auto& c : m_components) {
+    c = nullptr;
+  }
 }
 
 void Entity::die() {
   for (auto cp : m_components) {
-    cp.second->m_alive = false;
+//    cp.second->m_alive = false;
+    if (cp)
+      cp->m_alive = false;
   }
   m_alive = false;
   m_system->m_tail += 1;
