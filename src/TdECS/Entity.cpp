@@ -181,3 +181,33 @@ void Entity::addEntity<EntityType::ENEMY>(Game *game, System *system, double x,
   auto pt = entity;
   system->addEntity(game, entity);
 }
+
+template<>
+void Entity::addEntity(Game *game, System *system, EntityType type) {
+  switch (type) {
+    case EntityType::BASE:
+      Entity::addEntity<EntityType::BASE>(game, system);
+      break;
+  }
+}
+
+template<>
+void Entity::addEntity(Game *game, System *system, EntityType type, int x, int y) {
+  switch (type) {
+    case EntityType::TOWER:
+      Entity::addEntity<EntityType::TOWER>(game, system, x, y);
+      break;
+    case EntityType::WALL:
+      Entity::addEntity<EntityType::WALL>(game, system, x, y);
+      break;
+  }
+}
+
+template<>
+void Entity::addEntity(Game *game, System *system, EntityType type, double x, double y) {
+  switch (type) {
+    case EntityType::ENEMY:
+      Entity::addEntity<EntityType::ENEMY>(game, system, x, y);
+      break;
+  }
+}

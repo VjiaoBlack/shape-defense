@@ -95,4 +95,7 @@ class Entity {
 
   template<EntityType, typename...Args>
   static void addEntity(Game* game, System* system, Args...args);
+
+  template<typename...Args>
+  static void addEntity(Game* game, System* system, EntityType type, Args...args);
 };
