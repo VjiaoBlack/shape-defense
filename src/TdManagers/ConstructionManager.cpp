@@ -33,6 +33,9 @@ ConstructionManager::ConstructionManager(Game* game) {
 }
 
 void ConstructionManager::update(Game *game) {
+  // update building menu (also draws)
+  m_GUISystem->update(game);
+
   for (auto button : game->m_buttonsDown) {
     switch (button) {
       case SDL_BUTTON_LEFT:
@@ -46,7 +49,7 @@ void ConstructionManager::update(Game *game) {
 
 void ConstructionManager::render(Game* game) {
   // render building menu
-  m_GUISystem->update(game);
+  m_GUISystem->m_graphics.update(game);
 
   // render the "future object"
   if (m_isOn) {
@@ -76,7 +79,18 @@ void ConstructionManager::render(Game* game) {
 // right now just builds a tower
 void ConstructionManager::build(Game *game) {
   if (m_isOn && game->m_curMoney >= EntityCosts[(uint)m_type]) {
-    Entity::addEntity(game, game->m_entitySystem.get(), m_type, m_rect.x / 16 - 50, m_rect.y / 16 - 28);
-    game->m_curMoney -= EntityCosts[(uint)m_type];
+    if (!m_GUIMenu->get<GUIContainerComponent>()->m_buttons[0]
+          ->get<GUIClickableComponent>()->m_pressedInside &&
+        !m_GUIMenu->get<GUIContainerComponent>()->m_buttons[1]
+          ->get<GUIClickableComponent>()->m_pressedInside &&
+        !m_GUIMenu->get<GUIContainerComponent>()->m_buttons[2]
+          ->get<GUIClickableComponent>()->m_pressedInside) {
+      Entity::addEntity(game,
+                        game->m_entitySystem.get(),
+                        m_type,
+                        m_rect.x / 16 - 50,
+                        m_rect.y / 16 - 28);
+      game->m_curMoney -= EntityCosts[(uint) m_type];
+    }
   }
 }
