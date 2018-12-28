@@ -21,6 +21,15 @@ ConstructionManager::ConstructionManager(Game* game) {
   vector<string> labels = {"Toggle", "Tower", "Wall"};
   m_GUIMenu = GUIEntity::addVerticalMenu(game, m_GUISystem.get(), r,
                                          labels);
+
+  m_GUIMenu->get<GUIContainerComponent>()->m_buttons[0]->get<GUIClickableComponent>()->setCallback(
+      [&]() { m_isOn = !m_isOn; printf("TOGGLE, is now %d\n", (uint) m_isOn); });
+
+  m_GUIMenu->get<GUIContainerComponent>()->m_buttons[1]->get<GUIClickableComponent>()->setCallback(
+      [&]() { m_type = EntityType::TOWER; });
+
+  m_GUIMenu->get<GUIContainerComponent>()->m_buttons[2]->get<GUIClickableComponent>()->setCallback(
+      [&]() { m_type = EntityType::WALL; });
 }
 
 void ConstructionManager::update(Game *game) {
@@ -32,28 +41,6 @@ void ConstructionManager::update(Game *game) {
         }
         break;
     }
-  }
-
-  if (m_GUIMenu->get<GUIContainerComponent>()
-      ->m_buttons[0]
-      ->get<GUIClickableComponent>()
-      ->m_activated) {
-    m_isOn = !m_isOn;
-  }
-
-  if (m_GUIMenu->get<GUIContainerComponent>()
-      ->m_buttons[1]
-      ->get<GUIClickableComponent>()
-      ->m_activated) {
-    m_type = EntityType::TOWER;
-  }
-
-
-  if (m_GUIMenu->get<GUIContainerComponent>()
-      ->m_buttons[2]
-      ->get<GUIClickableComponent>()
-      ->m_activated) {
-    m_type = EntityType::WALL;
   }
 }
 

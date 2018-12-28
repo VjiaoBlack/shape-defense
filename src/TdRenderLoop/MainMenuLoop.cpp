@@ -28,29 +28,24 @@ MainMenuLoop::MainMenuLoop(Game *game) {
   vector<string> labels = {"New Game", "Load Game", "Quit"};
   m_GUIMenu = GUIEntity::addVerticalMenu(game, m_GUISystem.get(), r,
                                            labels);
+
+  // both these callbacks are '=' because the only used param is game, a passed in pointer
+  m_GUIMenu->get<GUIContainerComponent>()->m_buttons[0]->get<GUIClickableComponent>()->setCallback(
+      [=]() {
+        auto gameLoop = std::make_shared<GameLoop>(game);
+        game->m_gameStateTransition = TransitionLoop::makePushLoop(
+            game, game->m_gameStateStack.back(), gameLoop);
+
+        game->m_gameStateStack.push_back(gameLoop);
+      });
+
+  m_GUIMenu->get<GUIContainerComponent>()->m_buttons[2]->get<GUIClickableComponent>()->setCallback(
+      [=]() { game->m_quit = true; });
 }
 
 MainMenuLoop::~MainMenuLoop() = default;
 
 RenderLoop *MainMenuLoop::update(Game *game) {
-  if (m_GUIMenu->get<GUIContainerComponent>()
-          ->m_buttons[0]
-          ->get<GUIClickableComponent>()
-          ->m_activated) {
-    auto gameLoop = std::make_shared<GameLoop>(game);
-    game->m_gameStateTransition = TransitionLoop::makePushLoop(
-        game, game->m_gameStateStack.back(), gameLoop);
-
-    game->m_gameStateStack.push_back(gameLoop);
-  }
-
-  if (m_GUIMenu->get<GUIContainerComponent>()
-          ->m_buttons[2]
-          ->get<GUIClickableComponent>()
-          ->m_activated) {
-    game->m_quit = true;
-  }
-
   return nullptr;
 }
 

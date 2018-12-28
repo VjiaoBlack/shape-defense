@@ -35,5 +35,14 @@ void GUIClickableComponent::update(Game* game) {
   }
 
   m_wasPressed = game->m_buttonsDown.count(SDL_BUTTON_LEFT) != 0;
+
+  if (m_activated && m_hasCallback) {
+    m_callback();
+  }
+}
+
+void GUIClickableComponent::setCallback(std::function<void()> callback) {
+  m_hasCallback = true;
+  m_callback    = callback;
 }
 
