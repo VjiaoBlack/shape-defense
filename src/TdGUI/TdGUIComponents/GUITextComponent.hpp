@@ -17,7 +17,7 @@ class GUITextComponent : public GUIComponent {
   SDL_Rect m_destRect;
   SDL_Color m_textColor;
 
-  GUITextComponent(Game* game, std::string &&label, SDL_Rect r);
+  GUITextComponent(Game* game, std::string label, SDL_Rect r);
 
   virtual void update(Game* game);
 };

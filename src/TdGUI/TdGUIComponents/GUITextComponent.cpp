@@ -9,7 +9,7 @@
 #include <TdGUI/TdGUIComponents/GUITextComponent.hpp>
 #include <Game.hpp>
 
-GUITextComponent::GUITextComponent(Game *game, std::string &&label,
+GUITextComponent::GUITextComponent(Game *game, std::string label,
                                        SDL_Rect r)
     : m_text(label), m_destRect(r) {
   m_textColor.a = 0xFF;

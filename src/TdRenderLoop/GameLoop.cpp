@@ -25,7 +25,7 @@ GameLoop::GameLoop(Game *game) {
   this->addRandomEnemy(game, 500);
   this->addRandomEnemy(game, 600);
 
-  m_constructionManager = std::make_unique<ConstructionManager>();
+  m_constructionManager = std::make_unique<ConstructionManager>(game);
 }
 
 GameLoop::~GameLoop() = default;
@@ -102,6 +102,7 @@ void GameLoop::render(Game *game) {
 
   game->m_entitySystem->m_graphics.update(game, game->m_entitySystem.get());
 
+  // draw money
   SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0x80);
   SDL_RenderDrawLine(game->m_SDLRenderer, 50, 50, 50 + (int) game->m_maxMoney * 2.0, 50);
 
@@ -113,4 +114,6 @@ void GameLoop::render(Game *game) {
 
   SDL_SetRenderDrawColor(game->m_SDLRenderer, 0x80, 0x80, 0xFF, 0xFF);
   SDL_RenderDrawLine(game->m_SDLRenderer, 50, 75, 50 + (int) game->m_curEnergy * 2.0, 75);
+
+  m_constructionManager->render(game);
 }

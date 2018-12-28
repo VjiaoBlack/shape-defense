@@ -8,6 +8,8 @@
 #include "RenderLoop.hpp"
 
 class ConstructionManager;
+class GUIEntity;
+class GUISystem;
 
 class GameLoop : public RenderLoop {
  private:

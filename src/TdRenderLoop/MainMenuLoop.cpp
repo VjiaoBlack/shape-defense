@@ -25,11 +25,9 @@ MainMenuLoop::MainMenuLoop(Game *game) {
                  sz(K_DISPLAY_SIZE_Y / 2 - text_height / 2),
                  sz(300), sz(K_DISPLAY_SIZE_Y / 3)};
 
-  vector<string> mylabels = {"New Game", "Load Game", "Quit"};
-  m_GUIMenu = GUIEntity::addVerticalMenu(game, m_GUISystem.get(), r,
-                                           std::move(mylabels));
-
   vector<string> labels = {"New Game", "Load Game", "Quit"};
+  m_GUIMenu = GUIEntity::addVerticalMenu(game, m_GUISystem.get(), r,
+                                           labels);
 }
 
 MainMenuLoop::~MainMenuLoop() = default;

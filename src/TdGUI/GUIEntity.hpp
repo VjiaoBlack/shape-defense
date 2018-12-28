@@ -54,14 +54,14 @@ public:
 
 
   static GUIEntity *addButton(Game *game, GUISystem *system,
-                                SDL_Rect rect, std::string &&label) {
+                                SDL_Rect rect, std::string label) {
     SDL_Rect textRect = rect;
 
     auto entity = std::make_unique<GUIEntity>(system);
 
     auto graphicsComp = std::make_unique<GUIGraphicsComponent>(rect);
     auto textComp =
-        std::make_unique<GUITextComponent>(game, std::move(label), textRect);
+        std::make_unique<GUITextComponent>(game, label, textRect);
     auto mouseComp = std::make_unique<GUIMouseComponent>();
     auto highlightComp = std::make_unique<GUIHighlightComponent>();
     auto clickComp = std::make_unique<GUIClickableComponent>();
@@ -79,7 +79,7 @@ public:
 
   static GUIEntity *addVerticalMenu(Game *game, GUISystem *system,
                                       SDL_Rect rect,
-                                      std::vector<std::string> &&labels) {
+                                      std::vector<std::string> labels) {
     SDL_Rect textRect = rect;
 
     auto entity = std::make_unique<GUIEntity>(system);
@@ -96,7 +96,7 @@ public:
                       round(rect.y + i * (height + containerComp->m_spacing))),
           rect.w, static_cast<int>(round(height))};
       containerComp->m_buttons.push_back(
-          addButton(game, system, buttonRect, std::move(labels[i])));
+          addButton(game, system, buttonRect, labels[i]));
     }
 
     entity->addComponent(std::move(containerComp));
@@ -108,7 +108,7 @@ public:
 
   static GUIEntity *addHorizontalMenu(Game *game, GUISystem *system,
                                         SDL_Rect rect,
-                                        std::vector<std::string> &&labels) {
+                                        std::vector<std::string> labels) {
     SDL_Rect textRect = rect;
 
     auto entity = std::make_unique<GUIEntity>(system);
@@ -125,7 +125,7 @@ public:
               round(rect.x + i * (width + containerComp->m_spacing))),
           rect.y, static_cast<int>(round(width)), rect.h};
       containerComp->m_buttons.push_back(
-          addButton(game, system, buttonRect, std::move(labels[i])));
+          addButton(game, system, buttonRect, labels[i]));
     }
 
     entity->addComponent(std::move(containerComp));

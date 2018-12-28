@@ -144,7 +144,7 @@ void Entity::addEntity<EntityType::WALL>(Game *game, System *system, int tileX,
   auto graphicsComp = Graphics(convertColorType(EntityColor<EntityType::WALL>::c));
   auto shapeComp = Shape(EntityShape<EntityType::WALL>::w, EntityShape<EntityType::WALL>::h);
   auto tilePosComp = TilePosition(tileX, tileY);
-  auto healthComp = Health(500, 2);
+  auto healthComp = Health(75, 2);
 
   entity.addComponent(graphicsComp);
   entity.addComponent(shapeComp);
