@@ -25,7 +25,7 @@
 #include "HealthSystem.hpp"
 #include "PhysicsSystem.hpp"
 #include "PlanningSystem.hpp"
-#include "CollisionSystem.hpp"
+#include "TdManagers/CollisionSystem.hpp"
 
 #include "TdECS/Entity.hpp"
 

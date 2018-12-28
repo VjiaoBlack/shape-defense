@@ -49,10 +49,20 @@ Entity::Entity(System *system)
     exit(1);
   }
 
-//  m_components = std::map<int, Component *>();
   for (auto& c : m_components) {
     c = nullptr;
   }
+}
+
+Entity::Entity(System *system, EntityType type)
+    : Entity(system) {
+  auto graphicsComp = Graphics(convertColorType(EntityColors[(uint)type]));
+  auto shapeComp    = Shape(EntityShapes[(uint)type].w, EntityShapes[(uint)type].h);
+  auto healthComp   = Health(EntityHealths[(uint)type].h, EntityHealths[(uint)type].a);
+
+  this->addComponent(healthComp);
+  this->addComponent(graphicsComp);
+  this->addComponent(shapeComp);
 }
 
 void Entity::die() {
@@ -94,91 +104,63 @@ void Entity::addComponent(T component) {
 
 template<>
 void Entity::addEntity<EntityType::BASE>(Game* game, System* system) {
-  auto entity = Entity(system);
+  auto entity = Entity(system, EntityType::BASE);
 
-  auto graphicsComp = Graphics(convertColorType(EntityColor<EntityType::BASE>::c));
-  auto shapeComp = Shape(EntityShape<EntityType::BASE>::w, EntityShape<EntityType::BASE>::h);
   auto tilePosComp = TilePosition(0, 0);
-  auto healthComp = Health(3000000, 2);
   auto attackComp = Attack(Attack::ALLIED, 10, 0.3, Attack::SHOOTER);
   auto laserComp = LaserShooter();
 
-  entity.addComponent(graphicsComp);
-  entity.addComponent(shapeComp);
   entity.addComponent(tilePosComp);
-  entity.addComponent(healthComp);
   entity.addComponent(attackComp);
   entity.addComponent(laserComp);
 
-  auto pt = entity;
   system->addEntity(game, entity);
 }
 
 template<>
 void Entity::addEntity<EntityType::TOWER>(Game* game, System* system, int tileX, int tileY) {
-  auto entity = Entity(system);
+  auto entity = Entity(system, EntityType::TOWER);
 
-  auto graphicsComp = Graphics(convertColorType(EntityColor<EntityType::TOWER>::c));
-  auto shapeComp = Shape(EntityShape<EntityType::TOWER>::w, EntityShape<EntityType::TOWER>::h);
   auto tilePosComp = TilePosition(tileX, tileY);
-  auto healthComp = Health(100, 0);
   auto attackComp = Attack(Attack::ALLIED, 5, 1.5, Attack::SHOOTER);
   auto laserComp = LaserShooter();
 
-  entity.addComponent(graphicsComp);
-  entity.addComponent(shapeComp);
   entity.addComponent(tilePosComp);
-  entity.addComponent(healthComp);
   entity.addComponent(attackComp);
   entity.addComponent(laserComp);
 
-  auto pt = entity;
   system->addEntity(game, entity);
 }
 
 template<>
 void Entity::addEntity<EntityType::WALL>(Game *game, System *system, int tileX,
                      int tileY) {
-  auto entity = Entity(system);
+  auto entity = Entity(system, EntityType::WALL);
 
-  auto graphicsComp = Graphics(convertColorType(EntityColor<EntityType::WALL>::c));
-  auto shapeComp = Shape(EntityShape<EntityType::WALL>::w, EntityShape<EntityType::WALL>::h);
   auto tilePosComp = TilePosition(tileX, tileY);
-  auto healthComp = Health(75, 2);
 
-  entity.addComponent(graphicsComp);
-  entity.addComponent(shapeComp);
   entity.addComponent(tilePosComp);
-  entity.addComponent(healthComp);
 
-  auto pt = entity;
   system->addEntity(game, entity);
 }
 
 template<>
 void Entity::addEntity<EntityType::ENEMY>(Game *game, System *system, double x,
                       double y) {
-  auto entity = Entity(system);
+  auto entity = Entity(system, EntityType::ENEMY);
 
-  auto graphicsComp = Graphics(convertColorType(EntityColor<EntityType::ENEMY>::c));
-  auto shapeComp = Shape(EntityShape<EntityType::ENEMY>::w, EntityShape<EntityType::ENEMY>::h);
   auto positionComp = Position(x, y);
   auto physicsComp = Physics();
-  auto healthComp = Health(10, 0);
   auto attackComp = Attack(Attack::ENEMY, 3, 0.5, Attack::FIGHTER);
   auto laserComp = LaserShooter();
   auto pathingComp = Pathing();
 
-  entity.addComponent(graphicsComp);
-  entity.addComponent(shapeComp);
   entity.addComponent(positionComp);
   entity.addComponent(physicsComp);
-  entity.addComponent(healthComp);
   entity.addComponent(attackComp);
   entity.addComponent(laserComp);
   entity.addComponent(pathingComp);
 
-  auto pt = entity;
   system->addEntity(game, entity);
 }
 

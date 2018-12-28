@@ -7,8 +7,8 @@
  */
 #include "CollisionSystem.hpp"
 
-#include "TdECS/TdECSSystems/TdCollisionQuadTree/Node.hpp"
-#include "TdECS/TdECSSystems/TdCollisionQuadTree/QuadTree.hpp"
+#include <TdManagers/TdCollisionQuadTree/Node.hpp>
+#include <TdManagers/TdCollisionQuadTree/QuadTree.hpp>
 
 #include "TdECS/TdECSComponents/Shape.hpp"
 

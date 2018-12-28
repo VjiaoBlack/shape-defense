@@ -5,8 +5,8 @@
  *
  * <DETAILS>
  */
-#include "TdCollisionQuadTree/Node.hpp"
-#include "TdCollisionQuadTree/QuadTree.hpp"
+#include <TdManagers/TdCollisionQuadTree/Node.hpp>
+#include <TdManagers/TdCollisionQuadTree/QuadTree.hpp>
 
 
 #include <Game.hpp>

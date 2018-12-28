@@ -5,8 +5,9 @@
  *
  * <DETAILS>
  */
-#include <TdECS/TdECSSystems/TdCollisionQuadTree/Node.hpp>
-#include <TdECS/TdECSSystems/TdCollisionQuadTree/QuadTree.hpp>
+#include <TdManagers/TdCollisionQuadTree/Node.hpp>
+#include <TdManagers/TdCollisionQuadTree/QuadTree.hpp>
+
 #include "System.hpp"
 #include "TdECS/Entity.hpp"
 #include "SystemPosUtils.hpp"

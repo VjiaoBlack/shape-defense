@@ -8,7 +8,9 @@
 #include <Game.hpp>
 #include "HealthSystem.hpp"
 #include "System.hpp"
-#include "TdCollisionQuadTree/QuadTree.hpp"
+
+#include <TdManagers/TdCollisionQuadTree/Node.hpp>
+#include <TdManagers/TdCollisionQuadTree/QuadTree.hpp>
 
 void HealthSystem::update(Game *game, System* system) {
   for (auto c = m_healthComponents.begin(); c != m_healthComponents.end();) {
