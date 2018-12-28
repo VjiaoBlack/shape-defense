@@ -11,7 +11,7 @@
 
 enum class EntityType {
   //// Default
-  NONE,
+  NONE = 0,
   //// Allied
   // Attack
   BASE,
@@ -20,67 +20,38 @@ enum class EntityType {
   WALL,
   //// Enemy
   // Attack
-  ENEMY
+  ENEMY,
+  //// Count
+  COUNT
+};
+
+struct entity_shape_vec_t {
+  int w;
+  int h;
+};
+
+constexpr entity_shape_vec_t EntityShapes[static_cast<uint>(EntityType::COUNT)+1] = {
+  { 0,  0},
+  {48, 48}, // BASE
+  {32, 32}, // TOWER
+  {16, 16}, // WALL
+  {16, 16}  // ENEMY
+};
+constexpr uint EntityColors[static_cast<uint>(EntityType::COUNT)+1] = {
+  (0x00000000),
+  (0xFFFFFFFF), // BASE
+  (0xFFFFFFFF), // TOWER
+  (0xFFFFFFFF), // WALL
+  (0xFFC06060)  // ENEMY
 };
 
 template<EntityType T>
 struct EntityShape {
-  static constexpr int w = 0;
-  static constexpr int h = 0;
+  static constexpr int w = EntityShapes[static_cast<uint>(T)].w;
+  static constexpr int h = EntityShapes[static_cast<uint>(T)].h;
 };
 
 template<EntityType T>
 struct EntityColor {
-  static constexpr SDL_Color c = convertColorType(0x00000000);
-};
-
-
-template<>
-struct EntityShape<EntityType::BASE> {
-  static constexpr int w = 48;
-  static constexpr int h = 48;
-};
-
-
-template<>
-struct EntityShape<EntityType::TOWER> {
-  static constexpr int w = 32;
-  static constexpr int h = 32;
-};
-
-
-template<>
-struct EntityShape<EntityType::WALL> {
-  static constexpr int w = 16;
-  static constexpr int h = 16;
-};
-
-
-template<>
-struct EntityShape<EntityType::ENEMY> {
-  static constexpr int w = 16;
-  static constexpr int h = 16;
-};
-
-
-template<>
-struct EntityColor<EntityType::BASE> {
-  static constexpr SDL_Color c = convertColorType(0xFFFFFFFF);
-};
-
-template<>
-struct EntityColor<EntityType::TOWER> {
-  static constexpr SDL_Color c = convertColorType(0xFFFFFFFF);
-};
-
-
-template<>
-struct EntityColor<EntityType::WALL> {
-  static constexpr SDL_Color c = convertColorType(0xFFFFFFFF);
-};
-
-
-template<>
-struct EntityColor<EntityType::ENEMY> {
-  static constexpr SDL_Color c = convertColorType(0xFFC06060);
+  static constexpr uint c = EntityColors[static_cast<uint>(T)];
 };

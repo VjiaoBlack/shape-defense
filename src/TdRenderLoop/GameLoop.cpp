@@ -46,45 +46,12 @@ RenderLoop *GameLoop::update(Game *game) {
       case SDLK_SPACE:
         this->addRandomEnemy(game, 1000);
         break;
-      case SDLK_b:
-        if (!game->m_keysDownPrev.count(SDLK_b)) {
-          m_isBuilding = !m_isBuilding;
-          if (m_isBuilding) {
-            LOG_INF("BUILDING MODE ON");
-            m_constructionManager->m_isOn = true;
-          } else {
-            LOG_INF("building mode off");
-            m_constructionManager->m_isOn = false;
-          }
-        }
-        break;
-      case SDLK_n:
-        if (!game->m_keysDownPrev.count(SDLK_n)) {
-          if (m_constructionManager->m_isTower) {
-            LOG_INF("WALL MODE ON");
-            m_constructionManager->m_isTower = false;
-          } else {
-            LOG_INF("wall mode off");
-            m_constructionManager->m_isTower = true;
-          }
-        }
-        break;
     }
   }
-
-  for (auto button : game->m_buttonsDown) {
-    switch (button) {
-      case SDL_BUTTON_LEFT:
-        if (!game->m_buttonsDownPrev.count(SDL_BUTTON_LEFT)) {
-          m_constructionManager->build(game);
-        }
-        break;
-    }
-  }
-
-  game->m_entitySystem->update(game, false);
 
   m_constructionManager->update(game);
+
+  game->m_entitySystem->update(game, false);
 
   if (m_enemySpawnTimer == 15) {
     this->addRandomEnemy(game, 1000);

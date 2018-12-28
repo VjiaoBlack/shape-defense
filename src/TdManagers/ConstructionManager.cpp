@@ -11,6 +11,47 @@
 #include "Game.hpp"
 
 void ConstructionManager::update(Game *game) {
+  for (auto key : game->m_keysDown) {
+    switch (key) {
+      case SDLK_b:
+        if (!game->m_keysDownPrev.count(SDLK_b)) {
+          m_isOn = !m_isOn;
+          if (m_isOn) {
+            LOG_INF("BUILDING MODE ON");
+            m_isOn = true;
+          } else {
+            LOG_INF("building mode off");
+            m_isOn = false;
+          }
+        }
+        break;
+      case SDLK_1:
+        if (!game->m_keysDownPrev.count(SDLK_1) && m_isOn) {
+          LOG_INF("WALL MODE ON");
+          m_isTower = false;
+          m_type    = EntityType::WALL;
+        }
+        break;
+      case SDLK_2:
+        if (!game->m_keysDownPrev.count(SDLK_2) && m_isOn) {
+          LOG_INF("wall mode off");
+          m_isTower = true;
+          m_type    = EntityType::TOWER;
+        }
+        break;
+    }
+  }
+
+  for (auto button : game->m_buttonsDown) {
+    switch (button) {
+      case SDL_BUTTON_LEFT:
+        if (!game->m_buttonsDownPrev.count(SDL_BUTTON_LEFT)) {
+          build(game);
+        }
+        break;
+    }
+  }
+
   if (m_isOn) {
     m_rect.x = game->m_mouseX - 16;
     m_rect.y = game->m_mouseY - 16;

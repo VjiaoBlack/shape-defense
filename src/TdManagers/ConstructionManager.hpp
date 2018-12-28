@@ -17,7 +17,7 @@ class ConstructionManager {
   SDL_Rect   m_rect    = {0, 0, 32, 32};
   bool       m_isOn    = false;
   bool       m_isTower = true;
-//  EntityType m_type    = EntityType::NONE;
+  EntityType m_type    = EntityType::NONE;
 
   ConstructionManager() {}
 
