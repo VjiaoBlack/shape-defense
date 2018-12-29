@@ -8,20 +8,14 @@
 #include "RenderLoop.hpp"
 
 class ConstructionManager;
+class LevelManager;
 class GUIEntity;
 class GUISystem;
 
 class GameLoop : public RenderLoop {
- private:
-  void addRandomEnemy(Game* game, double dist);
-
  public:
-  std::default_random_engine m_rg;
-  std::uniform_real_distribution<> m_rd;
-
-  int m_enemySpawnTimer = 0;
-
   std::unique_ptr<ConstructionManager> m_constructionManager;
+  std::unique_ptr<LevelManager> m_levelManager;
 
   explicit GameLoop(Game *game);
 

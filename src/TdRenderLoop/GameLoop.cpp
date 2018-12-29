@@ -3,35 +3,24 @@
  */
 
 #include "GameLoop.hpp"
-#include "TdManagers/ConstructionManager.hpp"
+#include <TdManagers/ConstructionManager.hpp>
+#include <TdManagers/LevelManager.hpp>
 #include "TdECS/Entity.hpp"
 #include "MainMenuLoop.hpp"
 #include "TransitionLoop.hpp"
 
 class MainMenuLoop;
 
-void GameLoop::addRandomEnemy(Game *game, double dist) {
-  double theta = m_rd(m_rg);
-  double x = sin(theta) * dist + K_DISPLAY_SIZE_X / 2.0;
-  double y = cos(theta) * dist + K_DISPLAY_SIZE_Y / 2.0;
-  Entity::addEntity<EntityType::ENEMY>(game, game->m_entitySystem.get(), x, y);
-}
-
 GameLoop::GameLoop(Game *game) {
-  m_rd = std::uniform_real_distribution<>(0.0, M_PI * 2);
-
-  this->addRandomEnemy(game, 300);
-  this->addRandomEnemy(game, 400);
-  this->addRandomEnemy(game, 500);
-  this->addRandomEnemy(game, 600);
-
   m_constructionManager = std::make_unique<ConstructionManager>(game);
+  m_levelManager = std::make_unique<LevelManager>(game);
 }
 
 GameLoop::~GameLoop() = default;
 
 RenderLoop *GameLoop::update(Game *game) {
   auto penu = game->m_gameStateStack.end();
+
   for (auto key : game->m_keysDown) {
     switch (key) {
       case SDLK_v:
@@ -43,22 +32,13 @@ RenderLoop *GameLoop::update(Game *game) {
         game->m_gameStateStack.pop_back();
 
         break;
-      case SDLK_SPACE:
-        this->addRandomEnemy(game, 1000);
-        break;
     }
   }
 
   m_constructionManager->update(game);
+  m_levelManager->update(game);
 
   game->m_entitySystem->update(game, false);
-
-  if (m_enemySpawnTimer == 15) {
-    this->addRandomEnemy(game, 1000);
-    m_enemySpawnTimer = 0;
-  }
-
-  m_enemySpawnTimer++;
 
   return this;
 }
@@ -116,4 +96,5 @@ void GameLoop::render(Game *game) {
   SDL_RenderDrawLine(game->m_SDLRenderer, 50, 75, 50 + (int) game->m_curEnergy * 2.0, 75);
 
   m_constructionManager->render(game);
+  m_levelManager->render(game);
 }

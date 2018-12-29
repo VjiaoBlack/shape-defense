@@ -35,9 +35,13 @@ glm::dvec2 Entity::getCenterPosition() {
   }
 };
 
-Entity::Entity(System *system)
+uint Entity::numCreated[static_cast<uint>(EntityType::COUNT)+1] = {0, 0, 0, 0, 0};
+uint Entity::numDestroyed[static_cast<uint>(EntityType::COUNT)+1] = {0, 0, 0, 0, 0};
+
+Entity::Entity(System *system, EntityType type)
     : m_id(system->m_openSlots[system->m_head])
-    , m_system(system) {
+    , m_system(system)
+    , m_type(type) {
   system->m_openSlots[system->m_head] = 0; // clear mem
   system->m_head += 1;
   if (system->m_head >= k_MAX_ENTS) {
@@ -52,10 +56,9 @@ Entity::Entity(System *system)
   for (auto& c : m_components) {
     c = nullptr;
   }
-}
 
-Entity::Entity(System *system, EntityType type)
-    : Entity(system) {
+  Entity::numCreated[(uint)type]++;
+
   auto graphicsComp = Graphics(convertColorType(EntityColors[(uint)type]));
   auto shapeComp    = Shape(EntityShapes[(uint)type].w, EntityShapes[(uint)type].h);
   auto healthComp   = Health(EntityHealths[(uint)type].h, EntityHealths[(uint)type].a);
@@ -72,6 +75,8 @@ void Entity::die() {
       cp->m_alive = false;
   }
   m_alive = false;
+  Entity::numDestroyed[(uint)m_type]++;
+
   m_system->m_tail += 1;
   if (m_system->m_tail >= k_MAX_ENTS) {
     m_system->m_tail = 0;
@@ -107,7 +112,7 @@ void Entity::addEntity<EntityType::BASE>(Game* game, System* system) {
   auto entity = Entity(system, EntityType::BASE);
 
   auto tilePosComp = TilePosition(0, 0);
-  auto attackComp = Attack(Attack::ALLIED, 10, 0.3, Attack::SHOOTER);
+  auto attackComp = Attack(Attack::ALLIED, 2, 0.3, Attack::SHOOTER);
   auto laserComp = LaserShooter();
 
   entity.addComponent(tilePosComp);
@@ -152,6 +157,26 @@ void Entity::addEntity<EntityType::ENEMY>(Game *game, System *system, double x,
   auto positionComp = Position(x, y);
   auto physicsComp = Physics();
   auto attackComp = Attack(Attack::ENEMY, 3, 0.5, Attack::FIGHTER);
+  auto laserComp = LaserShooter();
+  auto pathingComp = Pathing();
+
+  entity.addComponent(positionComp);
+  entity.addComponent(physicsComp);
+  entity.addComponent(attackComp);
+  entity.addComponent(laserComp);
+  entity.addComponent(pathingComp);
+
+  system->addEntity(game, entity);
+}
+
+template<>
+void Entity::addEntity<EntityType::BOSS>(Game *game, System *system, double x,
+                                          double y) {
+  auto entity = Entity(system, EntityType::BOSS);
+
+  auto positionComp = Position(x, y);
+  auto physicsComp = Physics();
+  auto attackComp = Attack(Attack::ENEMY, 20, 1, Attack::FIGHTER);
   auto laserComp = LaserShooter();
   auto pathingComp = Pathing();
 

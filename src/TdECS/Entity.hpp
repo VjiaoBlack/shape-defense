@@ -57,6 +57,9 @@ class MissingComponentException : public std::runtime_error {
 
 class Entity {
  public:
+  static uint numCreated[static_cast<uint>(EntityType::COUNT)+1];
+  static uint numDestroyed[static_cast<uint>(EntityType::COUNT)+1];
+
   bool       m_alive = true;
   int        m_id;
   EntityType m_type;
@@ -70,8 +73,6 @@ class Entity {
     m_alive = false;
     m_id = 0;
   }
-  Entity(System *system);
-  Entity(System *system, EntityType type);
 
   // TODO: should I inline
   glm::dvec2 getPosition();
@@ -97,4 +98,7 @@ class Entity {
 
   template<typename...Args>
   static void addEntity(Game* game, System* system, EntityType type, Args...args);
+
+ private:
+  Entity(System *system, EntityType type);
 };
