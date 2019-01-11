@@ -42,6 +42,8 @@ class System {
   std::array<uint16_t, k_MAX_ENTS> m_openSlots;
   uint16_t m_head = 0;
   uint16_t m_tail = k_MAX_ENTS - 1;
+  std::array<Entity, k_MAX_ENTS> m_enemies;
+  std::array<Entity, k_MAX_ENTS> m_allies;
 
   GraphicsSystem  m_graphics;
   PhysicsSystem   m_physics;
@@ -52,12 +54,9 @@ class System {
   std::array<TilePosition, k_MAX_ENTS> m_tilePositionComponents;
   std::array<Shape,        k_MAX_ENTS> m_shapeComponents;
 
-  std::array<Entity, k_MAX_ENTS> m_enemies;
-  std::array<Entity, k_MAX_ENTS> m_allies;
-
   System() {
     for (uint16_t i = 0; i < k_MAX_ENTS; i++) {
-      m_openSlots[i] = i+1;
+      m_openSlots[i] = i;
     }
   }
 
@@ -76,8 +75,8 @@ class System {
 
   template <typename T>
   T* addComponent(T c) {
-    this->getCompArray<T>()[c.m_entID-1] = c;
-    return &this->getCompArray<T>()[c.m_entID-1];
+    this->getCompArray<T>()[c.m_entID] = c;
+    return &this->getCompArray<T>()[c.m_entID];
   }
 
  private:

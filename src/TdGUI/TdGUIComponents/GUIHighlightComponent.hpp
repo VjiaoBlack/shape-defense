@@ -13,7 +13,7 @@
 
 class GUIHighlightComponent : public GUIComponent {
  public:
-  SDL_Color m_highlightColor;
+  MY_Color m_highlightColor;
 
   GUIHighlightComponent() {
     m_highlightColor.r = 0xFF;

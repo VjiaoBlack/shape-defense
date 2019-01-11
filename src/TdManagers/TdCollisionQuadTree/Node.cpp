@@ -183,7 +183,7 @@ void Node::refreshNode(
     std::unordered_map<int, Entity *> &outside) {
   // draw rect
 //  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0x80, 0x80, 0xFF, 0xFF);
-//  SDL_Rect draw{(int)m_rect.pos.x, (int)m_rect.pos.y, (int)m_rect.w,
+//  MY_Rect draw{(int)m_rect.pos.x, (int)m_rect.pos.y, (int)m_rect.w,
 //                (int)m_rect.h};
 //  SDL_RenderDrawRect(game->m_SDLRenderer, &draw);
 

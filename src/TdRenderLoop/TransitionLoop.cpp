@@ -50,22 +50,22 @@ void TransitionLoop::render(Game *game) {
             (float) ((m_maxTicks / 2.0)));
   }
 
-  SDL_Texture *tempTexSmall =
-      SDL_CreateTexture(game->m_SDLRenderer, SDL_PIXELFORMAT_RGBA8888,
-                        SDL_TEXTUREACCESS_TARGET, mx, my);
-  SDL_Texture *tempTexFull = SDL_CreateTexture(
-      game->m_SDLRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
-      sz(K_DISPLAY_SIZE_X), sz(K_DISPLAY_SIZE_Y));
+//  SDL_Texture *tempTexSmall =
+//      SDL_CreateTexture(game->m_SDLRenderer, SDL_PIXELFORMAT_RGBA8888,
+//                        SDL_TEXTUREACCESS_TARGET, mx, my);
+//  SDL_Texture *tempTexFull = SDL_CreateTexture(
+//      game->m_SDLRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
+//      sz(K_DISPLAY_SIZE_X), sz(K_DISPLAY_SIZE_Y));
 
-  SDL_SetTextureBlendMode(tempTexSmall, SDL_BLENDMODE_BLEND);
-  SDL_SetTextureBlendMode(tempTexFull, SDL_BLENDMODE_BLEND);
+//  SDL_SetTextureBlendMode(tempTexSmall, SDL_BLENDMODE_BLEND);
+//  SDL_SetTextureBlendMode(tempTexFull, SDL_BLENDMODE_BLEND);
 
-  SDL_Rect tmp = {0, 0, mx, my};
-  SDL_Rect tmpFr = {0, 0, mx, my};
-  SDL_Rect screenQuad = {0, 0, sz((K_DISPLAY_SIZE_X)),
+  MY_Rect tmp = {0, 0, mx, my};
+  MY_Rect tmpFr = {0, 0, mx, my};
+  MY_Rect screenQuad = {0, 0, sz((K_DISPLAY_SIZE_X)),
                          sz((K_DISPLAY_SIZE_Y))};
 
-  SDL_SetRenderTarget(game->m_SDLRenderer, tempTexFull);
+//  SDL_SetRenderTarget(game->m_SDLRenderer, tempTexFull);
 
   // if over halfway done, render the new one??
   if (m_curTick >= m_maxTicks / 2) {
@@ -75,9 +75,9 @@ void TransitionLoop::render(Game *game) {
     m_source->render(game);
   }
 
-  SDL_SetRenderTarget(game->m_SDLRenderer, tempTexSmall);
-
-  SDL_RenderCopy(game->m_SDLRenderer, tempTexFull, nullptr, &tmp);
+//  SDL_SetRenderTarget(game->m_SDLRenderer, tempTexSmall);
+//
+//  SDL_RenderCopy(game->m_SDLRenderer, tempTexFull, nullptr, &tmp);
 
   float alpha = m_curTick;
   if (alpha >= m_maxTicks / 2.0) {
@@ -90,10 +90,10 @@ void TransitionLoop::render(Game *game) {
 
   alpha *= 255.0;
 
-  SDL_SetRenderTarget(game->m_SDLRenderer, nullptr);
-  SDL_SetTextureAlphaMod(tempTexSmall, (int) alpha);
-
-  SDL_RenderCopy(game->m_SDLRenderer, tempTexSmall, &tmpFr, &screenQuad);
-
-  SDL_DestroyTexture(tempTexSmall);
+//  SDL_SetRenderTarget(game->m_SDLRenderer, nullptr);
+//  SDL_SetTextureAlphaMod(tempTexSmall, (int) alpha);
+//
+//  SDL_RenderCopy(game->m_SDLRenderer, tempTexSmall, &tmpFr, &screenQuad);
+//
+//  SDL_DestroyTexture(tempTexSmall);
 }

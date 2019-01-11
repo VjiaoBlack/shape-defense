@@ -7,7 +7,7 @@
  * <DETAILS>
  */
 
-#include <SDL_rect.h>
+//#include <SDL_rect.h>
 #include <exception>
 #include <map>
 #include <memory>

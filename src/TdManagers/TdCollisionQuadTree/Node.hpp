@@ -7,7 +7,7 @@
  * <DETAILS>
  */
 
-#include <SDL_rect.h>
+//#include <SDL_rect.h>
 #include <unordered_map>
 #include <set>
 #include <list>

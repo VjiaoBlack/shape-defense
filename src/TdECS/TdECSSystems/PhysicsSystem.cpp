@@ -11,7 +11,7 @@
 
 void PhysicsSystem::update(Game *game, System* system) {
   for (auto c = m_physicsComponents.begin(); c != m_physicsComponents.end();) {
-    if (!(c)->m_alive || c->m_entID == 0) {
+    if (!(c)->m_alive) {
       c++;
     } else {
       (c)->update(game, system);
@@ -20,7 +20,7 @@ void PhysicsSystem::update(Game *game, System* system) {
   }
 
   for (auto& c : m_physicsComponents) {
-    if (!c.m_alive || c.m_entID == 0) {
+    if (!c.m_alive) {
       continue;
     }
     system->getEnt(c.m_entID)->get<Position>()->m_p += c.m_v;

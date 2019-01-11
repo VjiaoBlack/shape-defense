@@ -8,12 +8,21 @@
  */
 
 #include "Component.hpp"
+#include <Utils.hpp>
+
+class Game;
+class System;
 
 class Graphics : public Component {
  public:
-  SDL_Color m_color{};
+  MY_Color m_color{};
+
+  std::array<int, 9> m_effectIndices;
+  bool m_validIndices = false;
 
   Graphics() {}
-  Graphics(SDL_Color color) : m_color(color) {}
+  Graphics(MY_Color color) : m_color(color) {}
+
+  void update(Game* game, System* system);
 };
 

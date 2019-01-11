@@ -10,8 +10,8 @@
 #include <Game.hpp>
 
 void GUIGraphicsComponent::update(Game *game) {
-  setRenderDrawColor(game->m_SDLRenderer, m_drawColor);
+//  setRenderDrawColor(game->m_SDLRenderer, m_drawColor);
 
-  SDL_RenderDrawRect(game->m_SDLRenderer, &m_rect);
+//  SDL_RenderDrawRect(game->m_SDLRenderer, &m_rect);
 }
 

@@ -2,10 +2,6 @@
 
 #include <set>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
-
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -23,31 +19,46 @@
 #include "Graphics.hpp"
 #include "TdECS/TdECSSystems/System.hpp"
 
+
+
+
+
+
+
+
+
+
+
 using namespace std;
 
 class GameLoop;
 class MainMenuLoop;
 class RenderLoop;
 
+// TODO: enforce singleton
 class Game {
  public:
   Window   m_SDLWindow;
   Renderer m_SDLRenderer;
 
   // setup for rendering loop
-  SDL_Event m_SDLEvent;
+//  SDL_Event m_SDLEvent;
   bool      m_quit;
 
-  set<int>  m_keysDown;
-  set<int>  m_keysDownPrev;
-  set<char> m_buttonsDown;
-  set<char> m_buttonsDownPrev;
+  static set<int>  m_keysDown;
+  static set<int>  m_keysDownPrev;
+  static set<char> m_buttonsDown;
+  static set<char> m_buttonsDownPrev;
 
-  int m_mouseX;
-  int m_mouseY;
+  static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+  static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos);
+  static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
-  ttf_font_pt m_font     = SDL::null_font();
-  ttf_font_pt m_menuFont = SDL::null_font();
+  static double m_mouseX;
+  static double m_mouseY;
+//
+//  ttf_font_pt m_font     = SDL::null_font();
+//  ttf_font_pt m_menuFont = SDL::null_font();
 
   std::unique_ptr<RenderLoop>            m_gameStateTransition;
   std::list<std::shared_ptr<RenderLoop>> m_gameStateStack;
@@ -67,11 +78,11 @@ class Game {
   Game();
   ~Game();
 
-  void setupSDL();
-
   void handleInput();
   void handleKey(int SDLKey);
   void run();
 
   void mainMenu();
 };
+
+

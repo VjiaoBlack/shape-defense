@@ -7,7 +7,7 @@
  * <DETAILS>
  */
 
-#include <SDL_rect.h>
+//#include <SDL_rect.h>
 #include "Component.hpp"
 
 class Shape : public Component {

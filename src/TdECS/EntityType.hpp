@@ -56,7 +56,7 @@ constexpr uint EntityColors[static_cast<uint>(EntityType::COUNT)+1] = {
 };
 constexpr entity_health_vec_t EntityHealths[static_cast<uint>(EntityType::COUNT)+1] = {
   {0, 0},
-  {1000, 3}, // BASE
+  {1000000, 3}, // BASE
   {100, 0}, // TOWER
   {75, 2}, // WALL
   {10, 0}, // ENEMY

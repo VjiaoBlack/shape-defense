@@ -13,12 +13,12 @@
 LevelManager::LevelManager(Game *game) {
   LOG_INF("Created LevelManager");
 
-  sdl_surface_pt textSurface(TTF_RenderText_Solid(
-      game->m_font.get(), m_titleText.c_str(), textColor0));
-  m_titleTexture.reset(
-      SDL_CreateTextureFromSurface(game->m_SDLRenderer, textSurface.get()));
-  text_width = textSurface->w;
-  text_height = textSurface->h;
+//  sdl_surface_pt textSurface(TTF_RenderText_Solid(
+//      game->m_font.get(), m_titleText.c_str(), textColor0));
+//  m_titleTexture.reset(
+//      SDL_CreateTextureFromSurface(game->m_SDLRenderer, textSurface.get()));
+//  text_width = textSurface->w;
+//  text_height = textSurface->h;
 
   m_rd = std::uniform_real_distribution<>(0.0, M_PI * 2);
 
@@ -45,7 +45,7 @@ void LevelManager::addRandomBoss(Game *game, double dist) {
 void LevelManager::update(Game* game) {
   for (auto key : game->m_keysDown) {
     switch (key) {
-      case SDLK_SPACE:
+      case GLFW_KEY_SPACE:
         this->addRandomEnemy(game, 1000);
         break;
     }
@@ -93,20 +93,20 @@ void LevelManager::render(Game* game) {
   m_titleText = std::to_string(m_curLevel) + " " +
                 std::to_string(Entity::numDestroyed[(uint)EntityType::ENEMY]) + " " +
                 std::to_string(m_curMarker);
-  sdl_surface_pt textSurface(TTF_RenderText_Solid(
-      game->m_font.get(), m_titleText.c_str(), textColor0));
-  m_titleTexture.reset(
-      SDL_CreateTextureFromSurface(game->m_SDLRenderer, textSurface.get()));
-  text_width = textSurface->w;
-  text_height = textSurface->h;
+//  sdl_surface_pt textSurface(TTF_RenderText_Solid(
+//      game->m_font.get(), m_titleText.c_str(), textColor0));
+//  m_titleTexture.reset(
+//      SDL_CreateTextureFromSurface(game->m_SDLRenderer, textSurface.get()));
+//  text_width = textSurface->w;
+//  text_height = textSurface->h;
 
   // text
-  SDL_Rect renderQuad = {
+  MY_Rect renderQuad = {
       sz(K_DISPLAY_SIZE_X / 2 - text_width / 2),
       sz(K_DISPLAY_SIZE_Y / 4 - text_height / 2),
       text_width * sz(1),
       text_height * sz(1)};
 
-  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0x00, 0x00, 0x00, 0x40);
-  SDL_RenderCopy(game->m_SDLRenderer, m_titleTexture.get(), nullptr, &renderQuad);
+//  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0x00, 0x00, 0x00, 0x40);
+//  SDL_RenderCopy(game->m_SDLRenderer, m_titleTexture.get(), nullptr, &renderQuad);
 }

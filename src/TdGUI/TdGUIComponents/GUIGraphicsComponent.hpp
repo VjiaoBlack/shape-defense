@@ -15,15 +15,15 @@ class Game;
 
 class GUIGraphicsComponent : public GUIComponent {
  public:
-  SDL_Rect m_rect;
+  MY_Rect m_rect;
 
-  SDL_Color m_buttonColor;
+  MY_Color m_buttonColor;
 
-  SDL_Color m_drawColor;
+  MY_Color m_drawColor;
 
   GUIGraphicsComponent() = delete;
 
-  GUIGraphicsComponent(SDL_Rect rect) : m_rect(rect) {
+  GUIGraphicsComponent(MY_Rect rect) : m_rect(rect) {
     m_buttonColor = convertColorType(0xFF00FF00);
 
     m_drawColor = m_buttonColor;

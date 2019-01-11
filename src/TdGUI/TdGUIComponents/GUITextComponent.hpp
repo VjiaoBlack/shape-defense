@@ -13,11 +13,11 @@
 class GUITextComponent : public GUIComponent {
  public:
   std::string m_text;
-  sdl_texture_pt m_textTexture;
-  SDL_Rect m_destRect;
-  SDL_Color m_textColor;
+//  sdl_texture_pt m_textTexture;
+  MY_Rect m_destRect;
+  MY_Color m_textColor;
 
-  GUITextComponent(Game* game, std::string label, SDL_Rect r);
+  GUITextComponent(Game* game, std::string label, MY_Rect r);
 
   virtual void update(Game* game);
 };

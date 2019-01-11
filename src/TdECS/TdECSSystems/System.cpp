@@ -13,10 +13,10 @@
 #include "SystemPosUtils.hpp"
 
 Entity* System::getEnt(int entID) {
-  if (m_enemies[entID-1].m_id > 0) {
-    return &m_enemies[entID-1];
-  } else if (m_allies[entID-1].m_id > 0) {
-    return &m_allies[entID-1];
+  if (m_enemies[entID].m_alive) {
+    return &m_enemies[entID];
+  } else if (m_allies[entID].m_alive) {
+    return &m_allies[entID];
   } else {
     return nullptr;
   }
@@ -27,9 +27,9 @@ void System::addEntity(Game *game, Entity e) {
   if (e.has<Attack>() &&
       e.get<Attack>()->m_type ==
           Attack::FIGHTER) {
-    m_enemies[id-1] = std::move(e);
+    m_enemies[id] = std::move(e);
   } else {
-    m_allies[id-1] = std::move(e);
+    m_allies[id] = std::move(e);
   }
   if (!m_collisions.m_qtree->tryAddEntID(game, this, id)) {
     LOG_ERR("Error: FAILED TO ADD ENTITY");

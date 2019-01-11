@@ -7,14 +7,15 @@
 #include <random>
 #include <vector>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
+//#include <SDL2/SDL.h>
+//#include <SDL2/SDL_image.h>
+//#include <SDL2/SDL_ttf.h>
 
 #include <glm/glm.hpp>
 #include <glm/detail/_swizzle.hpp>
 
 #include "Graphics.hpp"
+#include <MY.hpp>
 
 // set to 2 (or more) if it's a retina screen, 1 if not.
 #define K_RETINA 1
@@ -66,8 +67,8 @@
 using namespace std;
 using namespace glm;
 
-void renderTextureWithOffset(SDL_Renderer *renderer, SDL_Texture *texture,
-                             int xOff, int yOff, int pixelSize);
+//void renderTextureWithOffset(SDL_Renderer *renderer, SDL_Texture *texture,
+//                             int xOff, int yOff, int pixelSize);
 
 // edited from
 // https://en.wikipedia.org/wiki/Fast_inverse_square_root
@@ -170,21 +171,21 @@ inline uint32_t shiftColor(uint32_t color, int r, int g, int b) {
   return ret;
 }
 
-constexpr inline SDL_Color convertColorType(uint32_t color) {
-  return (SDL_Color)
-      {static_cast<Uint8>((color >> 16) & 0xFF),
-       static_cast<Uint8>((color >> 8) & 0xFF),
-       static_cast<Uint8>((color) & 0xFF),
-       static_cast<Uint8>((color >> 24) & 0xFF)};
+constexpr inline MY_Color convertColorType(uint32_t color) {
+  return (MY_Color)
+      {static_cast<uint8_t>((color >> 16) & 0xFF),
+       static_cast<uint8_t>((color >> 8) & 0xFF),
+       static_cast<uint8_t>((color) & 0xFF),
+       static_cast<uint8_t>((color >> 24) & 0xFF)};
 }
 
-constexpr inline uint32_t convertColorType(SDL_Color color) {
+constexpr inline uint32_t convertColorType(MY_Color color) {
   return color.a << 24 | color.r << 16 | color.g << 8 | color.b;
 }
 
 /// Insets a rect by the amount specified on the left, top, right, and bottom.
 /// Asserts that it cannot inset a rect beyond a 0 dimension
-inline SDL_Rect makeInsetRect(SDL_Rect rect, int left, int top, int right, int bottom) {
+inline MY_Rect makeInsetRect(MY_Rect rect, int left, int top, int right, int bottom) {
   //
   assert(rect.w >= left + right);
   assert(rect.h >= top + bottom);
@@ -192,10 +193,10 @@ inline SDL_Rect makeInsetRect(SDL_Rect rect, int left, int top, int right, int b
           rect.w - (left + right), rect.h - (top + bottom)};
 }
 
-inline void setRenderDrawColor(SDL_Renderer* renderer, SDL_Color color) {
-  SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-}
+//inline void setRenderDrawColor(SDL_Renderer* renderer, MY_Color color) {
+//  SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+//}
 
-inline SDL_Point makeSDLPoint(int x, int y) {
-  return (SDL_Point) {x, y};
-}
+//inline SDL_Point makeSDLPoint(int x, int y) {
+//  return (SDL_Point) {x, y};
+//}

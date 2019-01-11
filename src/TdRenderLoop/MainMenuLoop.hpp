@@ -16,11 +16,11 @@ class GUISystem;
 class MainMenuLoop : public RenderLoop {
 public:
   std::string m_titleText = "Defense";
-  SDL_Color textColor0 = {0, 255, 0, 255};
+  MY_Color textColor0 = {0, 255, 0, 255};
   int text_width;
   int text_height;
 
-  sdl_texture_pt m_titleTexture;
+//  sdl_texture_pt m_titleTexture;
 
   unique_ptr<GUISystem> m_GUISystem;
   GUIEntity *m_GUIMenu;

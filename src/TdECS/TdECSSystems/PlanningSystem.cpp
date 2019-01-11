@@ -40,7 +40,7 @@ void Pathing::stop(Game* game, System* system) {
 
 void PlanningSystem::update(Game *game, System* system) {
   for (auto c = m_attackComponents.begin(); c != m_attackComponents.end();) {
-    if (!(c)->m_alive || c->m_entID == 0) {
+    if (!(c)->m_alive) {
       c++;
     } else {
       (c)->update(game, system);
@@ -49,7 +49,7 @@ void PlanningSystem::update(Game *game, System* system) {
   }
 
   for (auto &c : m_attackComponents) {
-    if (!c.m_alive || c.m_entID == 0) {
+    if (!c.m_alive) {
       continue;
     }
     if (c.m_curCooldown > 0) {
@@ -104,7 +104,7 @@ void PlanningSystem::update(Game *game, System* system) {
         break;
       case Attack::ENEMY:  // targets allies
         for (auto &itPair : system->m_allies) {
-          if (!itPair.m_alive || itPair.m_id == 0) {
+          if (!itPair.m_alive) {
             continue;
           }
 
@@ -141,7 +141,7 @@ void PlanningSystem::update(Game *game, System* system) {
 
 
   for (auto c = m_laserComponents.begin(); c != m_laserComponents.end();) {
-    if (!(c)->m_alive || c->m_entID == 0) {
+    if (!(c)->m_alive) {
       c++;
     } else {
       (c)->update(game, system);
@@ -149,7 +149,7 @@ void PlanningSystem::update(Game *game, System* system) {
     }
   }
   for (auto &comp : m_laserComponents) {
-    if (!comp.m_alive || comp.m_entID == 0) {
+    if (!comp.m_alive) {
       continue;
     }
     auto ent = system->getEnt(comp.m_entID);
@@ -177,7 +177,7 @@ void PlanningSystem::update(Game *game, System* system) {
 
 
   for (auto c = m_pathingComponents.begin(); c != m_pathingComponents.end();) {
-    if (!(c)->m_alive || c->m_entID == 0) {
+    if (!(c)->m_alive) {
       c++;
     } else {
       (c)->update(game, system);
@@ -186,7 +186,7 @@ void PlanningSystem::update(Game *game, System* system) {
   }
 
   for (auto& c : m_pathingComponents) {
-    if (!c.m_alive || c.m_entID == 0) {
+    if (!c.m_alive) {
       continue;
     }
     if (c.m_isMoving) {
@@ -214,15 +214,16 @@ void PlanningSystem::update(Game *game, System* system) {
 
         //      if (dist <= system->getEnt(m_entID)->get<Shape>()->m_dimensions.x) {
         //        system->getEnt(m_entID)->get<Graphics>()->m_color =
-        //          (SDL_Color) {0x00, 0xFF, 0xFF, 0xFF};
+        //          (MY_Color) {0x00, 0xFF, 0xFF, 0xFF};
         //      } else {
         //        system->getEnt(m_entID)->get<Graphics>()->m_color =
-        //            (SDL_Color) {0xFF, 0x00, 0x00, 0xFF};
+        //            (MY_Color) {0xFF, 0x00, 0x00, 0xFF};
         //      }
 
         myEnt->get<Physics>()->m_v = glm::vec2(0);
 
         // only allow to move if there is space
+
         c.move(game, system, c.m_goalxy.x, c.m_goalxy.y);
 
         glm::vec2 vel = system->getEnt(c.m_entID)->get<Physics>()->m_v;

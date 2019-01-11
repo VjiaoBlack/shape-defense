@@ -54,8 +54,8 @@ public:
 
 
   static GUIEntity *addButton(Game *game, GUISystem *system,
-                                SDL_Rect rect, std::string label) {
-    SDL_Rect textRect = rect;
+                                MY_Rect rect, std::string label) {
+    MY_Rect textRect = rect;
 
     auto entity = std::make_unique<GUIEntity>(system);
 
@@ -78,9 +78,9 @@ public:
   }
 
   static GUIEntity *addVerticalMenu(Game *game, GUISystem *system,
-                                      SDL_Rect rect,
+                                      MY_Rect rect,
                                       std::vector<std::string> labels) {
-    SDL_Rect textRect = rect;
+    MY_Rect textRect = rect;
 
     auto entity = std::make_unique<GUIEntity>(system);
 
@@ -91,7 +91,7 @@ public:
                             containerComp->m_spacing * (labels.size() - 1)) /
         static_cast<double>(labels.size());
     for (int i = 0; i < labels.size(); i++) {
-      SDL_Rect buttonRect = {
+      MY_Rect buttonRect = {
           rect.x, static_cast<int>(
                       round(rect.y + i * (height + containerComp->m_spacing))),
           rect.w, static_cast<int>(round(height))};
@@ -107,9 +107,9 @@ public:
   }
 
   static GUIEntity *addHorizontalMenu(Game *game, GUISystem *system,
-                                        SDL_Rect rect,
+                                        MY_Rect rect,
                                         std::vector<std::string> labels) {
-    SDL_Rect textRect = rect;
+    MY_Rect textRect = rect;
 
     auto entity = std::make_unique<GUIEntity>(system);
 
@@ -120,7 +120,7 @@ public:
                             containerComp->m_spacing * (labels.size() - 1)) /
         static_cast<double>(labels.size());
     for (int i = 0; i < labels.size(); i++) {
-      SDL_Rect buttonRect = {
+      MY_Rect buttonRect = {
           static_cast<int>(
               round(rect.x + i * (width + containerComp->m_spacing))),
           rect.y, static_cast<int>(round(width)), rect.h};

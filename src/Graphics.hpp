@@ -7,74 +7,109 @@
  * Stores wrappers for SDL2
  */
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
 #include <random>
-#include <vector>
 #include <memory>
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <common/shader.hpp>
 #include "Utils.hpp"
+#include <MY.hpp>
 
-// https://swarminglogic.com/jotting/2015_05_smartwrappers
-template<class T, class D = std::default_delete<T>>
-struct shared_ptr_with_deleter : public std::shared_ptr<T> {
-  explicit shared_ptr_with_deleter(T *t = nullptr)
-      : std::shared_ptr<T>(t, D()) {}
+void addTriangle(std::vector<GLfloat>& buf, int pos,
+                 glm::vec2 a, glm::vec2 b, glm::vec2 c);
 
-  void reset(T *t = nullptr) {
-    std::shared_ptr<T>::reset(t, D());
-  }
+//template <typename T>
+class CircularBuffer {
+ public:
+  static constexpr int k_length = 900;
+  int m_head = 0; // most recently added
+  int m_tail = 0; // least recently added
+//  std::array<T, CircularBuffer::k_length> m_arr;
+  std::array<float, CircularBuffer::k_length> m_arr;
+  std::array<bool,  CircularBuffer::k_length> m_alive;
+
+  CircularBuffer();
+
+  // TODO: optimize these for bulk add/removes
+//  int  add   (T   elem);
+  int  add   (float   elem);
+  bool remove(int pos);
+
+  size_t size() { return CircularBuffer::k_length; }
+//  T*     data() { return m_arr.data(); }
+  float* data() { return m_arr.data(); }
+
+ private:
 };
 
-struct SDL_Deleter {
-  static int boop;
-  void operator()(SDL_Surface *ptr) { if (ptr) SDL_FreeSurface(ptr); }
-  void operator()(SDL_Texture *ptr) { if (ptr) SDL_DestroyTexture(ptr); }
-  void operator()(SDL_Renderer *ptr) { if (ptr) SDL_DestroyRenderer(ptr); }
-  void operator()(SDL_Window *ptr) { if (ptr) SDL_DestroyWindow(ptr); }
-  void operator()(TTF_Font *ptr) { if (ptr) TTF_CloseFont(ptr); }
+class GraphicsBackend {
+ public:
+  static constexpr int triangles_per_ent = 8;
+
+  std::vector<GLfloat> gridVBOdata;
+  std::vector<GLfloat> entVBOdata;
+  std::vector<GLfloat> enthealthVBOdata;
+//  CircularBuffer<GLfloat> effectVBOdata;
+//  CircularBuffer<GLfloat> guiVBOdata;
+  CircularBuffer effectVBOdata;
+  CircularBuffer guiVBOdata;
+
+  GLuint gridVAO;
+  GLuint entVAO;
+  GLuint guiVAO;
+  GLuint effectVAO;
+
+  GLuint gridvertexVBO;
+  GLuint entvertexVBO;
+  GLuint enthealthVBO;
+  GLuint guiVBO;
+  GLuint effectVBO;
+
+  GLuint gridShader;
+  GLuint entShader;
+
+  GLFWwindow* window;
+
+
+  GraphicsBackend() {};
+
+  void initialize();
+  void destroy();
+
+//  void loadShader();
+//  void useShader();
+
+  static void createVAO(GLuint* VAO);
+  static void createVBO(GLuint* VBO, GLuint VAO);
+  static void updateVBO(GLuint VBO, void* dataPtr, size_t size);
+
+  // for fixed-sized data sources like Ents, use 1-1 mapping
+  // for dynamic-sized data sources like firing lasers, use circular buffer
+ private:
+
 };
 
+extern GraphicsBackend graphicsBackend;
+constexpr int triangles_per_ent = 8;
 
-typedef shared_ptr_with_deleter<SDL_Surface, SDL_Deleter> sdl_surface_pt;
-typedef shared_ptr_with_deleter<SDL_Texture, SDL_Deleter> sdl_texture_pt;
-typedef shared_ptr_with_deleter<TTF_Font, SDL_Deleter> ttf_font_pt;
 
-struct SDL {
-  static sdl_texture_pt null_texture();
-
-  static ttf_font_pt null_font();
-};
 
 struct Renderer {
-  std::unique_ptr<SDL_Renderer, void (*)(SDL_Renderer *)> m_renderer
-      = std::unique_ptr<SDL_Renderer, void (*)(SDL_Renderer *)>(nullptr, SDL_DestroyRenderer);
-
   Renderer() = default;
-  explicit Renderer(SDL_Renderer *renderer) {
-    m_renderer = std::unique_ptr<SDL_Renderer, void (*)(SDL_Renderer *)>(renderer,
-        SDL_DestroyRenderer);
-  }
-
-  // implicit cast to SDL_Renderer
-  operator SDL_Renderer *() const { return m_renderer.get(); }
 };
 
 struct Window {
-  std::unique_ptr<SDL_Window, void (*)(SDL_Window *)> m_renderer
-      = std::unique_ptr<SDL_Window, void (*)(SDL_Window *)>(nullptr, SDL_DestroyWindow);
-
   Window() = default;
-  explicit Window(SDL_Window *window) {
-    m_renderer = std::unique_ptr<SDL_Window, void (*)(SDL_Window *)>(window, SDL_DestroyWindow);
-  }
-
-  // implicit cast to SDL_Window
-  operator SDL_Window *() const { return m_renderer.get(); }
 };
 
 using namespace std;

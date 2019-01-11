@@ -38,10 +38,12 @@ glm::dvec2 Entity::getCenterPosition() {
 uint Entity::numCreated[static_cast<uint>(EntityType::COUNT)+1] = {0, 0, 0, 0, 0};
 uint Entity::numDestroyed[static_cast<uint>(EntityType::COUNT)+1] = {0, 0, 0, 0, 0};
 
-Entity::Entity(System *system, EntityType type)
-    : m_id(system->m_openSlots[system->m_head])
-    , m_system(system)
-    , m_type(type) {
+Entity::Entity(System *system, EntityType type){
+  m_id = system->m_openSlots[system->m_head];
+  m_system = system;
+  m_type = type;
+
+
   system->m_openSlots[system->m_head] = 0; // clear mem
   system->m_head += 1;
   if (system->m_head >= k_MAX_ENTS) {
@@ -98,6 +100,7 @@ void Entity::die() {
 template <class T>
 void Entity::addComponent(T component) {
   component.m_entID = m_id;
+  component.m_alive = true;
 
   if (m_system) {
     m_components[classToInt<T>::value] = m_system->addComponent(component);
@@ -112,7 +115,7 @@ void Entity::addEntity<EntityType::BASE>(Game* game, System* system) {
   auto entity = Entity(system, EntityType::BASE);
 
   auto tilePosComp = TilePosition(0, 0);
-  auto attackComp = Attack(Attack::ALLIED, 2, 0.3, Attack::SHOOTER);
+  auto attackComp = Attack(Attack::ALLIED, 1, 0.1, Attack::SHOOTER);
   auto laserComp = LaserShooter();
 
   entity.addComponent(tilePosComp);

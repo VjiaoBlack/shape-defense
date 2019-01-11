@@ -15,7 +15,7 @@ class LevelManager {
   std::uniform_real_distribution<> m_rd;
 
   std::string m_titleText = "BLEP";
-  SDL_Color textColor0 = {0, 255, 0, 255};
+  MY_Color textColor0 = {0, 255, 0, 255};
   int text_width;
   int text_height;
 
@@ -26,7 +26,7 @@ class LevelManager {
   int m_curLevel = 1;
   int m_curBossesSpawned = 0;
 
-  sdl_texture_pt m_titleTexture;
+//  sdl_texture_pt m_titleTexture;
 
   LevelManager(Game* game);
 

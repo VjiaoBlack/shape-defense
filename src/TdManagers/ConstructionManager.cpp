@@ -13,8 +13,8 @@
 ConstructionManager::ConstructionManager(Game* game) {
   m_GUISystem = std::make_unique<GUISystem>();
 
-  SDL_Rect r =
-      (SDL_Rect){sz(K_DISPLAY_SIZE_X * 3 / 4),
+  MY_Rect r =
+      (MY_Rect){sz(K_DISPLAY_SIZE_X * 3 / 4),
                  sz(K_DISPLAY_SIZE_Y / 2 - K_DISPLAY_SIZE_Y / 4 - K_DISPLAY_SIZE_Y / 8),
                  sz(200), sz(K_DISPLAY_SIZE_Y * 3 / 4)};
 
@@ -38,10 +38,10 @@ void ConstructionManager::update(Game *game) {
 
   for (auto button : game->m_buttonsDown) {
     switch (button) {
-      case SDL_BUTTON_LEFT:
-        if (!game->m_buttonsDownPrev.count(SDL_BUTTON_LEFT)) {
-          build(game);
-        }
+//      case SDL_BUTTON_LEFT:
+//        if (!game->m_buttonsDownPrev.count(SDL_BUTTON_LEFT)) {
+//          build(game);
+//        }
         break;
     }
   }
@@ -57,17 +57,17 @@ void ConstructionManager::render(Game* game) {
     m_rect.x = (1 + (game->m_mouseX - 16) / 16) * 16 + 0;
     m_rect.y = (1 + (game->m_mouseY - 16) / 16) * 16 + 2;
 
-    SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    SDL_Rect b = m_rect;
+//    SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    MY_Rect b = m_rect;
 
     switch (m_type) {
       case EntityType::TOWER:
-        SDL_RenderDrawRect(game->m_SDLRenderer, &m_rect);
+//        SDL_RenderDrawRect(game->m_SDLRenderer, &m_rect);
         break;
       case EntityType::WALL:
         b.w  = 16;
         b.h  = 16;
-        SDL_RenderDrawRect(game->m_SDLRenderer, &b);
+//        SDL_RenderDrawRect(game->m_SDLRenderer, &b);
         break;
       default:
         LOG_ERR("Construction manager has unhandled entity type: %d", (uint) m_type);
