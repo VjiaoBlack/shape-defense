@@ -29,24 +29,32 @@ class GUIGraphicsComponent : public GUIComponent {
     m_buttonColor = convertColorType(0xFF00FF00);
 
     m_drawColor = m_buttonColor;
+    this->refresh();
+  };
+
+  ~GUIGraphicsComponent() {
+    this->destroy();
+  }
+
+  void destroy() {
+    m_rect1.destroy();
+    m_rect2.destroy();
+  }
+
+  void refresh() {
     m_rect1 = Triangle(&graphicsBackend.guiVBOdata,
                        &graphicsBackend.guicolorVBOdata,
-                       glm::vec2(rect.x, rect.y),
-                       glm::vec2(rect.x + rect.w, rect.y),
-                       glm::vec2(rect.x + rect.w, rect.y + rect.h),
+                       glm::vec2(m_rect.x, m_rect.y),
+                       glm::vec2(m_rect.x + m_rect.w, m_rect.y),
+                       glm::vec2(m_rect.x + m_rect.w, m_rect.y + m_rect.h),
                        glm::vec3(1.0, 0.0, 1.0));
 
     m_rect2 = Triangle(&graphicsBackend.guiVBOdata,
                        &graphicsBackend.guicolorVBOdata,
-                       glm::vec2(rect.x, rect.y),
-                       glm::vec2(rect.x, rect.y + rect.h),
-                       glm::vec2(rect.x + rect.w, rect.y + rect.h),
+                       glm::vec2(m_rect.x, m_rect.y),
+                       glm::vec2(m_rect.x, m_rect.y + m_rect.h),
+                       glm::vec2(m_rect.x + m_rect.w, m_rect.y + m_rect.h),
                        glm::vec3(1.0, 0.0, 1.0));
-  };
-
-  ~GUIGraphicsComponent() {
-    m_rect1.destroy();
-    m_rect2.destroy();
   }
 
   virtual void update(Game *game);

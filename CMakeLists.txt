@@ -15,7 +15,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O0 -Werror -g")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O3 -Werror")
 
 # Include libraries
-find_package(glfw3     REQUIRED)
+find_package(GLFW3     REQUIRED)
 find_package(GLEW      REQUIRED)
 find_package(FreeType2 REQUIRED)
 find_package(OpenGL    REQUIRED)

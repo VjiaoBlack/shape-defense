@@ -347,11 +347,12 @@ void GraphicsBackend::render_text(const char *text, float x, float y, float sx, 
   glDeleteTextures(1, &tex);
 }
 
-void GraphicsBackend::display() {
+void GraphicsBackend::displayText() {
   float sx = 2.0 / K_DISPLAY_SIZE_X;
   float sy = 2.0 / K_DISPLAY_SIZE_Y;
 
   glUseProgram(textShader);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
   /* White background */
 //  glClearColor(0.5, 0.5, 0.5, 0.5);

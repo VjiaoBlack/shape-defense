@@ -15,7 +15,7 @@ class GUISystem;
 class GameLoop : public RenderLoop {
  public:
   std::unique_ptr<ConstructionManager> m_constructionManager;
-  std::unique_ptr<LevelManager> m_levelManager;
+  std::unique_ptr<LevelManager>        m_levelManager;
 
   Triangle m_moneyBar1;
   Triangle m_moneyBar2;
@@ -28,5 +28,5 @@ class GameLoop : public RenderLoop {
   ~GameLoop() override;
 
   RenderLoop *update(Game *game) override;
-  void render(Game *game) override;
+  void        render(Game *game) override;
 };

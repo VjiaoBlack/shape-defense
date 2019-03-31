@@ -14,19 +14,19 @@ class GUIEntity;
 class GUISystem;
 
 class MainMenuLoop : public RenderLoop {
-public:
+ public:
   std::string m_titleText = "Defense";
-  MY_Color textColor0 = {0, 255, 0, 255};
-  int text_width;
-  int text_height;
+  MY_Color    textColor0  = {0, 255, 0, 255};
+  int         text_width;
+  int         text_height;
 
-  unique_ptr<GUISystem> m_GUISystem;
-  GUIEntity *m_GUIMenu;
+  unique_ptr<GUISystem>  m_GUISystem;
+  GUIEntity             *m_GUIMenu;
 
   explicit MainMenuLoop(Game *game);
 
   ~MainMenuLoop() override;
 
   RenderLoop *update(Game *game) override;
-  void render(Game *game) override;
+  void        render(Game *game) override;
 };

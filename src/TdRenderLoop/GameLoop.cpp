@@ -7,7 +7,6 @@
 #include <TdManagers/LevelManager.hpp>
 #include "TdECS/Entity.hpp"
 #include "MainMenuLoop.hpp"
-#include "TransitionLoop.hpp"
 
 class MainMenuLoop;
 
@@ -64,18 +63,12 @@ GameLoop::GameLoop(Game *game) {
 GameLoop::~GameLoop() = default;
 
 RenderLoop *GameLoop::update(Game *game) {
-  auto penu = game->m_gameStateStack.end();
-
   for (auto key : game->m_keysDown) {
     switch (key) {
       case GLFW_KEY_V:
-        penu--;
-        penu--;
-
-        game->m_gameStateTransition = TransitionLoop::makePopLoop(
-            game, game->m_gameStateStack.back(), *penu);
         game->m_gameStateStack.pop_back();
-
+        // deleting the current loop
+        return nullptr;
         break;
     }
   }

@@ -40,7 +40,6 @@ Game::Game()
 
   // setup game loop
   auto tempmenu = make_shared<MainMenuLoop>(this);
-//  auto tempmenu = make_shared<GameLoop>(this);
   m_gameStateStack.push_back(std::move(tempmenu));
 }
 
@@ -54,9 +53,11 @@ Game::~Game() {
 
 void Game::run() {
   while (!m_quit) {
-
     // TODO: consider GLFW time?
     clock_t beginFrame = clock();
+
+    // Clear the screen
+    glClear(GL_COLOR_BUFFER_BIT);
 
     glfwPollEvents();
 
@@ -73,9 +74,6 @@ void Game::run() {
       LOG_FAT("No RenderLoop in render stack\n");
       exit(1);
     }
-
-    // Clear the screen
-    glClear( GL_COLOR_BUFFER_BIT );
 
     // Use our shader
     glUseProgram(graphicsBackend.gridShader);
@@ -151,8 +149,7 @@ void Game::run() {
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
 
-
-    graphicsBackend.display();
+    // graphicsBackend.displayText();
 
     // Swap buffers
     glfwSwapBuffers(graphicsBackend.window);
