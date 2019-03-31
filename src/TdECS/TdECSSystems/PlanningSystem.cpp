@@ -137,9 +137,6 @@ void PlanningSystem::update(Game *game, System* system) {
     }
   }
 
-
-
-
   for (auto c = m_laserComponents.begin(); c != m_laserComponents.end();) {
     if (!(c)->m_alive) {
       c++;
@@ -171,10 +168,6 @@ void PlanningSystem::update(Game *game, System* system) {
       }
     }
   }
-
-
-
-
 
   for (auto c = m_pathingComponents.begin(); c != m_pathingComponents.end();) {
     if (!(c)->m_alive) {
@@ -211,14 +204,6 @@ void PlanningSystem::update(Game *game, System* system) {
                   dist,
                   system->getEnt(c.m_entID)->get<Shape>()->m_dimensions.x);
         }
-
-        //      if (dist <= system->getEnt(m_entID)->get<Shape>()->m_dimensions.x) {
-        //        system->getEnt(m_entID)->get<Graphics>()->m_color =
-        //          (MY_Color) {0x00, 0xFF, 0xFF, 0xFF};
-        //      } else {
-        //        system->getEnt(m_entID)->get<Graphics>()->m_color =
-        //            (MY_Color) {0xFF, 0x00, 0x00, 0xFF};
-        //      }
 
         myEnt->get<Physics>()->m_v = glm::vec2(0);
 

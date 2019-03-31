@@ -17,13 +17,12 @@ double Game::m_mouseX;
 double Game::m_mouseY;
 
 Game::Game()
-    : m_quit(false),
-      m_gameStateTransition(nullptr),
-      m_deltaTime(0),
-      m_frames(0),
-      m_frameRate(30) {
+  : m_quit(false)
+  , m_gameStateTransition(nullptr)
+  , m_deltaTime(0)
+  , m_frames(0)
+  , m_frameRate(30) {
   graphicsBackend.initialize();
-
 
   // initialize framerate counter
   m_deltaTime = 0;
@@ -40,10 +39,9 @@ Game::Game()
   Entity::addEntity<EntityType::BASE>(this, m_entitySystem.get());
 
   // setup game loop
-//  auto tempmenu = make_shared<MainMenuLoop>(this);
-  auto tempmenu = make_shared<GameLoop>(this);
+  auto tempmenu = make_shared<MainMenuLoop>(this);
+//  auto tempmenu = make_shared<GameLoop>(this);
   m_gameStateStack.push_back(std::move(tempmenu));
-
 }
 
 Game::~Game() {
@@ -54,15 +52,13 @@ Game::~Game() {
   graphicsBackend.destroy();
 }
 
-
 void Game::run() {
   while (!m_quit) {
 
     // TODO: consider GLFW time?
     clock_t beginFrame = clock();
 
-    // Update keysDown and buttonsDown
-    handleInput();
+    glfwPollEvents();
 
     if (m_gameStateTransition) {
       m_gameStateTransition->render(this);
@@ -70,18 +66,106 @@ void Game::run() {
       if (!loop) {
         m_gameStateTransition.reset(nullptr);
       }
-    } else {
+    } else if (m_gameStateStack.back()) {
       m_gameStateStack.back()->render(this);
       RenderLoop *loop = m_gameStateStack.back()->update(this);
+    } else {
+      LOG_FAT("No RenderLoop in render stack\n");
+      exit(1);
     }
 
-    // update screen
+    // Clear the screen
+    glClear( GL_COLOR_BUFFER_BIT );
+
+    // Use our shader
+    glUseProgram(graphicsBackend.gridShader);
+
+    // draw background grid
+    glBindVertexArray(graphicsBackend.gridVAO);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, graphicsBackend.gridvertexVBO);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    glDrawArrays(GL_LINES, 0, graphicsBackend.gridVBOdata.size());
+
+    // draw ents
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glUseProgram(graphicsBackend.entShader);
+    glBindVertexArray(graphicsBackend.entVAO);
+
+    // ent shapes
+    glEnableVertexAttribArray(0);
+    GraphicsBackend::updateVBO(graphicsBackend.entvertexVBO,
+                               graphicsBackend.entVBOdata.data(),
+                               sizeof(GLfloat) * graphicsBackend.entVBOdata.size());
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    // ent healths
+    glEnableVertexAttribArray(1);
+    GraphicsBackend::updateVBO(graphicsBackend.entcolorVBO,
+                               graphicsBackend.entcolorVBOdata.data(),
+                               sizeof(GLfloat) * graphicsBackend.entcolorVBOdata.size());
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glDrawArrays(GL_TRIANGLES, 0, graphicsBackend.entVBOdata.size());
+
+    // draw effects
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glUseProgram(graphicsBackend.effectShader);
+    glBindVertexArray(graphicsBackend.effectVAO);
+    glEnableVertexAttribArray(0);
+    GraphicsBackend::updateVBO(graphicsBackend.effectVBO,
+                               graphicsBackend.effectVBOdata.data(),
+                               sizeof(GLfloat) * graphicsBackend.effectVBOdata.size());
+    glBindBuffer(GL_ARRAY_BUFFER, graphicsBackend.effectVBO);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glEnableVertexAttribArray(1);
+    GraphicsBackend::updateVBO(graphicsBackend.effectcolorVBO,
+                               graphicsBackend.effectcolorVBOdata.data(),
+                               sizeof(GLfloat) * graphicsBackend.effectcolorVBOdata.size());
+    glBindBuffer(GL_ARRAY_BUFFER, graphicsBackend.effectcolorVBO);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glDrawArrays(GL_TRIANGLES, 0, graphicsBackend.effectVBOdata.size());
+
+    // draw GUI
+    glUseProgram(graphicsBackend.guiShader);
+    glBindVertexArray(graphicsBackend.guiVAO);
+    glEnableVertexAttribArray(0);
+    GraphicsBackend::updateVBO(graphicsBackend.guiVBO,
+                               graphicsBackend.guiVBOdata.data(),
+                               sizeof(GLfloat) * graphicsBackend.guiVBOdata.size());
+    glBindBuffer(GL_ARRAY_BUFFER, graphicsBackend.guiVBO);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glEnableVertexAttribArray(1);
+    GraphicsBackend::updateVBO(graphicsBackend.guicolorVBO,
+                               graphicsBackend.guicolorVBOdata.data(),
+                               sizeof(GLfloat) * graphicsBackend.guicolorVBOdata.size());
+    glBindBuffer(GL_ARRAY_BUFFER, graphicsBackend.guicolorVBO);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glDrawArrays(GL_TRIANGLES, 0, graphicsBackend.guiVBOdata.size());
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+
+
+    graphicsBackend.display();
+
+    // Swap buffers
+    glfwSwapBuffers(graphicsBackend.window);
+
+    // set prev frame's inputs
+    updatePrevInput();
+
     clock_t endFrame = clock();
 
     m_deltaTime = clockToMilliseconds(endFrame - beginFrame);
     double rfps = (1000.0 / m_deltaTime);
     // display rFPS (rendering FPS)
-//    std::cout << "rFPS: " << rfps << std::endl;
+    // std::cout << "rFPS: " << rfps << std::endl;
     fflush(stdout);
     if (m_deltaTime < (1000.0 / 30.0)) {
       usleep(1000 * ((1000.0 / 30.0) - m_deltaTime));
@@ -106,7 +190,9 @@ void Game::key_callback(GLFWwindow* window, int key, int scancode, int action, i
 
 void Game::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
   Game::m_mouseX = xpos;
-  Game::m_mouseY = ypos;
+  // TODO: some Y coordinates seem flipped?
+  // example case: this vs GUI components
+  Game::m_mouseY = K_DISPLAY_SIZE_Y - ypos;
 }
 
 void Game::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
@@ -117,7 +203,7 @@ void Game::mouse_button_callback(GLFWwindow* window, int button, int action, int
   }
 }
 
-void Game::handleInput() {
+void Game::updatePrevInput() {
   Game::m_keysDownPrev.empty();
   Game::m_buttonsDownPrev.empty();
   Game::m_keysDownPrev = m_keysDown;

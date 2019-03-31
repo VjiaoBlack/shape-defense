@@ -93,7 +93,8 @@ public:
     for (int i = 0; i < labels.size(); i++) {
       MY_Rect buttonRect = {
           rect.x, static_cast<int>(
-                      round(rect.y + i * (height + containerComp->m_spacing))),
+                      round(K_DISPLAY_SIZE_Y / 2 - (-rect.y + i * (height +
+          containerComp->m_spacing)))),
           rect.w, static_cast<int>(round(height))};
       containerComp->m_buttons.push_back(
           addButton(game, system, buttonRect, labels[i]));

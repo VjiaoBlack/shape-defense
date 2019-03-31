@@ -11,12 +11,15 @@
 #include <TdGUI/GUIEntity.hpp>
 
 void GUIMouseComponent::update(Game* game) {
-//  SDL_Point mousePos = {game->m_mouseX, game->m_mouseY};
-//
-//  if (SDL_PointInRect(&mousePos, &m_ent->get<GUIGraphicsComponent>()->m_rect)) {
-//    m_mouseInside = true;
-//  } else {
-//    m_mouseInside = false;
-//  }
+  if (Game::m_mouseX >= m_ent->get<GUIGraphicsComponent>()->m_rect.x &&
+      Game::m_mouseX <= m_ent->get<GUIGraphicsComponent>()->m_rect.x +
+                        m_ent->get<GUIGraphicsComponent>()->m_rect.w &&
+      Game::m_mouseY >= m_ent->get<GUIGraphicsComponent>()->m_rect.y &&
+      Game::m_mouseY <= m_ent->get<GUIGraphicsComponent>()->m_rect.y +
+                        m_ent->get<GUIGraphicsComponent>()->m_rect.h) {
+    m_mouseInside = true;
+  } else {
+    m_mouseInside = false;
+  }
 }
 

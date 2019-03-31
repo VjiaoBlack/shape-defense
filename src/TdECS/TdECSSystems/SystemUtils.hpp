@@ -36,6 +36,8 @@ inline void updateComponents(Game* game, System* system,
   for (auto c = arr.begin(); c != arr.end(); c++) {
     if (c->m_alive) {
       c->update(game, system);
+    } else {
+      c->destroy();
     }
   }
 }

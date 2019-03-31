@@ -17,6 +17,12 @@ class GameLoop : public RenderLoop {
   std::unique_ptr<ConstructionManager> m_constructionManager;
   std::unique_ptr<LevelManager> m_levelManager;
 
+  Triangle m_moneyBar1;
+  Triangle m_moneyBar2;
+
+  Triangle m_energyBar1;
+  Triangle m_energyBar2;
+
   explicit GameLoop(Game *game);
 
   ~GameLoop() override;

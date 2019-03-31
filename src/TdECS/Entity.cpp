@@ -72,7 +72,6 @@ Entity::Entity(System *system, EntityType type){
 
 void Entity::die() {
   for (auto cp : m_components) {
-//    cp.second->m_alive = false;
     if (cp)
       cp->m_alive = false;
   }
@@ -137,6 +136,7 @@ void Entity::addEntity<EntityType::TOWER>(Game* game, System* system, int tileX,
   entity.addComponent(attackComp);
   entity.addComponent(laserComp);
 
+  printf("MADE TOWER\n");
   system->addEntity(game, entity);
 }
 
@@ -149,6 +149,7 @@ void Entity::addEntity<EntityType::WALL>(Game *game, System *system, int tileX,
 
   entity.addComponent(tilePosComp);
 
+  printf("MADE WALL\n");
   system->addEntity(game, entity);
 }
 

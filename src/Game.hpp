@@ -19,16 +19,6 @@
 #include "Graphics.hpp"
 #include "TdECS/TdECSSystems/System.hpp"
 
-
-
-
-
-
-
-
-
-
-
 using namespace std;
 
 class GameLoop;
@@ -38,12 +28,7 @@ class RenderLoop;
 // TODO: enforce singleton
 class Game {
  public:
-  Window   m_SDLWindow;
-  Renderer m_SDLRenderer;
-
-  // setup for rendering loop
-//  SDL_Event m_SDLEvent;
-  bool      m_quit;
+  bool m_quit;
 
   static set<int>  m_keysDown;
   static set<int>  m_keysDownPrev;
@@ -56,9 +41,6 @@ class Game {
 
   static double m_mouseX;
   static double m_mouseY;
-//
-//  ttf_font_pt m_font     = SDL::null_font();
-//  ttf_font_pt m_menuFont = SDL::null_font();
 
   std::unique_ptr<RenderLoop>            m_gameStateTransition;
   std::list<std::shared_ptr<RenderLoop>> m_gameStateStack;
@@ -78,7 +60,7 @@ class Game {
   Game();
   ~Game();
 
-  void handleInput();
+  void updatePrevInput();
   void handleKey(int SDLKey);
   void run();
 

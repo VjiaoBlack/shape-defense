@@ -16,7 +16,7 @@ class Game;
 
 class ConstructionManager {
  public:
-  MY_Rect   m_rect = {0, 0, 32, 32};
+  MY_Rect    m_rect = {0, 0, 32, 32};
   bool       m_isOn = false;
   EntityType m_type = EntityType::TOWER;
 

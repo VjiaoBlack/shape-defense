@@ -29,6 +29,36 @@ void addTriangle(std::vector<GLfloat>& buf, int pos, glm::vec2 a, glm::vec2 b, g
 GameLoop::GameLoop(Game *game) {
   m_constructionManager = std::make_unique<ConstructionManager>(game);
   m_levelManager = std::make_unique<LevelManager>(game);
+
+  // draw money
+  m_moneyBar1 = Triangle(&graphicsBackend.guiVBOdata,
+                     &graphicsBackend.guicolorVBOdata,
+                     glm::vec2(50, K_DISPLAY_SIZE_Y - 50),
+                     glm::vec2(50, K_DISPLAY_SIZE_Y - 75),
+                     glm::vec2(50 + (int) game->m_maxMoney * 2.0, K_DISPLAY_SIZE_Y - 50),
+                     glm::vec3(0.5, 0.5, 0.5));
+
+  m_moneyBar2 = Triangle(&graphicsBackend.guiVBOdata,
+                     &graphicsBackend.guicolorVBOdata,
+                     glm::vec2(50, K_DISPLAY_SIZE_Y - 75),
+                     glm::vec2(50 + (int) game->m_maxMoney * 2.0, K_DISPLAY_SIZE_Y - 75),
+                     glm::vec2(50 + (int) game->m_maxMoney * 2.0, K_DISPLAY_SIZE_Y - 50),
+                     glm::vec3(0.5, 0.5, 0.5));
+
+  m_energyBar1 = Triangle(&graphicsBackend.guiVBOdata,
+                     &graphicsBackend.guicolorVBOdata,
+                     glm::vec2(50, K_DISPLAY_SIZE_Y - 50),
+                     glm::vec2(50, K_DISPLAY_SIZE_Y - 75),
+                     glm::vec2(50 + (int) game->m_curMoney * 2.0, K_DISPLAY_SIZE_Y - 50),
+                     glm::vec3(1.0, 1.0, 1.0));
+
+  m_energyBar2 = Triangle(&graphicsBackend.guiVBOdata,
+                     &graphicsBackend.guicolorVBOdata,
+                     glm::vec2(50, K_DISPLAY_SIZE_Y - 75),
+                     glm::vec2(50 + (int) game->m_curMoney * 2.0, K_DISPLAY_SIZE_Y - 75),
+                     glm::vec2(50 + (int) game->m_curMoney * 2.0, K_DISPLAY_SIZE_Y - 50),
+                     glm::vec3(1.0, 1.0, 1.0));
+
 }
 
 GameLoop::~GameLoop() = default;
@@ -55,90 +85,32 @@ RenderLoop *GameLoop::update(Game *game) {
 
   game->m_entitySystem->update(game, false);
 
+
+  m_moneyBar1.update(glm::vec2(50, K_DISPLAY_SIZE_Y - 50),
+                 glm::vec2(50, K_DISPLAY_SIZE_Y - 75),
+                 glm::vec2(50 + (int) game->m_maxMoney * 2.0, K_DISPLAY_SIZE_Y - 50),
+                 glm::vec3(0.5, 0.5, 0.5));
+
+  m_moneyBar2.update(glm::vec2(50, K_DISPLAY_SIZE_Y - 75),
+                 glm::vec2(50 + (int) game->m_maxMoney * 2.0, K_DISPLAY_SIZE_Y - 75),
+                 glm::vec2(50 + (int) game->m_maxMoney * 2.0, K_DISPLAY_SIZE_Y - 50),
+                 glm::vec3(0.5, 0.5, 0.5));
+
+  m_energyBar1.update(glm::vec2(50, K_DISPLAY_SIZE_Y - 50),
+                 glm::vec2(50, K_DISPLAY_SIZE_Y - 75),
+                 glm::vec2(50 + (int) game->m_curMoney * 2.0, K_DISPLAY_SIZE_Y - 50),
+                 glm::vec3(1.0, 1.0, 1.0));
+
+  m_energyBar2.update(glm::vec2(50, K_DISPLAY_SIZE_Y - 75),
+                 glm::vec2(50 + (int) game->m_curMoney * 2.0, K_DISPLAY_SIZE_Y - 75),
+                 glm::vec2(50 + (int) game->m_curMoney * 2.0, K_DISPLAY_SIZE_Y - 50),
+                 glm::vec3(1.0, 1.0, 1.0));
+
   return this;
 }
 
 void GameLoop::render(Game *game) {
   game->m_entitySystem->m_graphics.update(game, game->m_entitySystem.get());
-
-  // Clear the screen
-  glClear( GL_COLOR_BUFFER_BIT );
-
-  // Use our shader
-  glUseProgram(graphicsBackend.gridShader);
-
-  // draw background grid
-  glBindVertexArray(graphicsBackend.gridVAO);
-  glEnableVertexAttribArray(0);
-
-  glBindBuffer(GL_ARRAY_BUFFER, graphicsBackend.gridvertexVBO);
-  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
-  glDrawArrays(GL_LINES, 0, graphicsBackend.gridVBOdata.size());
-
-  // draw ents
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  glUseProgram(graphicsBackend.entShader);
-  glBindVertexArray(graphicsBackend.entVAO);
-
-  // ent shapes
-  glEnableVertexAttribArray(0);
-  GraphicsBackend::updateVBO(graphicsBackend.entvertexVBO,
-                             graphicsBackend.entVBOdata.data(),
-                             sizeof(GLfloat) * graphicsBackend.entVBOdata.size());
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-  // ent healths
-  glEnableVertexAttribArray(1);
-  GraphicsBackend::updateVBO(graphicsBackend.enthealthVBO,
-                             graphicsBackend.enthealthVBOdata.data(),
-                             sizeof(GLfloat) * graphicsBackend.enthealthVBOdata.size());
-  glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 0, 0);
-
-  glDrawArrays(GL_TRIANGLES, 0, graphicsBackend.entVBOdata.size());
-
-  glDisableVertexAttribArray(1);
-
-  // draw effects
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  glUseProgram(graphicsBackend.gridShader);
-  glBindVertexArray(graphicsBackend.effectVAO);
-  glEnableVertexAttribArray(0);
-  GraphicsBackend::updateVBO(graphicsBackend.effectVBO,
-                             graphicsBackend.effectVBOdata.data(),
-                             sizeof(GLfloat) * graphicsBackend.effectVBOdata.size());
-  glBindBuffer(GL_ARRAY_BUFFER, graphicsBackend.effectVBO);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-  glDrawArrays(GL_TRIANGLES, 0, graphicsBackend.effectVBOdata.size());
-
-  // draw GUI
-  glUseProgram(graphicsBackend.gridShader);
-  glBindVertexArray(graphicsBackend.guiVAO);
-  glEnableVertexAttribArray(0);
-  GraphicsBackend::updateVBO(graphicsBackend.guiVBO,
-                             graphicsBackend.guiVBOdata.data(),
-                             sizeof(GLfloat) * graphicsBackend.guiVBOdata.size());
-  glBindBuffer(GL_ARRAY_BUFFER, graphicsBackend.guiVBO);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-  glDrawArrays(GL_TRIANGLES, 0, graphicsBackend.guiVBOdata.size());
-
-  glDisableVertexAttribArray(0);
-
-  // Swap buffers
-  glfwSwapBuffers(graphicsBackend.window);
-  glfwPollEvents();
-
-  // draw money
-//  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0x80);
-//  SDL_RenderDrawLine(game->m_SDLRenderer, 50, 50, 50 + (int) game->m_maxMoney * 2.0, 50);
-//
-//  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0x80, 0x80, 0xFF, 0x80);
-//  SDL_RenderDrawLine(game->m_SDLRenderer, 50, 75, 50 + (int) game->m_maxEnergy * 2.0, 75);
-//
-//  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-//  SDL_RenderDrawLine(game->m_SDLRenderer, 50, 50, 50 + (int) game->m_curMoney * 2.0, 50);
-//
-//  SDL_SetRenderDrawColor(game->m_SDLRenderer, 0x80, 0x80, 0xFF, 0xFF);
-//  SDL_RenderDrawLine(game->m_SDLRenderer, 50, 75, 50 + (int) game->m_curEnergy * 2.0, 75);
 
   m_constructionManager->render(game);
   m_levelManager->render(game);

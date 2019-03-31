@@ -67,13 +67,10 @@
 using namespace std;
 using namespace glm;
 
-//void renderTextureWithOffset(SDL_Renderer *renderer, SDL_Texture *texture,
-//                             int xOff, int yOff, int pixelSize);
-
 // edited from
 // https://en.wikipedia.org/wiki/Fast_inverse_square_root
 // TODO: fast square root
-// TODO: macro
+// TODO: macro?
 inline double Q_rsqrt(double number) { return 1.0 / sqrt(number); }
 
 inline double lerp5(double omin, double omax, double imin, double xx,
@@ -183,20 +180,11 @@ constexpr inline uint32_t convertColorType(MY_Color color) {
   return color.a << 24 | color.r << 16 | color.g << 8 | color.b;
 }
 
-/// Insets a rect by the amount specified on the left, top, right, and bottom.
-/// Asserts that it cannot inset a rect beyond a 0 dimension
+// Insets a rect by the amount specified on the left, top, right, and bottom.
+// Asserts that it cannot inset a rect beyond a 0 dimension
 inline MY_Rect makeInsetRect(MY_Rect rect, int left, int top, int right, int bottom) {
-  //
   assert(rect.w >= left + right);
   assert(rect.h >= top + bottom);
   return {rect.x + left, rect.y + top,
           rect.w - (left + right), rect.h - (top + bottom)};
 }
-
-//inline void setRenderDrawColor(SDL_Renderer* renderer, MY_Color color) {
-//  SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-//}
-
-//inline SDL_Point makeSDLPoint(int x, int y) {
-//  return (SDL_Point) {x, y};
-//}

@@ -18,4 +18,5 @@ class Component {
   // TODO: default to false
   bool m_alive = false;
   virtual void update(Game *game, System *system) {};
+  virtual void destroy() {};
 };

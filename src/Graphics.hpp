@@ -22,31 +22,37 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <common/shader.hpp>
-#include "Utils.hpp"
 #include <MY.hpp>
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
 
 void addTriangle(std::vector<GLfloat>& buf, int pos,
                  glm::vec2 a, glm::vec2 b, glm::vec2 c);
 
-//template <typename T>
+void addEnt(std::vector<GLfloat>& buf, int pos,
+            glm::vec2 xy, float width, float thickness);
+
 class CircularBuffer {
  public:
-  static constexpr int k_length = 900;
+  int m_length;
   int m_head = 0; // most recently added
   int m_tail = 0; // least recently added
-//  std::array<T, CircularBuffer::k_length> m_arr;
-  std::array<float, CircularBuffer::k_length> m_arr;
-  std::array<bool,  CircularBuffer::k_length> m_alive;
 
-  CircularBuffer();
+  std::vector<float> m_arr;
+  std::vector<bool> m_alive;
+
+  CircularBuffer(int length)
+    : m_length(length) {
+    m_arr.resize(length);
+    m_alive.resize(length);
+  };
 
   // TODO: optimize these for bulk add/removes
-//  int  add   (T   elem);
   int  add   (float   elem);
   bool remove(int pos);
 
-  size_t size() { return CircularBuffer::k_length; }
-//  T*     data() { return m_arr.data(); }
+  size_t size() { return m_length; }
   float* data() { return m_arr.data(); }
 
  private:
@@ -56,13 +62,16 @@ class GraphicsBackend {
  public:
   static constexpr int triangles_per_ent = 8;
 
+  // consider making circular buffers resizable
+  // and then only using circular buffers
   std::vector<GLfloat> gridVBOdata;
   std::vector<GLfloat> entVBOdata;
-  std::vector<GLfloat> enthealthVBOdata;
-//  CircularBuffer<GLfloat> effectVBOdata;
-//  CircularBuffer<GLfloat> guiVBOdata;
-  CircularBuffer effectVBOdata;
-  CircularBuffer guiVBOdata;
+  std::vector<GLfloat> entcolorVBOdata;
+
+  CircularBuffer effectVBOdata = CircularBuffer(720);
+  CircularBuffer effectcolorVBOdata = CircularBuffer(1080);
+  CircularBuffer guiVBOdata = CircularBuffer(720);
+  CircularBuffer guicolorVBOdata = CircularBuffer(1080);
 
   GLuint gridVAO;
   GLuint entVAO;
@@ -71,47 +80,77 @@ class GraphicsBackend {
 
   GLuint gridvertexVBO;
   GLuint entvertexVBO;
-  GLuint enthealthVBO;
+  GLuint entcolorVBO;
   GLuint guiVBO;
+  GLuint guicolorVBO;
   GLuint effectVBO;
+  GLuint effectcolorVBO;
 
   GLuint gridShader;
   GLuint entShader;
+  GLuint effectShader;
+  GLuint guiShader;
 
-  GLFWwindow* window;
-
+  GLFWwindow *window;
 
   GraphicsBackend() {};
 
   void initialize();
   void destroy();
 
-//  void loadShader();
-//  void useShader();
+  static void createVAO(GLuint *VAO);
+  static void createVBO(GLuint *VBO, GLuint VAO);
+  static void updateVBO(GLuint VBO, void *dataPtr, size_t size);
 
-  static void createVAO(GLuint* VAO);
-  static void createVBO(GLuint* VBO, GLuint VAO);
-  static void updateVBO(GLuint VBO, void* dataPtr, size_t size);
 
-  // for fixed-sized data sources like Ents, use 1-1 mapping
-  // for dynamic-sized data sources like firing lasers, use circular buffer
- private:
+  GLint attribute_coord;
+  GLint uniform_tex;
+  GLint uniform_color;
 
+  struct point {
+    GLfloat x;
+    GLfloat y;
+    GLfloat s;
+    GLfloat t;
+  };
+
+  GLuint vbo;
+
+  FT_Library ft;
+  FT_Face face;
+
+  const char *fontfilename = "neris.thin.ttf";
+
+
+  GLuint textShader;
+
+  void render_text(const char *text, float x, float y, float sx, float sy);
+  void display();
 };
 
 extern GraphicsBackend graphicsBackend;
+
 constexpr int triangles_per_ent = 8;
 
+// TODO: do we need to cache-optimize this more?
+// TODO: ... do we need to space-optimize this more?
+struct Triangle {
+  std::array<int, 6> m_indices;
+  std::array<int, 9> m_colors;
 
+  bool m_hasColor = false;
+  CircularBuffer*    m_buffer = nullptr;
+  CircularBuffer*    m_colorBuffer = nullptr;
 
-struct Renderer {
-  Renderer() = default;
+  Triangle() {};
+  Triangle(CircularBuffer* buffer, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3);
+  Triangle(CircularBuffer* buffer, CircularBuffer* colorBuffer,
+           glm::vec2 p1, glm::vec2 p2, glm::vec2 p3,
+           glm::vec3 color);
+
+  void update(glm::vec3 color);
+  void update(glm::vec2 p1, glm::vec2 p2, glm::vec2 p3,
+              glm::vec3 color);
+
+  void destroy();
 };
-
-struct Window {
-  Window() = default;
-};
-
-using namespace std;
-
-

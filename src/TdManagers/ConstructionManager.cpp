@@ -38,10 +38,10 @@ void ConstructionManager::update(Game *game) {
 
   for (auto button : game->m_buttonsDown) {
     switch (button) {
-//      case SDL_BUTTON_LEFT:
-//        if (!game->m_buttonsDownPrev.count(SDL_BUTTON_LEFT)) {
-//          build(game);
-//        }
+      case GLFW_MOUSE_BUTTON_LEFT:
+        if (!game->m_buttonsDownPrev.count(GLFW_MOUSE_BUTTON_LEFT)) {
+          build(game);
+        }
         break;
     }
   }
@@ -54,20 +54,17 @@ void ConstructionManager::render(Game* game) {
   // render the "future object"
   if (m_isOn) {
     // not totally trivial due to integer division's trucation
-    m_rect.x = (1 + (game->m_mouseX - 16) / 16) * 16 + 0;
-    m_rect.y = (1 + (game->m_mouseY - 16) / 16) * 16 + 2;
+    m_rect.x = (1 + ((int)game->m_mouseX - 16) / 16) * 16 + 0;
+    m_rect.y = (1 + ((int)game->m_mouseY - 16) / 16) * 16 + 2;
 
-//    SDL_SetRenderDrawColor(game->m_SDLRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
     MY_Rect b = m_rect;
 
     switch (m_type) {
       case EntityType::TOWER:
-//        SDL_RenderDrawRect(game->m_SDLRenderer, &m_rect);
         break;
       case EntityType::WALL:
         b.w  = 16;
         b.h  = 16;
-//        SDL_RenderDrawRect(game->m_SDLRenderer, &b);
         break;
       default:
         LOG_ERR("Construction manager has unhandled entity type: %d", (uint) m_type);
@@ -78,6 +75,7 @@ void ConstructionManager::render(Game* game) {
 
 // right now just builds a tower
 void ConstructionManager::build(Game *game) {
+  printf("%f\n", game->m_curMoney);
   if (m_isOn && game->m_curMoney >= EntityCosts[(uint)m_type]) {
     if (!m_GUIMenu->get<GUIContainerComponent>()->m_buttons[0]
           ->get<GUIClickableComponent>()->m_pressedInside &&

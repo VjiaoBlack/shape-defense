@@ -33,72 +33,46 @@ void GraphicsSystem::update(Game *game, System* system) {
     int h = EntityShapes[(uint)game->m_entitySystem->getEnt(i)->m_type].h;
 
     int b = 2;
-    // left
-    addTriangle(graphicsBackend.entVBOdata, cur_vertex_id + 9 * 0,
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(b, 0),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(0, h));
 
-    addTriangle(graphicsBackend.entVBOdata, cur_vertex_id + 9 * 1,
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(b, 0),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(b, h),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(0, h));
-
-    // right
-    addTriangle(graphicsBackend.entVBOdata, cur_vertex_id + 9 * 2,
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(w, 0),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(w-b, 0),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(w-b, h));
-
-    addTriangle(graphicsBackend.entVBOdata, cur_vertex_id + 9 * 3,
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(w, 0),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(w, h),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(w-b, h));
-
-    // bottom
-    addTriangle(graphicsBackend.entVBOdata, cur_vertex_id + 9 * 4,
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(b, 0),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(w-b, 0),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(w-b, b));
-
-    addTriangle(graphicsBackend.entVBOdata, cur_vertex_id + 9 * 5,
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(b, 0),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(b, b),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(w-b, b));
-
-    // top
-    addTriangle(graphicsBackend.entVBOdata, cur_vertex_id + 9 * 6,
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(b, h),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(w-b, h),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(w-b,
-                                                                                          h-b));
-
-    addTriangle(graphicsBackend.entVBOdata, cur_vertex_id + 9 * 7,
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(b, h),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(b, h-b),
-                pos - glm::dvec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2) + glm::dvec2(w-b,
-                                                                                          h-b));
+    addEnt(graphicsBackend.entVBOdata, cur_vertex_id, pos, w, b);
   }
 
   for (int i = 0; i < k_MAX_ENTS; i++) {
-    int cur_vertex_id = i * triangles_per_ent * 3;
+    int cur_vertex_id = i * triangles_per_ent * 3 * 3;
 
     if (!game->m_entitySystem->m_health.m_healthComponents[i].m_alive) {
-      for (int j = 0; j < triangles_per_ent * 3; j++) {
-        graphicsBackend.enthealthVBOdata[cur_vertex_id + j] = 0.0f;
+      for (int j = 0; j < triangles_per_ent * 3 * 3; j++) {
+        graphicsBackend.entcolorVBOdata[cur_vertex_id + j] = 0.0f;
       }
       continue;
     } else if (game->m_entitySystem->getEnt(i) == nullptr) {
-      for (int j = 0; j < triangles_per_ent * 3; j++) {
-        graphicsBackend.enthealthVBOdata[cur_vertex_id + j] = 0.0f;
+      for (int j = 0; j < triangles_per_ent * 3 * 3; j++) {
+        graphicsBackend.entcolorVBOdata[cur_vertex_id + j] = 0.0f;
       }
       continue;
     }
 
-    for (int j = 0; j < triangles_per_ent * 3; j++) {
-      graphicsBackend.enthealthVBOdata[cur_vertex_id + j] =
-          game->m_entitySystem->m_health.m_healthComponents[i].m_curHealth /
-              game->m_entitySystem->m_health.m_healthComponents[i].m_maxHealth;
+    for (int j = 0; j < triangles_per_ent * 3 * 3; j += 3) {
+      float healthProp = game->m_entitySystem->m_health.m_healthComponents[i].m_curHealth /
+          game->m_entitySystem->m_health.m_healthComponents[i].m_maxHealth;
+
+      healthProp *= 0.5;
+      healthProp += 0.5;
+
+      auto ent = game->m_entitySystem->getEnt(i);
+      if (ent) {
+        if (ent->m_type == EntityType::ENEMY ||
+            ent->m_type == EntityType::BOSS) {
+          graphicsBackend.entcolorVBOdata[cur_vertex_id + j] = 1.0 * healthProp;
+          graphicsBackend.entcolorVBOdata[cur_vertex_id + j+1] = 0.0;
+          graphicsBackend.entcolorVBOdata[cur_vertex_id + j+2] = 0.0;
+        } else {
+          graphicsBackend.entcolorVBOdata[cur_vertex_id + j] = 1.0 * healthProp;
+          graphicsBackend.entcolorVBOdata[cur_vertex_id + j+1] = 1.0 * healthProp;
+          graphicsBackend.entcolorVBOdata[cur_vertex_id + j+2] = 1.0 * healthProp;
+        }
+
+      }
     }
   }
 }

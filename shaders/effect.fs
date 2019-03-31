@@ -3,13 +3,13 @@
 // Ouput data
 out vec3 color;
 
-in float HEALTH;
+in vec3 COLOR;
 
 
 void main()
 {
 
 	// Output color = white
-	color = vec3(1,1,1) * HEALTH;
+	color = COLOR;
 
 }

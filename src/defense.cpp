@@ -16,7 +16,6 @@
 
 #include <GLFW/glfw3.h>
 
-
 void handler(int sig) {
   constexpr int k_max_entries = 32;
   void *array[k_max_entries];
@@ -38,7 +37,6 @@ int main(int argv, char *argc[]) {
   shared_ptr<Game> renderer = make_shared<Game>();
   renderer->run();
   renderer.reset();
-//  TTF_Quit();
-//  SDL_Quit();
+
   return 0;
 }

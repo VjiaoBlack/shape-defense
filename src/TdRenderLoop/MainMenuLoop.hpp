@@ -20,8 +20,6 @@ public:
   int text_width;
   int text_height;
 
-//  sdl_texture_pt m_titleTexture;
-
   unique_ptr<GUISystem> m_GUISystem;
   GUIEntity *m_GUIMenu;
 

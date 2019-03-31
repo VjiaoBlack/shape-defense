@@ -70,27 +70,3 @@ constexpr double EntityCosts[static_cast<uint>(EntityType::COUNT)+1] = {
   2.0, // ENEMY
   10.0 // BOSS
 };
-
-// TODO: are all these templates really necessary?
-// At the end of the day, it's just a wrapper around the EntityStats[(uint) type].whatever
-//template<EntityType T>
-//struct EntityShape {
-//  static constexpr int w = EntityShapes[static_cast<uint>(T)].w;
-//  static constexpr int h = EntityShapes[static_cast<uint>(T)].h;
-//};
-//
-//template<EntityType T>
-//struct EntityColor {
-//  static constexpr uint c = EntityColors[static_cast<uint>(T)];
-//};
-//
-//template<EntityType T>
-//struct EntityHealth {
-//  static constexpr int max_health = EntityHealths[static_cast<uint>(T)].h;
-//  static constexpr int armor      = EntityHealths[static_cast<uint>(T)].a;
-//};
-//
-//template<EntityType T>
-//struct EntityCost {
-//  static constexpr double c = EntityCosts[static_cast<uint>(T)];
-//};

@@ -19,11 +19,19 @@ inline bool intersect(glm::vec4 r1, glm::vec4 r2) {
          r1.y + r1.w >= r2.y;
 }
 
+//// worked for the old SDL rendering scheme
+//inline bool intersectPixel(glm::vec4 r1, glm::vec4 r2) {
+//  return glm::floor(r1.x)              <= glm::ceil (r2.x + r2.z + 1.0) &&
+//         glm::ceil(r1.x + r1.z + 1.0)  >= glm::floor(r2.x)              &&
+//         glm::floor(r1.y)              <= glm::ceil (r2.y + r2.w + 1.0) &&
+//         glm::ceil(r1.y + r1.w + 1.0)  >= glm::floor(r2.y);
+//}
+
 inline bool intersectPixel(glm::vec4 r1, glm::vec4 r2) {
   return glm::floor(r1.x)              <= glm::ceil (r2.x + r2.z + 1.0) &&
-         glm::ceil(r1.x + r1.z + 1.0)  >= glm::floor(r2.x)              &&
-         glm::floor(r1.y)              <= glm::ceil (r2.y + r2.w + 1.0) &&
-         glm::ceil(r1.y + r1.w + 1.0)  >= glm::floor(r2.y);
+      glm::ceil(r1.x + r1.z + 1.0)  >= glm::floor(r2.x)              &&
+      glm::floor(r1.y)              <= glm::ceil (r2.y + r2.w + 1.0) &&
+      glm::ceil(r1.y + r1.w + 1.0)  >= glm::floor(r2.y);
 }
 
 CollisionSystem::CollisionSystem() {
