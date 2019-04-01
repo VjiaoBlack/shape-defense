@@ -22,7 +22,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <common/shader.hpp>
-#include <MY.hpp>
+#include <common/CircularBuffer.hpp>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -39,31 +39,7 @@ void addEnt(std::vector<GLfloat> &buf,
             float     width,
             float     thickness);
 
-class CircularBuffer {
- public:
-  int m_length;
-  int m_head = 0; // most recently added
-  int m_tail = 0; // least recently added
-
-  std::vector<float> m_arr;
-  std::vector<bool>  m_alive;
-
-  CircularBuffer(int length)
-      : m_length(length) {
-    m_arr.resize(length);
-    m_alive.resize(length);
-  };
-
-  // TODO: optimize these for bulk add/removes
-  int add(float elem);
-  bool remove(int pos);
-
-  size_t size() { return m_length; }
-  float *data() { return m_arr.data(); }
-
- private:
-};
-
+// TODO: consider using GPU instancing
 class GraphicsBackend {
  public:
   static constexpr int triangles_per_ent = 8;
