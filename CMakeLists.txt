@@ -51,7 +51,7 @@ add_executable(
         ${PROJECT_NAME}
         src/defense.cpp
         ${SOURCES}
-        ${HEADERS} src/common/CircularBuffer.cpp src/common/CircularBuffer.hpp)
+        ${HEADERS} src/common/CircularBuffer.cpp src/common/CircularBuffer.hpp src/graphics/GraphicsBackend.cpp src/graphics/GraphicsBackend.hpp)
 
 # TODO: why do I need -lfreetype? What's ${FREETYPE2_LIBRARY} for?
 target_link_libraries(
