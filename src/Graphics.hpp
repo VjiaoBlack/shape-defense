@@ -133,7 +133,6 @@ class GraphicsBackend {
                    float y,
                    float sx,
                    float sy);
-  void displayText();
 };
 
 extern GraphicsBackend graphicsBackend;

@@ -1,15 +1,13 @@
 #include "Graphics.hpp"
 
-
 #include <TdECS/TdECSSystems/SystemUtils.hpp>
 #include <Utils.hpp>
 #include <cstring>
 
-
 GraphicsBackend graphicsBackend;
 
 // TODO: refactor into a .obj file, or similar
-void addEnt(std::vector<GLfloat>& buf, int pos,
+void addEnt(std::vector<GLfloat> &buf, int pos,
             glm::vec2 xy, float width, float thickness) {
   glm::vec2 off_vec = glm::vec2(K_DISPLAY_SIZE_X / 2, K_DISPLAY_SIZE_Y / 2);
 
@@ -75,7 +73,7 @@ int CircularBuffer::add(float elem) {
       return false; // full
     }
   }
-  m_arr[m_head] = elem;
+  m_arr[m_head]   = elem;
   m_alive[m_head] = true;
   int past = m_head;
   m_head++;
@@ -110,9 +108,9 @@ bool CircularBuffer::remove(int pos) {
 void _createGrid() {
 // vertical lines
   int grid_i = 0;
-  int posx = 0;
+  int posx   = 0;
   while (posx <= K_DISPLAY_SIZE_X / 2) {
-    graphicsBackend.gridVBOdata[grid_i    ] = posx;
+    graphicsBackend.gridVBOdata[grid_i]     = posx;
     graphicsBackend.gridVBOdata[grid_i + 1] = -K_DISPLAY_SIZE_Y / 2.0f;
 
     graphicsBackend.gridVBOdata[grid_i + 2] = posx;
@@ -131,7 +129,7 @@ void _createGrid() {
   // horizontal lines
   int posy = 0;
   while (posy <= K_DISPLAY_SIZE_Y / 2) {
-    graphicsBackend.gridVBOdata[grid_i    ] = K_DISPLAY_SIZE_X / 2.0f;
+    graphicsBackend.gridVBOdata[grid_i]     = K_DISPLAY_SIZE_X / 2.0f;
     graphicsBackend.gridVBOdata[grid_i + 1] = posy;
 
     graphicsBackend.gridVBOdata[grid_i + 2] = -K_DISPLAY_SIZE_X / 2.0f;
@@ -148,12 +146,10 @@ void _createGrid() {
   }
 }
 
-
-
 void GraphicsBackend::initialize() {
   // Initialise GLFW
   if (!glfwInit()) {
-    fprintf( stderr, "Failed to initialize GLFW\n" );
+    fprintf(stderr, "Failed to initialize GLFW\n");
     getchar();
     exit(1);
   }
@@ -168,7 +164,7 @@ void GraphicsBackend::initialize() {
   graphicsBackend.window = glfwCreateWindow(K_DISPLAY_SIZE_X, K_DISPLAY_SIZE_Y,
                                             "shape defense", NULL, NULL);
   if (graphicsBackend.window == NULL) {
-    fprintf( stderr, "Failed to open GLFW window.\n" );
+    fprintf(stderr, "Failed to open GLFW window.\n");
     getchar();
     glfwTerminate();
     exit(1);
@@ -187,21 +183,21 @@ void GraphicsBackend::initialize() {
   // ensure we can capture the escape key being pressed below
   glfwSetInputMode(graphicsBackend.window, GLFW_STICKY_KEYS, GL_TRUE);
 
-  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
   // pixel style
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 0);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-//  // enable blend
-//  glEnable(GL_BLEND);
-//  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  // // enable blend
+  // glEnable(GL_BLEND);
+  // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  graphicsBackend.gridShader = LoadShaders( "shaders/grid.vs", "shaders/grid.fs" );
-  graphicsBackend.entShader  = LoadShaders( "shaders/ent.vs" , "shaders/ent.fs"  );
-  graphicsBackend.effectShader = LoadShaders( "shaders/effect.vs", "shaders/effect.fs" );
-  graphicsBackend.guiShader  = LoadShaders( "shaders/gui.vs" , "shaders/gui.fs"  );
+  graphicsBackend.gridShader   = LoadShaders("shaders/grid.vs", "shaders/grid.fs");
+  graphicsBackend.entShader    = LoadShaders("shaders/ent.vs", "shaders/ent.fs");
+  graphicsBackend.effectShader = LoadShaders("shaders/effect.vs", "shaders/effect.fs");
+  graphicsBackend.guiShader    = LoadShaders("shaders/gui.vs", "shaders/gui.fs");
 
   // Dark blue background
   glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
@@ -243,12 +239,12 @@ void GraphicsBackend::initialize() {
                              sizeof(GLfloat) * effectcolorVBOdata.size());
 
   // initialize text
-  /* Initialize the FreeType2 library */
+  // Initialize the FreeType2 library
   if (FT_Init_FreeType(&ft)) {
     fprintf(stderr, "Could not init freetype library\n");
   }
 
-  /* Load a font */
+  // Load a font
   if (FT_New_Face(ft, fontfilename, 0, &face)) {
     fprintf(stderr, "Could not open font %s\n", fontfilename);
   }
@@ -256,8 +252,8 @@ void GraphicsBackend::initialize() {
   textShader = LoadShaders("shaders/text.vs", "shaders/text.fs");
 
   attribute_coord = glGetAttribLocation(textShader, "coord");
-  uniform_tex = glGetUniformLocation(textShader, "tex");
-  uniform_color = glGetUniformLocation(textShader, "color");
+  uniform_tex     = glGetUniformLocation(textShader, "tex");
+  uniform_color   = glGetUniformLocation(textShader, "color");
 
   if (attribute_coord < 0) {
     printf("ERRRORRR\n");
@@ -271,21 +267,17 @@ void GraphicsBackend::initialize() {
     printf("ERRRORRR\n");
   }
 
-
   // Create the vertex buffer object
   glGenBuffers(1, &vbo);
-
-
 }
 
-
 void GraphicsBackend::render_text(const char *text, float x, float y, float sx, float sy) {
-  const char *p;
+  const char   *p;
   FT_GlyphSlot g = face->glyph;
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  /* Create a texture that will be used to hold one "glyph" */
+  // Create a texture that will be used to hold one "glyph"
   GLuint tex;
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -294,38 +286,38 @@ void GraphicsBackend::render_text(const char *text, float x, float y, float sx, 
   glBindTexture(GL_TEXTURE_2D, tex);
   glUniform1i(uniform_tex, 0);
 
-  /* We require 1 byte alignment when uploading texture data */
+  // We require 1 byte alignment when uploading texture data
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-  /* Clamping to edges is important to prevent artifacts when scaling */
+  // Clamping to edges is important to prevent artifacts when scaling
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-  /* Linear filtering usually looks best for text */
+  // Linear filtering usually looks best for text
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  /* Set up the VBO for our vertex data */
+  // Set up the VBO for our vertex data
   glEnableVertexAttribArray(attribute_coord);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
   glVertexAttribPointer(attribute_coord, 4, GL_FLOAT, GL_FALSE, 0, 0);
 
-  /* Loop through all characters */
+  // Loop through all characters
   for (p = text; *p; p++) {
 
-    /* Try to load and render the character */
+    // Try to load and render the character
     if (FT_Load_Char(face, *p, FT_LOAD_RENDER))
       continue;
 
-    /* Upload the "bitmap", which contains an 8-bit grayscale image, as an alpha texture */
+    // Upload the "bitmap", which contains an 8-bit grayscale image, as an alpha texture
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, g->bitmap.width, g->bitmap.rows, 0, GL_RED,
                  GL_UNSIGNED_BYTE, g->bitmap.buffer);
 
-    /* Calculate the vertex and texture coordinates */
+    // Calculate the vertex and texture coordinates
     float x2 = x + g->bitmap_left * sx;
     float y2 = -y - g->bitmap_top * sy;
-    float w = g->bitmap.width * sx;
-    float h = g->bitmap.rows * sy;
+    float w  = g->bitmap.width * sx;
+    float h  = g->bitmap.rows * sy;
 
     point box[4] = {
         {x2, -y2, 0, 0},
@@ -334,11 +326,11 @@ void GraphicsBackend::render_text(const char *text, float x, float y, float sx, 
         {x2 + w, -y2 - h, 1, 1},
     };
 
-    /* Draw the character on the screen */
+    // Draw the character on the screen
     glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    /* Advance the cursor to the start of the next character */
+    // Advance the cursor to the start of the next character
     x += (g->advance.x >> 6) * sx;
     y += (g->advance.y >> 6) * sy;
   }
@@ -347,72 +339,16 @@ void GraphicsBackend::render_text(const char *text, float x, float y, float sx, 
   glDeleteTextures(1, &tex);
 }
 
-void GraphicsBackend::displayText() {
-  float sx = 2.0 / K_DISPLAY_SIZE_X;
-  float sy = 2.0 / K_DISPLAY_SIZE_Y;
-
-  glUseProgram(textShader);
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-  /* White background */
-//  glClearColor(0.5, 0.5, 0.5, 0.5);
-//  glClear(GL_COLOR_BUFFER_BIT);
-
-  /* Enable blending, necessary for our alpha texture */
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  GLfloat black[4] = { 0, 0, 0, 1 };
-  GLfloat red[4] = { 1, 0, 0, 1 };
-  GLfloat transparent_green[4] = { 0, 1, 0, 0.5 };
-
-  /* Set font size to 48 pixels, color to black */
-  FT_Set_Pixel_Sizes(face, 0, 48);
-  glUniform4fv(uniform_color, 1, black);
-
-  /* Effects of alignment */
-  render_text("The Quick Brown Fox Jumps Over The Lazy Dog", -1 + 8 * sx, 1 - 50 * sy, sx, sy);
-  render_text("The Misaligned Fox Jumps Over The Lazy Dog", -1 + 8.5 * sx, 1 - 100.5 * sy, sx, sy);
-
-  /* Scaling the texture versus changing the font size */
-  render_text("The Small Texture Scaled Fox Jumps Over The Lazy Dog", -1 + 8 * sx, 1 - 175 * sy, sx * 0.5, sy * 0.5);
-  FT_Set_Pixel_Sizes(face, 0, 24);
-  render_text("The Small Font Sized Fox Jumps Over The Lazy Dog", -1 + 8 * sx, 1 - 200 * sy, sx, sy);
-  FT_Set_Pixel_Sizes(face, 0, 48);
-  render_text("The Tiny Texture Scaled Fox Jumps Over The Lazy Dog", -1 + 8 * sx, 1 - 235 * sy, sx * 0.25, sy * 0.25);
-  FT_Set_Pixel_Sizes(face, 0, 12);
-  render_text("The Tiny Font Sized Fox Jumps Over The Lazy Dog", -1 + 8 * sx, 1 - 250 * sy, sx, sy);
-  FT_Set_Pixel_Sizes(face, 0, 48);
-
-  /* Colors and transparency */
-  render_text("The Solid Black Fox Jumps Over The Lazy Dog", -1 + 8 * sx, 1 - 430 * sy, sx, sy);
-
-  glUniform4fv(uniform_color, 1, red);
-  render_text("The Solid Red Fox Jumps Over The Lazy Dog", -1 + 8 * sx, 1 - 330 * sy, sx, sy);
-  render_text("The Solid Red Fox Jumps Over The Lazy Dog", -1 + 28 * sx, 1 - 450 * sy, sx, sy);
-
-  glUniform4fv(uniform_color, 1, transparent_green);
-  render_text("The Transparent Green Fox Jumps Over The Lazy Dog", -1 + 8 * sx, 1 - 380 * sy, sx, sy);
-  render_text("The Transparent Green Fox Jumps Over The Lazy Dog", -1 + 18 * sx, 1 - 440 * sy, sx, sy);
-
-//  glutSwapBuffers();
-
-  glDisable(GL_BLEND);
-
-}
-
-
-
-void GraphicsBackend::createVAO(GLuint* VAO) {
+void GraphicsBackend::createVAO(GLuint *VAO) {
   glGenVertexArrays(1, VAO);
 };
 
-void GraphicsBackend::createVBO(GLuint* VBO, GLuint VAO) {
+void GraphicsBackend::createVBO(GLuint *VBO, GLuint VAO) {
   glBindVertexArray(VAO);
   glGenBuffers(1, VBO);
 };
 
-void GraphicsBackend::updateVBO(GLuint VBO, void* dataPtr, size_t size) {
+void GraphicsBackend::updateVBO(GLuint VBO, void *dataPtr, size_t size) {
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, size, dataPtr, GL_STATIC_DRAW);
 };
@@ -439,9 +375,8 @@ void GraphicsBackend::destroy() {
   glfwTerminate();
 }
 
-Triangle::Triangle(CircularBuffer* buffer, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
-  : m_buffer(buffer)
-  , m_hasColor(false) {
+Triangle::Triangle(CircularBuffer *buffer, glm::vec2 p1, glm::vec2 p2, glm::vec2 p3)
+    : m_buffer(buffer), m_hasColor(false) {
   m_indices[0] = m_buffer->add(p1.x - K_DISPLAY_SIZE_X / 2.0);
   m_indices[1] = m_buffer->add(p1.y - K_DISPLAY_SIZE_Y / 2.0);
 
@@ -453,12 +388,10 @@ Triangle::Triangle(CircularBuffer* buffer, glm::vec2 p1, glm::vec2 p2, glm::vec2
 
 }
 
-Triangle::Triangle(CircularBuffer* buffer, CircularBuffer* colorBuffer,
+Triangle::Triangle(CircularBuffer *buffer, CircularBuffer *colorBuffer,
                    glm::vec2 p1, glm::vec2 p2, glm::vec2 p3,
                    glm::vec3 color)
-  : m_buffer(buffer)
-  , m_colorBuffer(colorBuffer)
-  , m_hasColor(true) {
+    : m_buffer(buffer), m_colorBuffer(colorBuffer), m_hasColor(true) {
   m_indices[0] = m_buffer->add(p1.x - K_DISPLAY_SIZE_X / 2.0);
   m_indices[1] = m_buffer->add(p1.y - K_DISPLAY_SIZE_Y / 2.0);
   m_indices[2] = m_buffer->add(p2.x - K_DISPLAY_SIZE_X / 2.0);
