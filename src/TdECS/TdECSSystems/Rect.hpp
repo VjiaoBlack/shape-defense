@@ -9,7 +9,7 @@
  */
 
 #include <TdECS/Entity.hpp>
-#include <glm/detail/type_vec.hpp>
+#include <glm/detail/type_vec3.hpp>
 
 struct Rect {
   glm::dvec2 pos;
