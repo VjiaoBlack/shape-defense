@@ -77,6 +77,24 @@ public:
     return pt;
   }
 
+  static GUIEntity *addLabel(Game *game,
+                             GUISystem *system,
+                             MY_Rect rect,
+                             std::string label) {
+      auto entity = std::make_unique<GUIEntity>(system);
+
+      auto graphicsComp = std::make_unique<GUIGraphicsComponent>(rect);
+      auto textComp     = std::make_unique<GUITextComponent>(game, label, rect);
+
+      entity->addComponent(std::move(graphicsComp));
+      entity->addComponent(std::move(textComp));
+
+      auto pt = entity.get();
+      system->m_entities.push_back(std::move(entity));
+
+      return pt;
+  }
+
   static GUIEntity *addVerticalMenu(Game *game, GUISystem *system,
                                       MY_Rect rect,
                                       std::vector<std::string> labels) {

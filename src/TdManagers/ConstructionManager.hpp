@@ -22,6 +22,8 @@ class ConstructionManager {
 
   unique_ptr<GUISystem> m_GUISystem;
   GUIEntity *m_GUIMenu;
+  GUIEntity *m_GUIBuilding;
+  GUIEntity *m_GUIMoney;
 
   ConstructionManager(Game* game);
 

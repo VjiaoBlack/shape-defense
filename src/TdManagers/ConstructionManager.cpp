@@ -30,9 +30,29 @@ ConstructionManager::ConstructionManager(Game* game) {
 
   m_GUIMenu->get<GUIContainerComponent>()->m_buttons[2]->get<GUIClickableComponent>()->setCallback(
       [&]() { m_type = EntityType::WALL; });
+
+  r = (MY_Rect) {sz(K_DISPLAY_SIZE_X / 2) - 100,
+                 sz(K_DISPLAY_SIZE_Y / 2) + 200,
+                 sz(100),
+                 sz(100)};
+
+  m_GUIMoney = GUIEntity::addLabel(game,
+                                   m_GUISystem.get(),
+                                   r,
+                                   "energy");
+
+  r.x += 200;
+  m_GUIBuilding = GUIEntity::addLabel(game,
+                                      m_GUISystem.get(),
+                                      r,
+                                      "true");
 }
 
 void ConstructionManager::update(Game *game) {
+  m_GUIMoney->get<GUITextComponent>()->m_text    = std::to_string((int)game->m_curMoney) + "/" +
+                                                   std::to_string((int)game->m_maxMoney);
+  m_GUIBuilding->get<GUITextComponent>()->m_text = std::to_string(m_isOn);
+
   // update building menu (also draws)
   m_GUISystem->update(game);
 
