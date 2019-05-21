@@ -6,10 +6,10 @@
  * <DETAILS>
  */
 #include "Node.hpp"
-#include <TdECS/TdECSSystems/SystemPosUtils.hpp>
+#include <ECS/Systems//SystemPosUtils.hpp>
 #include <Game.hpp>
 #include <csignal>
-#include "TdECS/Entity.hpp"
+#include "ECS/Entity.hpp"
 #include "QuadTree.hpp"
 
 void Node::getAdjacentNodes(

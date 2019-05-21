@@ -1,10 +1,10 @@
 
 #include "Game.hpp"
-#include "TdRenderLoop/GameLoop.hpp"
-#include "TdRenderLoop/MainMenuLoop.hpp"
+#include "RenderLoop/GameLoop.hpp"
+#include "RenderLoop/MainMenuLoop.hpp"
 
 #include <deque>
-#include <TdECS/Entity.hpp>
+#include <ECS/Entity.hpp>
 
 #include <Graphics.hpp>
 

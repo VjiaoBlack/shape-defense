@@ -8,7 +8,7 @@
 #include "QuadTree.hpp"
 #include "Node.hpp"
 #include "Game.hpp"
-#include "TdECS/Entity.hpp"
+#include "ECS/Entity.hpp"
 
 void QuadTree::print(System* system, Game* game) {
   m_root->print( system, game);

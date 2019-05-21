@@ -7,7 +7,7 @@
  */
 
 #include "ConstructionManager.hpp"
-#include "TdECS/Entity.hpp"
+#include "ECS/Entity.hpp"
 #include "Game.hpp"
 
 ConstructionManager::ConstructionManager(Game* game) {

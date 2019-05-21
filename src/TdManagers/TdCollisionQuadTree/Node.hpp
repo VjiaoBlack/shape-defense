@@ -11,8 +11,8 @@
 #include <unordered_map>
 #include <set>
 #include <list>
-#include <TdECS/TdECSSystems/Rect.hpp>
-#include "TdECS/TdECSSystems/SystemUtils.hpp"
+#include <ECS/Systems//Rect.hpp>
+#include "ECS/Systems//SystemUtils.hpp"
 
 class Game;
 class System;

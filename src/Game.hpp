@@ -17,7 +17,7 @@
 #include <memory>
 
 #include "Graphics.hpp"
-#include "TdECS/TdECSSystems/System.hpp"
+#include "ECS/Systems//System.hpp"
 
 using namespace std;
 

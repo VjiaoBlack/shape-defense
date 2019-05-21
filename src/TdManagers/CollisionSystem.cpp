@@ -10,7 +10,7 @@
 #include <TdManagers/TdCollisionQuadTree/Node.hpp>
 #include <TdManagers/TdCollisionQuadTree/QuadTree.hpp>
 
-#include "TdECS/TdECSComponents/Shape.hpp"
+#include "ECS/Components/Shape.hpp"
 
 inline bool intersect(glm::vec4 r1, glm::vec4 r2) {
   return r1.x        <= r2.x + r2.z &&

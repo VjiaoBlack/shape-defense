@@ -6,7 +6,7 @@
  * <DETAILS>
  */
 #include <Game.hpp>
-#include <TdECS/Entity.hpp>
+#include <ECS/Entity.hpp>
 #include "LevelManager.hpp"
 #include <Graphics.hpp>
 

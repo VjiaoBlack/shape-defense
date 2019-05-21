@@ -8,9 +8,9 @@
  */
 
 //#include <SDL_rect.h>
-#include "../TdECS/EntityType.hpp"
-#include "../TdGUI/TdGUISystems/GUISystem.hpp"
-#include "../TdGUI/GUIEntity.hpp"
+#include <ECS/EntityType.hpp>
+#include <GUI/Systems/GUISystem.hpp>
+#include <GUI/GUIEntity.hpp>
 
 class Game;
 
