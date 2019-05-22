@@ -35,8 +35,8 @@ class GraphicsBackend {
 
   CircularBuffer effectVBOdata      = CircularBuffer(720);
   CircularBuffer effectcolorVBOdata = CircularBuffer(1080);
-  CircularBuffer guiVBOdata         = CircularBuffer(720);
-  CircularBuffer guicolorVBOdata    = CircularBuffer(1080);
+  CircularBuffer guiVBOdata         = CircularBuffer(72000);
+  CircularBuffer guicolorVBOdata    = CircularBuffer(108000);
 
   GLuint gridVAO;
   GLuint entVAO;

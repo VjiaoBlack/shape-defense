@@ -103,6 +103,8 @@ void ConstructionManager::build(Game *game) {
           ->get<GUIClickableComponent>()->m_pressedInside &&
         !m_GUIMenu->get<GUIContainerComponent>()->m_buttons[2]
           ->get<GUIClickableComponent>()->m_pressedInside) {
+
+      LOG_INF("Grid %d, %d\n", m_rect.x / 16 - 50, m_rect.y / 16 - 28);
       Entity::addEntity(game,
                         game->m_entitySystem.get(),
                         m_type,

@@ -5,6 +5,7 @@
 #include "GameLoop.hpp"
 #include <TdManagers/ConstructionManager.hpp>
 #include <TdManagers/LevelManager.hpp>
+#include <TdManagers/HeatMapManager.hpp>
 #include "ECS/Entity.hpp"
 #include "MainMenuLoop.hpp"
 
@@ -27,7 +28,8 @@ void addTriangle(std::vector<GLfloat>& buf, int pos, glm::vec2 a, glm::vec2 b, g
 
 GameLoop::GameLoop(Game *game) {
   m_constructionManager = std::make_unique<ConstructionManager>(game);
-  m_levelManager = std::make_unique<LevelManager>(game);
+  m_levelManager        = std::make_unique<LevelManager>(game);
+  m_heatMapManager      = std::make_unique<HeatMapManager>(game);
 
   // draw money
   m_moneyBar1 = Triangle(&graphicsBackend.guiVBOdata,
@@ -75,6 +77,7 @@ RenderLoop *GameLoop::update(Game *game) {
 
   m_constructionManager->update(game);
   m_levelManager->update(game);
+  m_heatMapManager->update(game);
 
   game->m_entitySystem->update(game, false);
 
