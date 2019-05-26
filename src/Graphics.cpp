@@ -6,6 +6,9 @@
 
 GraphicsBackend graphicsBackend;
 
+glm::vec2 Camera::pos = glm::vec2(0, 0);
+glm::vec2 Camera::vel = glm::vec2(0, 0);
+
 // TODO: refactor into a .obj file, or similar
 void addEnt(std::vector<GLfloat> &buf, int pos,
             glm::vec2 xy, float width, float thickness) {

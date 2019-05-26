@@ -16,6 +16,8 @@
 #include <random>
 #include <memory>
 
+#define GLM_FORCE_PURE
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -70,3 +72,19 @@ struct Triangle {
 
   void destroy();
 };
+
+class Camera {
+ public:
+  static glm::vec2 pos;
+  static glm::vec2 vel;
+
+  static constexpr glm::vec2 dim = glm::vec2(1600, 900);
+};
+
+
+class World {
+ public:
+  static constexpr glm::ivec2 dim  = glm::ivec2(400, 300);
+  static constexpr int        size = dim.x * dim.y;
+};
+

@@ -74,8 +74,8 @@ void ConstructionManager::render(Game* game) {
   // render the "future object"
   if (m_isOn) {
     // not totally trivial due to integer division's trucation
-    m_rect.x = (1 + ((int)game->m_mouseX - 16) / 16) * 16 + 0;
-    m_rect.y = (1 + ((int)game->m_mouseY - 16) / 16) * 16 + 2;
+    m_rect.x = (1 + ((int)game->m_mouseX - 16) / 16) * 16;
+    m_rect.y = (1 + ((int)game->m_mouseY - 16) / 16) * 16;
 
     MY_Rect b = m_rect;
 
@@ -104,12 +104,12 @@ void ConstructionManager::build(Game *game) {
         !m_GUIMenu->get<GUIContainerComponent>()->m_buttons[2]
           ->get<GUIClickableComponent>()->m_pressedInside) {
 
-      LOG_INF("Grid %d, %d\n", m_rect.x / 16 - 50, m_rect.y / 16 - 28);
+      LOG_INF("Grid %d, %d\n", m_rect.x / 16, m_rect.y / 16);
       Entity::addEntity(game,
                         game->m_entitySystem.get(),
                         m_type,
-                        m_rect.x / 16 - 50,
-                        m_rect.y / 16 - 28);
+                        m_rect.x / 16,
+                        m_rect.y / 16);
       game->m_curMoney -= EntityCosts[(uint) m_type];
     }
   }

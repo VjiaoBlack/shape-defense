@@ -31,8 +31,8 @@ void GUITextComponent::update(Game *game) {
   FT_Set_Pixel_Sizes(graphicsBackend.face, 0, 48);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glUniform4fv(graphicsBackend.uniform_color, 1, red);
   glUseProgram(graphicsBackend.textShader);
+  glUniform4fv(graphicsBackend.uniform_color, 1, red);
 
   graphicsBackend.render_text(m_text.c_str(), -1 + m_destRect.x * sx, m_destRect.y * sy - 1, sx, sy);
   glDisable(GL_BLEND);

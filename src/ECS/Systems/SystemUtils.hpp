@@ -7,6 +7,9 @@
  * <DETAILS>
  */
 
+#define GLM_FORCE_PURE
+
+
 #include <memory>
 #include <vector>
 #include <glm/vec2.hpp>

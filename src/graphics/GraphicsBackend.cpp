@@ -10,48 +10,6 @@
 #include <Utils.hpp>
 #include "GraphicsBackend.hpp"
 
-
-void _createGrid() {
-// vertical lines
-  int grid_i = 0;
-  int posx   = 0;
-  while (posx <= K_DISPLAY_SIZE_X / 2) {
-    graphicsBackend.gridVBOdata[grid_i]     = posx;
-    graphicsBackend.gridVBOdata[grid_i + 1] = -K_DISPLAY_SIZE_Y / 2.0f;
-
-    graphicsBackend.gridVBOdata[grid_i + 2] = posx;
-    graphicsBackend.gridVBOdata[grid_i + 3] = K_DISPLAY_SIZE_Y / 2.0f;
-
-    graphicsBackend.gridVBOdata[grid_i + 4] = -posx;
-    graphicsBackend.gridVBOdata[grid_i + 5] = -K_DISPLAY_SIZE_Y / 2.0f;
-
-    graphicsBackend.gridVBOdata[grid_i + 6] = -posx;
-    graphicsBackend.gridVBOdata[grid_i + 7] = K_DISPLAY_SIZE_Y / 2.0f;
-
-    grid_i += 12;
-    posx += 16;
-  }
-
-  // horizontal lines
-  int posy = 0;
-  while (posy <= K_DISPLAY_SIZE_Y / 2) {
-    graphicsBackend.gridVBOdata[grid_i]     = K_DISPLAY_SIZE_X / 2.0f;
-    graphicsBackend.gridVBOdata[grid_i + 1] = posy;
-
-    graphicsBackend.gridVBOdata[grid_i + 2] = -K_DISPLAY_SIZE_X / 2.0f;
-    graphicsBackend.gridVBOdata[grid_i + 3] = posy;
-
-    graphicsBackend.gridVBOdata[grid_i + 4] = K_DISPLAY_SIZE_X / 2.0f;
-    graphicsBackend.gridVBOdata[grid_i + 5] = -posy;
-
-    graphicsBackend.gridVBOdata[grid_i + 6] = -K_DISPLAY_SIZE_X / 2.0f;
-    graphicsBackend.gridVBOdata[grid_i + 7] = -posy;
-
-    grid_i += 12;
-    posy += 16;
-  }
-}
-
 void GraphicsBackend::initialize() {
   // Initialise GLFW
   if (!glfwInit()) {
@@ -100,25 +58,31 @@ void GraphicsBackend::initialize() {
   // glEnable(GL_BLEND);
   // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  graphicsBackend.gridShader   = LoadShaders("shaders/grid.vs", "shaders/grid.fs");
-  graphicsBackend.entShader    = LoadShaders("shaders/ent.vs", "shaders/ent.fs");
-  graphicsBackend.effectShader = LoadShaders("shaders/effect.vs", "shaders/effect.fs");
-  graphicsBackend.guiShader    = LoadShaders("shaders/gui.vs", "shaders/gui.fs");
+  graphicsBackend.backgroundShader = LoadShaders("shaders/background.vs", "shaders/background.fs");
+  graphicsBackend.entShader        = LoadShaders("shaders/ent.vs", "shaders/ent.fs");
+  graphicsBackend.effectShader     = LoadShaders("shaders/effect.vs", "shaders/effect.fs");
+  graphicsBackend.guiShader        = LoadShaders("shaders/gui.vs", "shaders/gui.fs");
 
   // Dark blue background
   glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-  graphicsBackend.gridVBOdata.resize(8000);
+  graphicsBackend.backgroundVBOdata.resize(24);
   graphicsBackend.entVBOdata.resize(3 * k_MAX_ENTS * triangles_per_ent * 3);
   graphicsBackend.entcolorVBOdata.resize(3 * k_MAX_ENTS * triangles_per_ent * 3);
   // effectVBOdata and guiVBOdata have constexpr sizes
 
-  _createGrid();
+  GraphicsBackend::createVAO(&backgroundVAO);
+  GraphicsBackend::createVBO(&backgroundVBO, backgroundVAO);
 
-  GraphicsBackend::createVAO(&gridVAO);
-  GraphicsBackend::createVBO(&gridvertexVBO, gridVAO);
-  GraphicsBackend::updateVBO(gridvertexVBO, gridVBOdata.data(),
-                             sizeof(GLfloat) * gridVBOdata.size());
+  backgroundVBOdata = {-1.0, -1.0, 0.0, 1.0,
+                       -1.0,  1.0, 0.0, 0.0,
+                        1.0,  1.0, 1.0, 0.0,
+                       -1.0, -1.0, 0.0, 1.0,
+                        1.0,  1.0, 1.0, 0.0,
+                        1.0, -1.0, 1.0, 1.0};
+
+  GraphicsBackend::updateVBO(backgroundVBO, backgroundVBOdata.data(),
+                             sizeof(GLfloat) * backgroundVBOdata.size());
 
   GraphicsBackend::createVAO(&entVAO);
   GraphicsBackend::createVBO(&entvertexVBO, entVAO);
@@ -175,6 +139,14 @@ void GraphicsBackend::initialize() {
 
   // Create the vertex buffer object
   glGenBuffers(1, &vbo);
+
+  // create heatmap texture
+  glGenTextures(1, &heatmapTex);
+  glBindTexture(GL_TEXTURE_2D, heatmapTex);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
 }
 
 void GraphicsBackend::render_text(const char *text, float x, float y, float sx, float sy) {
@@ -261,9 +233,6 @@ void GraphicsBackend::updateVBO(GLuint VBO, void *dataPtr, size_t size) {
 
 void GraphicsBackend::destroy() {
   // Cleanup VBO
-  glDeleteBuffers(1, &graphicsBackend.gridvertexVBO);
-  glDeleteVertexArrays(1, &graphicsBackend.gridVAO);
-
   glDeleteBuffers(1, &graphicsBackend.entvertexVBO);
   glDeleteBuffers(1, &graphicsBackend.entcolorVBO);
   glDeleteVertexArrays(1, &graphicsBackend.entVAO);
@@ -275,8 +244,10 @@ void GraphicsBackend::destroy() {
   glDeleteBuffers(1, &graphicsBackend.effectcolorVBO);
   glDeleteVertexArrays(1, &graphicsBackend.effectVAO);
 
-  glDeleteProgram(graphicsBackend.gridShader);
   glDeleteProgram(graphicsBackend.entShader);
+  glDeleteProgram(graphicsBackend.effectShader);
+  glDeleteProgram(graphicsBackend.guiShader);
+  glDeleteProgram(graphicsBackend.backgroundShader);
 
   glfwTerminate();
 }

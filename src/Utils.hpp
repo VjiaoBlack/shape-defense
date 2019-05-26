@@ -11,6 +11,8 @@
 //#include <SDL2/SDL_image.h>
 //#include <SDL2/SDL_ttf.h>
 
+#define GLM_FORCE_PURE
+
 #include <glm/glm.hpp>
 #include <glm/detail/_swizzle.hpp>
 

@@ -72,6 +72,18 @@ RenderLoop *GameLoop::update(Game *game) {
         // deleting the current loop
         return nullptr;
         break;
+      case GLFW_KEY_W:
+        Camera::pos.y -= 4;
+        break;
+      case GLFW_KEY_A:
+        Camera::pos.x -= 4;
+        break;
+      case GLFW_KEY_S:
+        Camera::pos.y += 4;
+        break;
+      case GLFW_KEY_D:
+        Camera::pos.x += 4;
+        break;
     }
   }
 

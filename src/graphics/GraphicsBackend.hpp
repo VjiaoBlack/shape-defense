@@ -29,21 +29,21 @@ class GraphicsBackend {
 
   // consider making circular buffers resizable
   // and then only using circular buffers
-  std::vector<GLfloat> gridVBOdata;
+  std::vector<GLfloat> backgroundVBOdata;
   std::vector<GLfloat> entVBOdata;
   std::vector<GLfloat> entcolorVBOdata;
 
-  CircularBuffer effectVBOdata      = CircularBuffer(720);
-  CircularBuffer effectcolorVBOdata = CircularBuffer(1080);
+  CircularBuffer effectVBOdata      = CircularBuffer(7200);
+  CircularBuffer effectcolorVBOdata = CircularBuffer(10800);
   CircularBuffer guiVBOdata         = CircularBuffer(72000);
   CircularBuffer guicolorVBOdata    = CircularBuffer(108000);
 
-  GLuint gridVAO;
+  GLuint backgroundVAO;
   GLuint entVAO;
   GLuint guiVAO;
   GLuint effectVAO;
 
-  GLuint gridvertexVBO;
+  GLuint backgroundVBO;
   GLuint entvertexVBO;
   GLuint entcolorVBO;
   GLuint guiVBO;
@@ -51,10 +51,12 @@ class GraphicsBackend {
   GLuint effectVBO;
   GLuint effectcolorVBO;
 
-  GLuint gridShader;
+  GLuint backgroundShader;
   GLuint entShader;
   GLuint effectShader;
   GLuint guiShader;
+
+  GLuint heatmapTex;
 
   GLFWwindow *window;
 
