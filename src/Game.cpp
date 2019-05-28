@@ -216,13 +216,13 @@ void Game::run() {
     clock_t endFrame = clock();
 
     m_deltaTime = clockToMilliseconds(endFrame - beginFrame);
-    double rfps = (1000.0 / m_deltaTime);
+//    double rfps = (1000.0 / m_deltaTime);
     // display rFPS (rendering FPS)
     // std::cout << "rFPS: " << rfps << std::endl;
     fflush(stdout);
-    if (m_deltaTime < (1000.0 / 30.0)) {
-      usleep(1000 * ((1000.0 / 30.0) - m_deltaTime));
-      m_deltaTime = 1000 / 30.0;
+    if (m_deltaTime < (1000.0 / K_FPS)) {
+      usleep(1000 * ((1000.0 / K_FPS) - m_deltaTime));
+//      m_deltaTime = 1000 / K_FPS;
     }
 
     if (glfwWindowShouldClose(graphicsBackend.window)) {
@@ -233,10 +233,14 @@ void Game::run() {
 
 // TODO: Assuming that order of processing doesn't matter??
 // TODO: will these happen in-between processing entity updates?
+
+// There's a bug where older key presses sometimes ends up jumbled and gets processed at the wrong time.
 void Game::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   if (action == GLFW_PRESS) {
+    LOG_INF("PRESS %.3f", glfwGetTime());
     m_keysDown.insert(key);
   } else if (action == GLFW_RELEASE) {
+    LOG_INF("RELEASE %.3f", glfwGetTime());
     m_keysDown.erase(key);
   }
 }
