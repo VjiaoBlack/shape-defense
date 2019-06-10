@@ -185,6 +185,7 @@ void Game::run() {
     glDrawArrays(GL_TRIANGLES, 0, graphicsBackend.effectVBOdata.size());
 
     // draw GUI
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glUseProgram(graphicsBackend.guiShader);
     glBindVertexArray(graphicsBackend.guiVAO);
     glEnableVertexAttribArray(0);
@@ -206,6 +207,9 @@ void Game::run() {
     // cleanup drawing
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
+
+    // render things again
+    m_gameStateStack.back()->render(this);
 
     // Swap buffers
     glfwSwapBuffers(graphicsBackend.window);
