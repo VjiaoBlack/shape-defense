@@ -101,9 +101,9 @@ void Game::run() {
     glUseProgram(graphicsBackend.backgroundShader);
     glBindVertexArray(graphicsBackend.backgroundVAO);
 
-    glActiveTexture(GL_TEXTURE0 + 1);
+    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, graphicsBackend.heatmapTex);
-    glUniform1i(2, 0);
+    glUniform1i(2, 1);
 
     glBindBuffer(GL_ARRAY_BUFFER, graphicsBackend.backgroundVBO);
     glEnableVertexAttribArray(0);

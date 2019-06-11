@@ -84,7 +84,7 @@ class Camera {
 
 class World {
  public:
-  static constexpr glm::ivec2 dim  = glm::ivec2(40, 30);
+  static constexpr glm::ivec2 dim  = glm::ivec2(400, 300);
   static constexpr int        size = dim.x * dim.y;
 };
 
