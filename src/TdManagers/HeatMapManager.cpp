@@ -11,6 +11,8 @@
 #include "Game.hpp"
 
 HeatMapManager::HeatMapManager(Game* game) {
+  std::fill(std::begin(m_tiles), std::end(m_tiles), 0);
+  std::fill(std::begin(m_tmp  ), std::end(m_tmp  ), 0);
 }
 
 void HeatMapManager::update(Game* game) {
@@ -73,6 +75,7 @@ void HeatMapManager::update(Game* game) {
     }
   }
 
+  double sum = 0;
   for (int x = 0; x < World::dim.x; x++) {
     for (int y = 0; y < World::dim.y; y++) {
       m_tiles[x + y * World::dim.x] = m_tmp[x + y * World::dim.x];

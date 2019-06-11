@@ -13,23 +13,37 @@
 ConstructionManager::ConstructionManager(Game* game) {
   m_GUISystem = std::make_unique<GUISystem>();
 
-  MY_Rect r =
-      (MY_Rect){sz(K_DISPLAY_SIZE_X * 3 / 4),
-                 sz(K_DISPLAY_SIZE_Y / 2 - K_DISPLAY_SIZE_Y / 4 - K_DISPLAY_SIZE_Y / 8),
-                 sz(200), sz(K_DISPLAY_SIZE_Y * 3 / 4)};
+  MY_Rect r{sz(350),
+            sz(100),
+            sz(200),
+            sz(K_DISPLAY_SIZE_Y * 3 / 4)};
 
-  vector<string> labels = {"Toggle", "Tower", "Wall"};
+  vector<string> labels = {"Toggle", "Tower", "Wall", "Battery", "Pylon"};
   m_GUIMenu = GUIEntity::addVerticalMenu(game, m_GUISystem.get(), r,
                                          labels);
 
   m_GUIMenu->get<GUIContainerComponent>()->m_buttons[0]->get<GUIClickableComponent>()->setCallback(
       [&]() { m_isOn = !m_isOn; printf("TOGGLE, is now %d\n", (uint) m_isOn); });
 
+
   m_GUIMenu->get<GUIContainerComponent>()->m_buttons[1]->get<GUIClickableComponent>()->setCallback(
       [&]() { m_type = EntityType::TOWER; });
 
   m_GUIMenu->get<GUIContainerComponent>()->m_buttons[2]->get<GUIClickableComponent>()->setCallback(
       [&]() { m_type = EntityType::WALL; });
+
+
+  r.x -= 250;
+
+  labels = {"Build", "Upgrade", "Research", "Maps", "Menu"};
+  auto menu = GUIEntity::addVerticalMenu(game, m_GUISystem.get(), r, labels);
+
+  auto dropdownComp = std::make_unique<GUIDropdownComponent>(menu->get<GUIContainerComponent>()->m_buttons[0]);
+  m_GUIMenu->addComponent(std::move(dropdownComp));
+
+
+
+
 
   r = (MY_Rect) {sz(K_DISPLAY_SIZE_X / 2) - 100,
                  sz(K_DISPLAY_SIZE_Y / 2) + 200,
@@ -74,8 +88,8 @@ void ConstructionManager::render(Game* game) {
   // render the "future object"
   if (m_isOn) {
     // not totally trivial due to integer division's trucation
-    m_rect.x = (1 + ((int)game->m_mouseX - 16) / 16) * 16;
-    m_rect.y = (1 + ((int)game->m_mouseY - 16) / 16) * 16;
+    m_rect.x = (1 + ((int)game->m_mouseX + Camera::pos.x - 16) / 16) * 16;
+    m_rect.y = (1 + ((int)game->m_mouseY - Camera::pos.y - 16 - K_DISPLAY_SIZE_Y) / 16) * 16;
 
     MY_Rect b = m_rect;
 

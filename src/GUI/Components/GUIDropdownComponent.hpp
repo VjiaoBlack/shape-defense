@@ -13,10 +13,13 @@
 class GUIDropdownComponent : public GUIComponent {
 // only activates when another GUIEntity is clicked
  public:
-  std::unique_ptr<GUIEntity> m_button;
+  bool m_isOn = true;
+  GUIEntity* m_button{};
 
-  virtual void update(Game* game) {
-    // TODO
-  }
+  GUIDropdownComponent() = delete;
+  GUIDropdownComponent(GUIEntity* button) : m_button(button) {};
+
+
+  virtual void update(Game* game);
 };
 
