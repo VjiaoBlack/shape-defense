@@ -22,4 +22,6 @@ class LaserShooter : public Component {
   }
 
   LaserShooter() {}
+
+  void update(Game *game, System *system);
 };

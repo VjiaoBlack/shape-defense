@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8)
 
 project(Defense)
 
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_BUILD_TYPE Debug)
@@ -51,7 +50,7 @@ add_executable(
         ${PROJECT_NAME}
         src/defense.cpp
         ${SOURCES}
-        ${HEADERS} src/common/CircularBuffer.cpp src/common/CircularBuffer.hpp src/graphics/GraphicsBackend.cpp src/graphics/GraphicsBackend.hpp src/TdManagers/HeatMapManager.cpp src/TdManagers/HeatMapManager.hpp)
+        ${HEADERS} src/common/CircularBuffer.cpp src/common/CircularBuffer.hpp src/graphics/GraphicsBackend.cpp src/graphics/GraphicsBackend.hpp src/TdManagers/HeatMapManager.cpp src/TdManagers/HeatMapManager.hpp src/ECS/Components/Health.cpp src/ECS/Components/Physics.cpp src/ECS/Components/Attack.cpp src/ECS/Components/LaserShooter.cpp src/ECS/Components/Pathing.cpp)
 
 # TODO: why do I need -lfreetype? What's ${FREETYPE2_LIBRARY} for?
 target_link_libraries(

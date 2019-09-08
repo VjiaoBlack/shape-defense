@@ -32,5 +32,7 @@ class Attack : public Component {
   Attack(Team team, double damage, double cooldown, AttackType type)
       : m_team(team), m_damage(damage), m_cooldown(cooldown), m_type(type) {}
 
+  void update(Game *game, System *system);
+
   void damage(Game *game, System *system);
 };

@@ -16,6 +16,8 @@ class Pathing : public Component {
   bool m_isMoving = false;
   glm::dvec2 m_goalxy;
 
+  void update(Game *game, System *system);
+
   void move(Game* game, System* system, double x, double y);
 
   void stop(Game* game, System* system);

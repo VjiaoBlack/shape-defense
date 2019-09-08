@@ -1,6 +1,6 @@
 #pragma once
 /**
- * TdECSHealthComponent.hpp
+ * Health.hpp
  *
  * Victor Jiao
  *
@@ -18,4 +18,6 @@ class Health : public Component {
   Health() {}
   Health(double health, double armor)
       : m_curHealth(health), m_maxHealth(health), m_armor(armor) {}
+
+  void update(Game *game, System *system);
 };
